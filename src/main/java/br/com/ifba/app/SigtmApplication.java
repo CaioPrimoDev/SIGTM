@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // teste
+//TESTE PEDRO
 @SpringBootApplication
 public class SigtmApplication {
 
