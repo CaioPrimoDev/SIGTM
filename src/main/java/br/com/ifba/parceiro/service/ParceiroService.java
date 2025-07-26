@@ -8,6 +8,9 @@ import br.com.ifba.parceiro.entity.Parceiro;
 import br.com.ifba.parceiro.repository.ParceiroRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
+import br.com.safeguard.check.SafeguardCheck;
+import br.com.safeguard.interfaces.Check;
+import br.com.safeguard.types.ParametroTipo;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +84,7 @@ public class ParceiroService {
 
         try {
             return repo.findById(id)
-                .orElseThrow(() -> new RegraNegocioException("Parceiro não encontrado."));
+                    .orElseThrow(() -> new RegraNegocioException("Parceiro não encontrado."));
         } catch (PersistenceException e) {
             log.error("Erro ao buscar parceiro por ID.", e);
             throw new RegraNegocioException("Erro ao buscar parceiro por ID.", e);
@@ -90,13 +93,16 @@ public class ParceiroService {
 
     // Validação de regra de negócio
     private void validarParceiro(Parceiro parceiro) {
+
+        Check check = new SafeguardCheck();//instacia para as checagens de validação específicas
+
         if (parceiro == null) {
             log.error("Parceiro é nulo.");
             throw new RegraNegocioException("O parceiro não pode ser nulo.");
         }
 
-        if (StringUtil.isNullOrEmpty(parceiro.getNome()) ||
-            !StringUtil.hasValidLength(parceiro.getNome(), 3, 100)) {
+        if (StringUtil.isNullOrEmpty(parceiro.getNome())
+                || !StringUtil.hasValidLength(parceiro.getNome(), 3, 100)) {
             log.error("Nome do parceiro inválido.");
             throw new RegraNegocioException("O nome do parceiro deve ter entre 3 e 100 caracteres.");
         }
@@ -121,8 +127,8 @@ public class ParceiroService {
             throw new RegraNegocioException("O status da solicitação é obrigatório.");
         }
 
-        if (StringUtil.isNullOrEmpty(parceiro.getEmail()) ||
-            !parceiro.getEmail().contains("@")) {
+        if (StringUtil.isNullOrEmpty(parceiro.getEmail())
+                || !parceiro.getEmail().contains("@")) {
             log.error("Email inválido.");
             throw new RegraNegocioException("Informe um e-mail válido.");
         }
@@ -131,11 +137,18 @@ public class ParceiroService {
             log.error("Telefone é obrigatório.");
             throw new RegraNegocioException("O telefone é obrigatório.");
         }
-        
+
+        if (check.elementOf(parceiro.getTelefone(), ParametroTipo.TELEFONE).validate().hasError()) {// validade para fazer a verificação, haserror para verificar retornar um booleano se é inválido(true) ou válido(false)
+            log.error("Telefone inválido");
+            throw new RegraNegocioException("Telefone inválido.");
+
+        }
+
         if (!StringUtil.isCpfOuCnpjValido(parceiro.getCpf_cnpj())) {
             throw new RegraNegocioException("CPF ou CNPJ inválido.");
         }
 
-        // Ainda falta validar CPF/CNPJ, endereço e senha
+        // Ainda falta validar endereço e senha
     }
+
 }

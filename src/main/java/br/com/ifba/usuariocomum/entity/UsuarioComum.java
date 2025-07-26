@@ -5,6 +5,8 @@
 package br.com.ifba.usuariocomum.entity;
 
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
+import br.com.safeguard.constraint.annotations.Verify;// adição das bibliotecas para o uso do verify
+import br.com.safeguard.types.ParametroTipo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -27,8 +29,9 @@ public class UsuarioComum extends PersistenceEntity {
     private final String papel = "COMUM";
     private String cpf_cnpj;
     private String nome;
-    private String endereco;
+    private String endereco;// Como endreço é atributo multivaorado lembrar de criar um classe para ele
     private String email;
+    @Verify(ParametroTipo.TELEFONE)//mesmca coisa da linha 30 
     private String telefone;
     private String email_secundario;
     private String senha_hash;

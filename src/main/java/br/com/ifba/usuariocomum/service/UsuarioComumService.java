@@ -8,6 +8,9 @@ import br.com.ifba.usuariocomum.entity.UsuarioComum;
 import br.com.ifba.usuariocomum.repository.UsuarioComumRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
+import br.com.safeguard.check.SafeguardCheck;
+import br.com.safeguard.interfaces.Check;
+import br.com.safeguard.types.ParametroTipo;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +94,9 @@ public class UsuarioComumService {
 
     // Validação de regra de negócio
     private void validarUsuarioComum(UsuarioComum user) {
+        
+        Check check = new SafeguardCheck();//instacia para as checagens de validação específicas
+        
         if (user == null) {
             log.error("Usuário comum é nulo.");
             throw new RegraNegocioException("O usuário comum não pode ser nulo.");
@@ -122,6 +128,11 @@ public class UsuarioComumService {
             throw new RegraNegocioException("O telefone é obrigatório.");
         }
 
+        if (check.elementOf(user.getTelefone(), ParametroTipo.EMAIL).validate().hasError()) {// validate para fazer a verificação, haserror para verificar retornar um booleano se é inválido(true) ou válido(false)
+            log.error("Telefone inválido");
+            throw new RegraNegocioException("Telefone inválido.");
+        }
+        
         if (StringUtil.isNullOrEmpty(user.getSenha_hash())) {
             log.error("Senha é obrigatória.");
             throw new RegraNegocioException("A senha é obrigatória.");
@@ -130,7 +141,7 @@ public class UsuarioComumService {
         if (!StringUtil.isCpfOuCnpjValido(user.getCpf_cnpj())) {
             throw new RegraNegocioException("CPF ou CNPJ inválido.");
         }
-
-        // As preferências e permissões podem ter validações lógicas extras caso necessário.
+        
+// As preferências e permissões podem ter validações lógicas extras caso necessário.
     }
 }
