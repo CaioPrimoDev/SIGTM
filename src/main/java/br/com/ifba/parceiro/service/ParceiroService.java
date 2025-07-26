@@ -132,7 +132,7 @@ public class ParceiroService {
             throw new RegraNegocioException("O telefone é obrigatório.");
         }
         
-        if (!StringUtil.isCpfOuCnpjValido(parceiro.getCpf_cnpj())) {
+        if (!StringUtil.isCpfOuCnpjValido(parceiro.getCpf_Cnpj())) {
             throw new RegraNegocioException("CPF ou CNPJ inválido.");
         }
 

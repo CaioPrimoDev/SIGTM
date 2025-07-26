@@ -128,7 +128,7 @@ public class GestorService {
             throw new RegraNegocioException("O telefone é obrigatório.");
         }
         
-        if (!StringUtil.isCpfOuCnpjValido(gestor.getCpf_cnpj())) {
+        if (!StringUtil.isCpfOuCnpjValido(gestor.getCpf_Cnpj())) {
             throw new RegraNegocioException("CPF ou CNPJ inválido.");
         }
 

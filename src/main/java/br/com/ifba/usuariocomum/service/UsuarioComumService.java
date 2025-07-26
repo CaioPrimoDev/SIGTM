@@ -96,7 +96,7 @@ public class UsuarioComumService {
             throw new RegraNegocioException("O usuário comum não pode ser nulo.");
         }
 
-        if (StringUtil.isNullOrEmpty(user.getCpf_cnpj())) {
+        if (StringUtil.isNullOrEmpty(user.getCpf_Cnpj())) {
             log.error("CPF/CNPJ é obrigatório.");
             throw new RegraNegocioException("O CPF/CNPJ é obrigatório.");
         }
@@ -122,12 +122,12 @@ public class UsuarioComumService {
             throw new RegraNegocioException("O telefone é obrigatório.");
         }
 
-        if (StringUtil.isNullOrEmpty(user.getSenha_hash())) {
+        if (StringUtil.isNullOrEmpty(user.getSenha_Hash())) {
             log.error("Senha é obrigatória.");
             throw new RegraNegocioException("A senha é obrigatória.");
         }
 
-        if (!StringUtil.isCpfOuCnpjValido(user.getCpf_cnpj())) {
+        if (!StringUtil.isCpfOuCnpjValido(user.getCpf_Cnpj())) {
             throw new RegraNegocioException("CPF ou CNPJ inválido.");
         }
 

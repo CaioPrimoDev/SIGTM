@@ -4,7 +4,8 @@
  */
 package br.com.ifba.gestor.entity;
 
-import br.com.ifba.usuariocomum.entity.UsuarioComum;
+import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.enums.Papel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -23,16 +24,15 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Gestor extends UsuarioComum {
+public class Gestor extends Usuario {
     private String matricula_funcional;
     private String departamento;
     private String cargo;
 
-    public Gestor(String matricula_funcional, String departamento, String cargo, String cpf_cnpj, String nome, String endereco, String email, String telefone, String email_secundario, String senha_hash) {
-        super(cpf_cnpj, nome, endereco, email, telefone, email_secundario, senha_hash);
+    public Gestor(String matricula_funcional, String departamento, String cargo, String nome, String email, String email_secundario, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
+        super(nome, email, email_secundario, Senha_Hash, telefone, Cpf_Cnpj, papel);
         this.matricula_funcional = matricula_funcional;
         this.departamento = departamento;
         this.cargo = cargo;
     }
-    
 }
