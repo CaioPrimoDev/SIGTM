@@ -13,6 +13,7 @@ import br.com.safeguard.interfaces.Check;
 import br.com.safeguard.types.ParametroTipo;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UsuarioComumService {
 
-    @Autowired
+    
     private UsuarioComumRepository repo;
 
     public boolean save(UsuarioComum user) {

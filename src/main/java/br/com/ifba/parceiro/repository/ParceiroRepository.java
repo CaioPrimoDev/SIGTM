@@ -7,11 +7,13 @@ package br.com.ifba.parceiro.repository;
 import br.com.ifba.parceiro.entity.Parceiro;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author User
  */
+    @Repository
 public interface ParceiroRepository extends JpaRepository<Parceiro, Long> {
     // Método para busca por nome com LIKE
     List<Parceiro> findByNomeContainingIgnoreCase(String termo);

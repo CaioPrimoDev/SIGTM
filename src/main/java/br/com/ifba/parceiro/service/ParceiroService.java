@@ -12,7 +12,9 @@ import br.com.safeguard.check.SafeguardCheck;
 import br.com.safeguard.interfaces.Check;
 import br.com.safeguard.types.ParametroTipo;
 import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ParceiroService {
 
-    @Autowired
     private ParceiroRepository repo;
 
+    @Transactional
     public boolean save(Parceiro parceiro) {
         validarParceiro(parceiro);
         try {
@@ -39,6 +42,7 @@ public class ParceiroService {
         }
     }
 
+    @Transactional
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.error("ID de parceiro inválido para exclusão.");
@@ -53,6 +57,7 @@ public class ParceiroService {
         }
     }
 
+    @Transactional
     public List<Parceiro> findAll() {
         try {
             return repo.findAll();
@@ -62,6 +67,7 @@ public class ParceiroService {
         }
     }
 
+    @Transactional
     public List<Parceiro> findByNome(String nome) {
         if (StringUtil.isNullOrEmpty(nome)) {
             log.error("Nome inválido.");
@@ -76,6 +82,7 @@ public class ParceiroService {
         }
     }
 
+    @Transactional
     public Parceiro findById(Long id) {
         if (id == null || id <= 0) {
             log.error("ID inválido.");

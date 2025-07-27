@@ -10,6 +10,7 @@ import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor//fazer injeção de dependências de forma automática
 public class GestorService {
 
-    @Autowired
     private GestorRepository repo;
 
     public boolean save(Gestor gestor) {

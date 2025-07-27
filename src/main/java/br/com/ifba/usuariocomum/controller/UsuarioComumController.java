@@ -8,13 +8,13 @@ import br.com.ifba.usuariocomum.entity.UsuarioComum;
 import br.com.ifba.usuariocomum.service.UsuarioComumService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
 /**
  *
  * @author User
  */
-@Service
+@Controller
 public class UsuarioComumController implements UsuarioComumIController {
     
     @Autowired

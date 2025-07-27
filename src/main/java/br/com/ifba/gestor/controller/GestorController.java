@@ -8,13 +8,13 @@ import br.com.ifba.gestor.entity.Gestor;
 import br.com.ifba.gestor.service.GestorService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
 /**
  *
  * @author User
  */
-@Service
+@Controller
 public class GestorController implements GestorIController {
     
     @Autowired

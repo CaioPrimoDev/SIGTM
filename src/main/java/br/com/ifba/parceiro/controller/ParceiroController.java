@@ -8,13 +8,13 @@ import br.com.ifba.parceiro.entity.Parceiro;
 import br.com.ifba.parceiro.service.ParceiroService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
 /**
  *
  * @author User
  */
-@Service
+@Controller
 public class ParceiroController implements ParceiroIController {
     
     @Autowired
