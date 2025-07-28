@@ -101,26 +101,6 @@ public class ParceiroService {
             throw new RegraNegocioException("O nome do parceiro deve ter entre 3 e 100 caracteres.");
         }
 
-        if (StringUtil.isNullOrEmpty(parceiro.getSegmento_empresarial())) {
-            log.error("Segmento empresarial é obrigatório.");
-            throw new RegraNegocioException("O segmento empresarial é obrigatório.");
-        }
-
-        if (parceiro.getHorario_abertura() == null || parceiro.getHorario_fechamento() == null) {
-            log.error("Horários de funcionamento são obrigatórios.");
-            throw new RegraNegocioException("Horário de abertura e fechamento devem ser informados.");
-        }
-
-        if (parceiro.getHorario_abertura().after(parceiro.getHorario_fechamento())) {
-            log.error("Horário de abertura posterior ao de fechamento.");
-            throw new RegraNegocioException("O horário de abertura não pode ser depois do de fechamento.");
-        }
-
-        if (StringUtil.isNullOrEmpty(parceiro.getStatus_solicitacao())) {
-            log.error("Status da solicitação é obrigatório.");
-            throw new RegraNegocioException("O status da solicitação é obrigatório.");
-        }
-
         if (StringUtil.isNullOrEmpty(parceiro.getEmail()) ||
             !parceiro.getEmail().contains("@")) {
             log.error("Email inválido.");

@@ -28,9 +28,6 @@ public abstract class Usuario extends PersistenceEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
-    
-    @Column(nullable = false, unique = true)
-    private String email_secundario;
 
     @Column(nullable = false)
     private String Senha_Hash;
@@ -38,6 +35,7 @@ public abstract class Usuario extends PersistenceEntity {
     @Column(nullable = false)
     private String telefone;
     
+    // Na hora que for transformar em Parceiro, é exigido CNPJ
     @Column(nullable = false)
     private String Cpf_Cnpj;
 
@@ -45,28 +43,12 @@ public abstract class Usuario extends PersistenceEntity {
     @Column(nullable = false)
     private Papel papel;
 
-    @Column(nullable = false)
-    private boolean podeComentar;
-
-    protected Usuario(String nome, String email, String email_secundario, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
+        protected Usuario(String nome, String email, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
         this.nome = nome;
         this.email = email;
-        this.email_secundario = email_secundario;
         this.Senha_Hash = Senha_Hash;
         this.telefone = telefone;
         this.Cpf_Cnpj = Cpf_Cnpj;
         this.papel = papel;
-        this.podeComentar = true;
-    }
-
-    public Usuario(String nome, String email, String email_secundario, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel, boolean podeComentar) {
-        this.nome = nome;
-        this.email = email;
-        this.email_secundario = email_secundario;
-        this.Senha_Hash = Senha_Hash;
-        this.telefone = telefone;
-        this.Cpf_Cnpj = Cpf_Cnpj;
-        this.papel = papel;
-        this.podeComentar = podeComentar;
     }
 }

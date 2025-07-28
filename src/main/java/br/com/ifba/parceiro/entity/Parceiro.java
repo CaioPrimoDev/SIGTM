@@ -6,9 +6,14 @@ package br.com.ifba.parceiro.entity;
 
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.usuario.enums.Papel;
+import br.com.ifba.usuariocomum.entity.UsuarioComum;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Time;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,16 +31,45 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Parceiro extends Usuario {
-    private String Segmento_empresarial;
-    private Time horario_abertura;
-    private Time horario_fechamento;
-    private String status_solicitacao;
+    // Herança + Agregação
+    @OneToOne
+    @JoinColumn(name = "usuario_comum_id", nullable = false)
+    private UsuarioComum origem;
+    
+    @Column(nullable = false)
+    private String nomeEmpresa;
+    
+    @Column(nullable = false, unique = true)
+    private String cnpj;
+    
+    @Column(nullable = false, unique = true)
+    private String emailExclusivo;
+    
+    @Column(nullable = false, unique = true)
+    private String senha;
+    
+    @Column(nullable = false)
+    private boolean status;
 
-    public Parceiro(String Segmento_empresarial, Time horario_abertura, Time horario_fechamento, String status_solicitacao, String nome, String email, String email_secundario, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
-        super(nome, email, email_secundario, Senha_Hash, telefone, Cpf_Cnpj, Papel.PARCEIRO);
-        this.Segmento_empresarial = Segmento_empresarial;
-        this.horario_abertura = horario_abertura;
-        this.horario_fechamento = horario_fechamento;
-        this.status_solicitacao = status_solicitacao;
-    }   
+    // Um novo login é gerado
+    public Parceiro(UsuarioComum origem, String nomeEmpresa, String cnpj, String emailExclusivo, String senha, String nome, String email, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
+        super(nome, email, Senha_Hash, telefone, Cpf_Cnpj, papel);
+        this.origem = origem;
+        this.nomeEmpresa = nomeEmpresa;
+        this.cnpj = cnpj;
+        this.emailExclusivo = emailExclusivo;
+        this.senha = senha;
+        importarDados(origem);
+    }        
+    
+    // Dessa forma, podemos usar parceiro.getNome() e os outros, sem precisar de parceiro.getOrigem().getNome()
+    private void importarDados(UsuarioComum uc) {
+        this.setNome(uc.getNome());
+        this.setTelefone(uc.getTelefone());
+        this.setSenha_Hash(uc.getSenha_Hash());
+        this.setCpf_Cnpj(uc.getCpf_Cnpj());
+        this.setPapel(Papel.PARCEIRO);
+        this.setStatus(true);
+        this.origem = uc;
+    }
 }

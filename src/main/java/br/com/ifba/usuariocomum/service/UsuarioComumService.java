@@ -111,11 +111,6 @@ public class UsuarioComumService {
             log.error("E-mail inválido.");
             throw new RegraNegocioException("Email inválido.");
         }
-        
-        if (!StringUtil.isValidEmail(user.getEmail_secundario())) {
-            log.error("E-mail secundário inválido.");
-            throw new RegraNegocioException("E-mail secundário inválido.");
-        }
 
         if (StringUtil.isNullOrEmpty(user.getTelefone())) {
             log.error("Telefone é obrigatório.");

@@ -29,10 +29,12 @@ public class Gestor extends Usuario {
     private String departamento;
     private String cargo;
 
-    public Gestor(String matricula_funcional, String departamento, String cargo, String nome, String email, String email_secundario, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
-        super(nome, email, email_secundario, Senha_Hash, telefone, Cpf_Cnpj, papel);
+    public Gestor(String matricula_funcional, String departamento, String cargo, String nome, String email, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
+        super(nome, email, Senha_Hash, telefone, Cpf_Cnpj, Papel.GESTOR);
         this.matricula_funcional = matricula_funcional;
         this.departamento = departamento;
         this.cargo = cargo;
     }
+
+    
 }
