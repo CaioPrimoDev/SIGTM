@@ -32,8 +32,8 @@ import lombok.ToString;
 @ToString
 public class Parceiro extends Usuario {
     // Herança + Agregação
-    @OneToOne
-    @JoinColumn(name = "usuario_comum_id", nullable = false)
+    @OneToOne // indica relacionamento um-para-um
+    @JoinColumn(name = "usuario_comum_id", nullable = false)// Equivalente de Column para chave estrangeira
     private UsuarioComum origem;
     
     @Column(nullable = false)

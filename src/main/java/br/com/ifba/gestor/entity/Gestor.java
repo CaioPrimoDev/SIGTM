@@ -6,6 +6,7 @@ package br.com.ifba.gestor.entity;
 
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.usuario.enums.Papel;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -25,8 +26,14 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Gestor extends Usuario {
+    
+    @Column(nullable = false)
     private String matricula_funcional;
+    
+    @Column(nullable = false)
     private String departamento;
+    
+    @Column(nullable = false)
     private String cargo;
 
     public Gestor(String matricula_funcional, String departamento, String cargo, String nome, String email, String Senha_Hash, String telefone, String Cpf_Cnpj, Papel papel) {
