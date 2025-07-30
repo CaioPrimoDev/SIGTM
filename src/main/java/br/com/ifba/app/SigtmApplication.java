@@ -1,6 +1,7 @@
 package br.com.ifba.app;
 
-import br.com.ifba.parceiro.view.ParceirosListar;
+import br.com.ifba.login.controller.LoginController;
+import br.com.ifba.login.view.TelaLoginUI;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -22,8 +23,10 @@ public class SigtmApplication {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        ParceirosListar telaCursoListar = context.getBean(ParceirosListar.class);
-        telaCursoListar.setVisible(true);
+        // Obtém a tela de login do contexto e a exibe
+        LoginController loginController = context.getBean(LoginController.class);
+        TelaLoginUI tela = new TelaLoginUI(loginController);
+        tela.setVisible(true);
 
     }
 
