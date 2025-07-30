@@ -18,7 +18,6 @@ import lombok.Setter;
  */
 @Entity
 @Getter  @Setter
-@NoArgsConstructor
 public class Usuario extends Pessoa {
 
     @Column(nullable = false)
@@ -29,6 +28,10 @@ public class Usuario extends Pessoa {
 
     @ManyToOne(optional = false)
     private TipoUsuario tipo;
+    
+    // Verifica para aparecer na tabela de solicitações para parceria
+    @Column(nullable = false)
+    private boolean socilitacao;
 
     // Atributos específicos de parceiro (opcionais)
     @Column(nullable = true, unique = true)
@@ -36,4 +39,26 @@ public class Usuario extends Pessoa {
 
     @Column(nullable = true)
     private String nomeEmpresa;
+    
+    // Atributos específicos de gestor (opcionais)
+    @Column(nullable = true, unique = true)
+    private String matricula;
+    
+    @Column(nullable = true)
+    private String cargo;
+
+    public Usuario(String senha, TipoUsuario tipo) {
+        this.senha = senha;
+        this.status = true;
+        this.tipo = tipo;
+        this.socilitacao = false;
+        this.cnpj = null;
+        this.nomeEmpresa = null;
+        this.matricula = null;
+        this.cargo = null;
+    }
+
+    
+    
+    
 }

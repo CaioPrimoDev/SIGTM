@@ -24,5 +24,6 @@ public class TipoUsuario extends PersistenceEntity {
     @Column(nullable = false, unique = true)
     private String nome;
 
+    @Column(nullable = false)
     private String descricao;
 }

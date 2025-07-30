@@ -118,6 +118,18 @@ public class UsuarioService {
             }
             
         }
+        
+        // Validações para gestor
+        if(user.getTipo().getNome().contains("GESTOR")) {
+            
+            if (StringUtil.isNullOrEmpty(user.getMatricula())) {
+                throw new RegraNegocioException("Cargo do Gestor é obrigatória.");
+            }
+            
+            if (StringUtil.isNullOrEmpty(user.getCargo())) {
+                throw new RegraNegocioException("Cargo do Gestor é obrigatória.");
+            }
+        }
     }
     
 }
