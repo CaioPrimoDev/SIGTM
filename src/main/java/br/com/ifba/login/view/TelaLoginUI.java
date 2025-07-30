@@ -5,8 +5,9 @@
 package br.com.ifba.login.view;
 
 import br.com.ifba.login.controller.LoginController;
+import br.com.ifba.usuario.comum.view.TelaUsuarioComumUI;
 import br.com.ifba.usuario.entity.Usuario;
-import javax.swing.JOptionPane;
+import br.com.ifba.util.MostrarMensagem;
 
 /**
  *
@@ -184,19 +185,22 @@ public class TelaLoginUI extends javax.swing.JFrame {
             String tipo = usuario.getTipo().getNome().toUpperCase();
 
             switch (tipo) {
-                    //new TelaGestorUI().setVisible(true);
                 case "GESTOR":
+                    //new TelaGestorUI().setVisible(true);
                     break;
-                    //new TelaParceiroUI().setVisible(true);
                 case "PARCEIRO":
+                    //new TelaParceiroUI().setVisible(true);
                     break;
-                    //new TelaUsuarioComumUI().setVisible(true);
+                case "USUARIO":
+                    new TelaUsuarioComumUI().setVisible(true);
+                    break;
                 default:
+                    MostrarMensagem.erro(this, "Tipo de usuário desconhecido.", "Erro");
                     break;
             }
 
         } else {
-            JOptionPane.showMessageDialog(this, "E-mail ou senha inválidos ou usuário inativo.");
+            MostrarMensagem.erro(this, "E-mail ou senha inválidos ou usuário inativo.", "Erro");
         }
     }//GEN-LAST:event_btnLogarActionPerformed
 

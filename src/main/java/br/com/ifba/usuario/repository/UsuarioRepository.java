@@ -8,11 +8,13 @@ import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author User
  */
+@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Optional só retorna um, a diferença é que ele ESPERA que exista um usuario OU NÃO, podendo lidar melhor com exceções
     Optional<Usuario> findByEmail(String email);
