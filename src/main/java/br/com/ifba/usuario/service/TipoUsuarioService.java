@@ -103,4 +103,10 @@ public class TipoUsuarioService {
             throw new RegraNegocioException("O nome do Tipo de Usuário deve ter entre 3 e 30 caracteres.");
         }
     }
+    
+    public TipoUsuario findByNome(String nome) {
+        return tipoUsuarioRepository.findByNome(nome)
+            .orElseThrow(() -> new RegraNegocioException("Tipo de usuário não encontrado: " + nome));
+    }
+
 }

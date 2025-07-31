@@ -2,16 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package br.com.ifba.parceiro.view;
+package br.com.ifba.usuario.parceiro.view;
 
-import br.com.ifba.usuario.controller.TipoUsuarioIController;
 import br.com.ifba.usuario.controller.UsuarioIController;
 import br.com.ifba.usuario.entity.Usuario;
+import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.springframework.stereotype.Component;
 
 
 import javax.swing.table.DefaultTableModel;
@@ -453,7 +452,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     }
 
     try {
-        Long id = Long.parseLong(termo);
+        Long id = Long.valueOf(termo);
         
         //usar invokeLater para garantir execução na thread correta
         SwingUtilities.invokeLater(() -> {
@@ -470,7 +469,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse ID.");
                     preencherTabelaParceiros();
                 }
-            } catch (Exception e) {
+            } catch (HeadlessException e) {
                 JOptionPane.showMessageDialog(null, "Erro ao buscar parceiro: " + e.getMessage());
             }
         });

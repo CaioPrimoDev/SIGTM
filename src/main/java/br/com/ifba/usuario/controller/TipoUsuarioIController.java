@@ -17,4 +17,5 @@ public interface TipoUsuarioIController {
     void delete(Long id);
     List<TipoUsuario> findAll();
     TipoUsuario findById(Long id);
+    TipoUsuario findByNome(String nome);
 }

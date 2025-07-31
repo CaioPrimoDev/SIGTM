@@ -39,4 +39,10 @@ public class TipoUsuarioController implements TipoUsuarioIController {
     public TipoUsuario findById(Long id) {
         return service.findById(id);
     }
+    
+    @Override
+    public TipoUsuario findByNome(String nome) {
+        return service.findByNome(nome);
+    }
+
 }

@@ -5,6 +5,7 @@
 package br.com.ifba.usuario.service;
 
 import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.repository.TipoUsuarioRepository;
 import br.com.ifba.usuario.repository.UsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
@@ -28,6 +29,8 @@ import org.springframework.util.StringUtils;
 public class UsuarioService {
     
         private final UsuarioRepository UserRepo;
+        
+        private final TipoUsuarioRepository TipoUserRepo;
         
         public boolean save(Usuario user) {
         validarUsuario(user);
