@@ -5,6 +5,7 @@
 package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.PromocaoController;
+import br.com.ifba.promocao.controller.PromocaoIController;
 import br.com.ifba.promocao.entity.Promocao;
 import br.com.ifba.telainicial.view.TelaInicial;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +22,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PromocaoEditar extends javax.swing.JFrame {
+    
+    @Autowired
+    private PromocaoIController promocaoController;
     
     private Promocao promocaoAtual;
 
@@ -208,8 +213,8 @@ public class PromocaoEditar extends javax.swing.JFrame {
         promocaoAtual.setTipo(tipo);
 
         // Atualiza via controller
-        PromocaoController controller = new PromocaoController();
-        controller.update(promocaoAtual);
+        //PromocaoController controller = new PromocaoController();
+        promocaoController.update(promocaoAtual);
 
         JOptionPane.showMessageDialog(this, "Promoção atualizada com sucesso!");
     } catch (Exception e) {

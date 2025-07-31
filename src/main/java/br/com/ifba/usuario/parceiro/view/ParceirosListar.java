@@ -14,12 +14,12 @@ import javax.swing.SwingUtilities;
 
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Casa
  */
-// @Component
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
