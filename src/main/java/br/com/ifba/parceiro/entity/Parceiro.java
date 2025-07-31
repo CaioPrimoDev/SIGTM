@@ -20,7 +20,7 @@ import lombok.ToString;
  */
 
 @Entity
-@Table(name="parceiro")
+//@Table(name="parceiro")
 @NoArgsConstructor
 @Getter
 @Setter

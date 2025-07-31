@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Casa
  */
-@Component
+// @Component
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired

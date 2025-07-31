@@ -18,7 +18,7 @@ import lombok.ToString;
  */
 
 @Entity
-@Table(name="gestor")
+//@Table(name="gestor")
 @NoArgsConstructor
 @Getter
 @Setter

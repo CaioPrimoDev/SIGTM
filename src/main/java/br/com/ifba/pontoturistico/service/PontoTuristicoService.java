@@ -49,8 +49,12 @@ public class PontoTuristicoService implements PontoTuristicoIService {
             throw new IllegalArgumentException("O campo 'localizacao' é obrigatório.");
         }
         // Verifica se o campo foi preenchido devidamente
-        if (StringUtil.isNullOrEmpty(pontoTuristico.getHorarioFuncionamento())) {
-            throw new IllegalArgumentException("O campo 'horarioFuncionamento' é obrigatório.");
+        if (StringUtil.isNullOrEmpty(pontoTuristico.getHorarioAbertura())) {
+            throw new IllegalArgumentException("O campo 'horarioAbertura' é obrigatório.");
+        }
+        // Verifica se o campo foi preenchido devidamente
+        if (StringUtil.isNullOrEmpty(pontoTuristico.getHorarioFechamento())) {
+            throw new IllegalArgumentException("O campo 'horarioFechamento' é obrigatório.");
         }
     }
 

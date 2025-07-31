@@ -35,5 +35,5 @@ public abstract class ItemTuristico extends PersistenceEntity implements Seriali
     protected String localizacao;
     
     @Column(name = "nivel_acessibilidade", nullable = false)
-    protected String nivelAcessibilidade;
+    protected int nivelAcessibilidade;
 }

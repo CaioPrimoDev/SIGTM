@@ -19,7 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Optional só retorna um, a diferença é que ele ESPERA que exista um usuario OU NÃO, podendo lidar melhor com exceções
     Optional<Usuario> findByEmail(String email);
 
-    Optional<Usuario> findByCpf(String cpf);
+    // Optional<Usuario> findByCpf(String cpf);
 
     Optional<Usuario> findByCnpj(String cnpj);
 

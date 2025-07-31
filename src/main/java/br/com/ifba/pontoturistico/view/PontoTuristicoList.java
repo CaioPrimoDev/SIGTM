@@ -12,27 +12,28 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author juant
  */
-@Component 
-public class PontoTuristicoList extends javax.swing.JFrame {
-    
+@Component
+public class PontoTuristicoList extends javax.swing.JFrame implements ApplicationContextAware{
+
     // Adiciona atributos para as classes de buscas
     private List<PontoTuristico> listaDePontos; // guarda a lista de pontos carregada
     @Autowired
     private PontoTuristicoIController pontoTuristicoController;
     private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
 
-
+    
     /**
      * Creates new form PontoTuristicoList
-     * @param pontoTuristicoController
      */
     @Autowired
     public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController) {
@@ -47,6 +48,7 @@ public class PontoTuristicoList extends javax.swing.JFrame {
         this.setResizable(false);
         setLocationRelativeTo(null); // inicializa o jframe no meio da tela
         configurarTabela(); // Novo método para organizar
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
         
         try {
             // Define o tamanho desejado para o ícone da lupa
@@ -99,15 +101,14 @@ public class PontoTuristicoList extends javax.swing.JFrame {
                         PontoTuristico pontoParaEditar = listaDePontos.get(linha);
 
                         //PontoTuristico telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
-                        //telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
+                        //telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList_OLD.this);
                         //telaAtualizacao.setVisible(true);
                     } 
                     // AÇÃO DE REMOVER
                     else if (coluna == 7) { // Verifica se o clique foi na 8ª coluna ("Remover")
                         PontoTuristico pontoParaRemover = listaDePontos.get(linha);
                         // Pede confirmação ao usuário antes de remover
-                        int resposta = JOptionPane.showConfirmDialog(
-                                PontoTuristicoList.this, // Parent component
+                        int resposta = JOptionPane.showConfirmDialog(PontoTuristicoList.this, // Parent component
                                 "Deseja realmente remover este ponto turistico: \"" + pontoParaRemover.getNome() + "\"?", 
                                 "Confirmar Remoção", 
                                 JOptionPane.YES_NO_OPTION);
@@ -150,6 +151,8 @@ public class PontoTuristicoList extends javax.swing.JFrame {
     
                 // Pega o ponto turistico que está na posição 'i' da lista
                 PontoTuristico pontoTuristico = listaDePontos.get(i);
+                String horarioFuncionamento = pontoTuristico.getHorarioAbertura() +
+                                                    " - " + pontoTuristico.getHorarioFechamento();
 
                 // adiciona linha 
                 model.addRow(new Object[]{
@@ -157,7 +160,7 @@ public class PontoTuristicoList extends javax.swing.JFrame {
                     pontoTuristico.getNome(),
                     pontoTuristico.getDescricao(),
                     pontoTuristico.getLocalizacao(), 
-                    pontoTuristico.getHorarioFuncionamento(),
+                    horarioFuncionamento,
                     pontoTuristico.getNivelAcessibilidade(),  
                     "Editar",
                     "Remover"
@@ -181,7 +184,7 @@ public class PontoTuristicoList extends javax.swing.JFrame {
         // Define a altura da linha para 40 pixels. Ajuste conforme necessário.
         tblPontosTuristicos.setRowHeight(32);
         
-        // Pega a coluna na posição 6 (a sétima coluna)
+        // Pega a coluna na posição 6 (a setima coluna)
         tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
         // Pega a coluna na posição 7 (a oitava coluna)
         tblPontosTuristicos.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
@@ -196,7 +199,6 @@ public class PontoTuristicoList extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         txtPesquisar = new javax.swing.JTextField();
         btnAdiciona = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -204,9 +206,6 @@ public class PontoTuristicoList extends javax.swing.JFrame {
         btnRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
-        jPanel1.setForeground(new java.awt.Color(0, 51, 255));
 
         txtPesquisar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtPesquisar.setToolTipText("Pesquisar...");
@@ -255,11 +254,11 @@ public class PontoTuristicoList extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nome", "Descrição", "Endereço", "Nivel de Acessibilidade", "Horario de Funcionamento", "Editar", "Remover"
+                "ID", "Nome", "Descrição", "Localização", "Nivel de Acessibilidade", "Horario de Funcionamento", "Editar", "Remover"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, true, true
@@ -283,44 +282,36 @@ public class PontoTuristicoList extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAdiciona))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 917, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE))
                 .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnAdiciona)
-                    .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                    .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAdiciona)
+                            .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -338,7 +329,7 @@ public class PontoTuristicoList extends javax.swing.JFrame {
     private void txtPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisarKeyReleased
         // TODO add your handling code here:
         // Pega o texto que o usuário digitou no campo de pesquisa
-        /* String nomePesquisa = txtPesquisar.getText();
+        String nomePesquisa = txtPesquisar.getText();
 
         // Verifica se o campo de pesquisa está vazio
         if (nomePesquisa.isBlank()) {
@@ -349,31 +340,35 @@ public class PontoTuristicoList extends javax.swing.JFrame {
 
         try {
             // Usa o buscadorNome para consultar o banco com o texto digitado
-            this.listaDeCursos = cursoController.findByNomeStartingWithIgnoreCase(nomePesquisa);
+            this.listaDePontos = pontoTuristicoController.findByNomeStartingWithIgnoreCase(nomePesquisa);
 
             // Pega o modelo da tabela
-            DefaultTableModel model = (DefaultTableModel) tblCursos.getModel();
+            DefaultTableModel model = (DefaultTableModel) tblPontosTuristicos.getModel();
             model.setRowCount(0); // Limpa a tabela para exibir apenas os resultados da pesquisa
 
             // Se a busca não retornar resultados, exibe uma mensagem
-            if (listaDeCursos.isEmpty()) {
+            if (listaDePontos.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Nenhum curso encontrado com o nome informado.",
                     "Pesquisa",
                     JOptionPane.INFORMATION_MESSAGE);
             }
             else {
                 // Preenche a tabela com os cursos encontrados na pesquisa
-                for (int i = 0; i < listaDeCursos.size(); i++) {
+                for (int i = 0; i < listaDePontos.size(); i++) {
 
-                    // Pega o curso que está na posição 'i' da lista
-                    Curso curso = listaDeCursos.get(i);
+                    // Pega o ponto turistico que está na posição 'i' da lista
+                    PontoTuristico pontoTuristico = listaDePontos.get(i);
+                    String horarioFuncionamento = pontoTuristico.getHorarioAbertura() +
+                                                    " - " + pontoTuristico.getHorarioFechamento();
 
                     // adiciona linha
                     model.addRow(new Object[]{
-                        curso.getCodigo(),
-                        curso.getNome(),
-                        curso.getCargaHoraria(),
-                        curso.isAtivo(), // Exibe true/false na coluna
+                        pontoTuristico.getId(),
+                        pontoTuristico.getNome(),
+                        pontoTuristico.getDescricao(),
+                        pontoTuristico.getLocalizacao(), 
+                        pontoTuristico.getNivelAcessibilidade(), 
+                        horarioFuncionamento,
                         "Editar",
                         "Remover"
                     });
@@ -386,27 +381,31 @@ public class PontoTuristicoList extends javax.swing.JFrame {
                 "Erro de Pesquisa",
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-        } */
+        }
     }//GEN-LAST:event_txtPesquisarKeyReleased
 
     private void btnAdicionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionaActionPerformed
         // TODO add your handling code here:
-        /* CursoSave telaCursoSave = applicationContext.getBean(CursoSave.class);
-        telaCursoSave.setCursoList(this); // Configura a referência para poder atualizar a tabela
-        telaCursoSave.setVisible(true); */
+        PontoTuristicoSave telaPontoTuristicoSave = applicationContext.getBean(PontoTuristicoSave.class);
+        telaPontoTuristicoSave.setPontoTuristicoList(this); // Configura a referência para poder atualizar a tabela
+        telaPontoTuristicoSave.setVisible(true);
     }//GEN-LAST:event_btnAdicionaActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         // TODO add your handling code here:
-        //carregarDados();
+        carregarDados();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdiciona;
     private javax.swing.JButton btnRefresh;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblPontosTuristicos;
     private javax.swing.JTextField txtPesquisar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

@@ -23,14 +23,19 @@ import lombok.Setter;
 @NoArgsConstructor 
 public class PontoTuristico extends ItemTuristico {
     
-    @Column(name = "horario_funcionamento")
-    private String horarioFuncionamento;
+    @Column(name = "horario_abertura")
+    private String horarioAbertura;
+
+    @Column(name = "horario_fechamento")
+    private String horarioFechamento;
 
     // Construtor manual garante a inicialização completa e correta do objeto
     public PontoTuristico(String nome, String descricao, String localizacao,
-                          String nivelAcessibilidade, String horarioFuncionamento) {
+                          int nivelAcessibilidade, String horarioAbertura, String horarioFechamento) {
         super(nome, descricao, localizacao, nivelAcessibilidade); 
         
-        this.horarioFuncionamento = horarioFuncionamento;
+        // responsaveis por dizer qual o horario de funcionamento
+        this.horarioFechamento = horarioFechamento;
+        this.horarioAbertura = horarioAbertura;
     }
 }
