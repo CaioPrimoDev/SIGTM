@@ -6,6 +6,7 @@ package br.com.ifba.telainicial.view;
 
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
+import br.com.ifba.promocao.view.PromocaoListar;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -42,6 +43,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
 
         btnCRUDPontoTuristico = new javax.swing.JButton();
         btnLogar = new javax.swing.JButton();
+        btnPromocoes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,6 +61,13 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btnPromocoes.setText("Gestão de Promoções");
+        btnPromocoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPromocoesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -66,9 +75,11 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(btnCRUDPontoTuristico)
-                .addGap(44, 44, 44)
+                .addGap(27, 27, 27)
                 .addComponent(btnLogar)
-                .addContainerGap(289, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addComponent(btnPromocoes)
+                .addContainerGap(126, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,7 +87,8 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCRUDPontoTuristico)
-                    .addComponent(btnLogar))
+                    .addComponent(btnLogar)
+                    .addComponent(btnPromocoes))
                 .addContainerGap(219, Short.MAX_VALUE))
         );
 
@@ -94,10 +106,17 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         telaLogin.setVisible(true);
     }//GEN-LAST:event_btnLogarActionPerformed
 
+    private void btnPromocoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromocoesActionPerformed
+        // TODO add your handling code here:
+        PromocaoListar telaListar = new PromocaoListar();
+        telaListar.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnPromocoesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnLogar;
+    private javax.swing.JButton btnPromocoes;
     // End of variables declaration//GEN-END:variables
 
     @Override
