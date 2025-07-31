@@ -108,10 +108,11 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
 
     private void btnPromocoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromocoesActionPerformed
         // TODO add your handling code here:
-        PromocaoListar telaListar = new PromocaoListar();
-        telaListar.setVisible(true);
-        this.dispose();
+        PromocaoListar telaPromocaoListar = applicationContext.getBean(PromocaoListar.class);
+        telaPromocaoListar.setVisible(true);
+        
     }//GEN-LAST:event_btnPromocoesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;

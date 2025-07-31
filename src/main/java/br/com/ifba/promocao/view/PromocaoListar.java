@@ -4,13 +4,15 @@
  */
 package br.com.ifba.promocao.view;
 
-import br.com.ifba.promocao.controller.PromocaoController;
+import br.com.ifba.promocao.controller.PromocaoIController;
 import br.com.ifba.promocao.entity.Promocao;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,23 +22,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class PromocaoListar extends javax.swing.JFrame {
     
-    private PromocaoController controller;
+    @Autowired
+    private PromocaoIController controller;
+    
+    @Autowired
+    private ApplicationContext context;
 
     /**
      * Creates new form PromocoesListar
      */
     public PromocaoListar() {
         initComponents();
-        this.controller = new PromocaoController(); 
+        this.controller = controller; 
         
         // Configura o combobox de tipos
-        cbbTipoPesquisa.setModel(new DefaultComboBoxModel<>(new String[]{"TODOS", "PROMOÇÃO", "CUPOM", "PACOTE"}));
+       // cbbTipoPesquisa.setModel(new DefaultComboBoxModel<>(new String[]{"TODOS", "PROMOÇÃO", "CUPOM", "PACOTE"}));
 
         // Configura a pesquisa dinâmica
-        setupPesquisaDinamica();
+       // setupPesquisaDinamica();
 
         // Carrega todos os dados inicialmente
-        carregarDadosIniciais();
+        //carregarDadosIniciais();
     }
 
     /**
@@ -212,10 +218,11 @@ public class PromocaoListar extends javax.swing.JFrame {
             });
         }
     }
-    
+   
     private void carregarDadosIniciais() {
-        List<Promocao> promocoes = controller.findAll();
-        atualizarTabela(promocoes);
+
+    PromocaoListar tela = context.getBean(PromocaoListar.class);
+    tela.setVisible(true);;
     }    
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         // TODO add your handling code here:
