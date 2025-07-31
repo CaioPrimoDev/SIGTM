@@ -4,21 +4,40 @@
  */
 package br.com.ifba.pontoturistico.view;
 
+import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
+import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.util.ButtonRenderer;
 import java.awt.Image;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author juant
  */
+@Component 
 public class PontoTuristicoList extends javax.swing.JFrame {
+    
+    // Adiciona atributos para as classes de buscas
+    private List<PontoTuristico> listaDePontos; // guarda a lista de pontos carregada
+    @Autowired
+    private PontoTuristicoIController pontoTuristicoController;
+    private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
+
 
     /**
      * Creates new form PontoTuristicoList
+     * @param pontoTuristicoController
      */
-    public PontoTuristicoList() {
+    @Autowired
+    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController) {
+        // inicializa o controller como parametro recebido
+        this.pontoTuristicoController = pontoTuristicoController;
         initComponents();
         
         // Define um tamanho fixo 
@@ -27,7 +46,7 @@ public class PontoTuristicoList extends javax.swing.JFrame {
         // Impede que o usuário redimensione a janela
         this.setResizable(false);
         setLocationRelativeTo(null); // inicializa o jframe no meio da tela
-        // configurarTabela(); // Novo método para organizar
+        configurarTabela(); // Novo método para organizar
         
         try {
             // Define o tamanho desejado para o ícone da lupa
@@ -76,44 +95,85 @@ public class PontoTuristicoList extends javax.swing.JFrame {
                 if (linha >= 0) {
 
                     // AÇÃO DE EDITAR
-                    if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Editar")
-                        /*Curso cursoParaEditar = listaDeCursos.get(linha);
+                    if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Editar")
+                        PontoTuristico pontoParaEditar = listaDePontos.get(linha);
 
-                        CursoUpdate telaAtualizacao = applicationContext.getBean(CursoUpdate.class);
-                        telaAtualizacao.setDadosParaEdicao(cursoParaEditar, CursoList.this);
-                        telaAtualizacao.setVisible(true);
+                        //PontoTuristico telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
+                        //telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
+                        //telaAtualizacao.setVisible(true);
                     } 
                     // AÇÃO DE REMOVER
-                    else if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Remover")
-                       /*Curso cursoParaRemover = listaDeCursos.get(linha);
+                    else if (coluna == 7) { // Verifica se o clique foi na 8ª coluna ("Remover")
+                        PontoTuristico pontoParaRemover = listaDePontos.get(linha);
                         // Pede confirmação ao usuário antes de remover
                         int resposta = JOptionPane.showConfirmDialog(
-                                CursoList.this, // Parent component
-                                "Deseja realmente remover o curso: \"" + cursoParaRemover.getNome() + "\"?", 
+                                PontoTuristicoList.this, // Parent component
+                                "Deseja realmente remover este ponto turistico: \"" + pontoParaRemover.getNome() + "\"?", 
                                 "Confirmar Remoção", 
                                 JOptionPane.YES_NO_OPTION);
 
                         if (resposta == JOptionPane.YES_NO_OPTION) {
                             try {
                                 // Usa o ID do objeto identificado corretamente
-                                // cursoController.delete(cursoParaRemover);
+                                pontoTuristicoController.delete(pontoParaRemover);
 
                                 // Mostra a mensagem de sucesso
                                 JOptionPane.showMessageDialog(PontoTuristicoList.this, "Ponto Turistico removido com sucesso!");
 
                                 // ATUALIZA A TABELA DE FORMA SIMPLES E SEGURA
-                                // carregarDados(); 
+                                carregarDados(); 
 
                             } 
                             catch (Exception e) {
                                 JOptionPane.showMessageDialog(PontoTuristicoList.this, "Erro ao remover curso: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                                 e.printStackTrace();
                             }
-                        }*/
+                        }
                     }
                 }
             }
         });
+    }
+    
+    // carrega os dados do banco de dados
+    public void carregarDados() {
+        try {
+            // Usa o buscador para obter a lista de pontos turisticos do banco
+            this.listaDePontos = pontoTuristicoController.findAll();
+
+            // Pega o modelo da tabela
+            DefaultTableModel model = (DefaultTableModel) tblPontosTuristicos.getModel();
+            model.setRowCount(0); // Limpa a tabela para evitar duplicatas
+
+            // loop que adiciona cada ponto turistico como uma nova linha
+            for (int i = 0; i < listaDePontos.size(); i++) {
+    
+                // Pega o ponto turistico que está na posição 'i' da lista
+                PontoTuristico pontoTuristico = listaDePontos.get(i);
+
+                // adiciona linha 
+                model.addRow(new Object[]{
+                    pontoTuristico.getId(),
+                    pontoTuristico.getNome(),
+                    pontoTuristico.getDescricao(),
+                    pontoTuristico.getLocalizacao(), 
+                    pontoTuristico.getHorarioFuncionamento(),
+                    pontoTuristico.getNivelAcessibilidade(),  
+                    "Editar",
+                    "Remover"
+                });
+            }
+        } 
+        catch (Exception e) {
+            // Mostra uma mensagem de erro se a conexão com o banco falhar
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao conectar ao banco de dados para listar os pontos turisticos.\n" +
+                "Verifique sua conexão e as configurações de firewall.\n\n" +
+                "Detalhes do erro: " + e.getMessage(),
+                "Erro de Conexão", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); // Imprime o erro detalhado no console para depuração
+        }
     }
     
     // Usando o índice da coluna!
@@ -340,41 +400,6 @@ public class PontoTuristicoList extends javax.swing.JFrame {
         // TODO add your handling code here:
         //carregarDados();
     }//GEN-LAST:event_btnRefreshActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PontoTuristicoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PontoTuristicoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PontoTuristicoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PontoTuristicoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PontoTuristicoList().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdiciona;

@@ -4,10 +4,10 @@
  */
 package br.com.ifba.pontoturistico.entity;
 
-import br.com.ifba.infrastructure.entity.PersistenceEntity;
+import br.com.ifba.itemturistico.entity.ItemTuristico;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import java.io.Serializable;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,14 +16,21 @@ import lombok.Setter;
  *
  * @author juant
  */
-
-@Entity // Diz que esta classe é uma entidade
-// @Table(name = "pontos_turisticos") // Diz que esta classe é uma tabela
+@Entity
+@Table(name = "pontos_turisticos")
 @Getter
 @Setter
-// usa apenas os campos da classe PontoTurististico para equals e hashCode e ignora os de PersistenceEntity
-@EqualsAndHashCode(callSuper = false) 
-@NoArgsConstructor
-public class PontoTuristico extends PersistenceEntity implements Serializable{
+@NoArgsConstructor 
+public class PontoTuristico extends ItemTuristico {
     
+    @Column(name = "horario_funcionamento")
+    private String horarioFuncionamento;
+
+    // Construtor manual garante a inicialização completa e correta do objeto
+    public PontoTuristico(String nome, String descricao, String localizacao,
+                          String nivelAcessibilidade, String horarioFuncionamento) {
+        super(nome, descricao, localizacao, nivelAcessibilidade); 
+        
+        this.horarioFuncionamento = horarioFuncionamento;
+    }
 }
