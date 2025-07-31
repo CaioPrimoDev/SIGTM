@@ -31,7 +31,7 @@ public class UsuarioComum extends PersistenceEntity {
     private String nome;
     private String endereco;// Como endreço é atributo multivaorado lembrar de criar um classe para ele
     private String email;
-    @Verify(ParametroTipo.TELEFONE)//mesmca coisa da linha 30 
+    @Verify(ParametroTipo.TELEFONE)// vai indicar ao safeguard que isso é um telefone e deve ser analisado como tal
     private String telefone;
     private String email_secundario;
     private String senha_hash;

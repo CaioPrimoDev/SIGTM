@@ -8,6 +8,7 @@ import br.com.ifba.usuariocomum.entity.UsuarioComum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,12 +27,12 @@ import lombok.ToString;
 @ToString
 public class Parceiro extends UsuarioComum {
     private String segmento_empresarial;
-    private Time horario_abertura;
-    private Time horario_fechamento;
+    private LocalDateTime horario_abertura;
+    private LocalDateTime horario_fechamento;
     private String status_solicitacao;
 
-    public Parceiro(String segmento_empresarial, Time horario_abertura
-            , Time horario_fechamento, String status_solicitacao
+    public Parceiro(String segmento_empresarial, LocalDateTime horario_abertura
+            , LocalDateTime horario_fechamento, String status_solicitacao
             , String cpf_cnpj, String nome, String endereco, String email
             , String telefone, String email_secundario, String senha_hash) 
     { 

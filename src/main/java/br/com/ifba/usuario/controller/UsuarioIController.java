@@ -16,4 +16,5 @@ public interface UsuarioIController {
     void delete(Long id);
     List<Usuario> findAll();
     Usuario findById(Long id);
+    List <Usuario> findByNomeContainingIgnoreCase(String nome);
 }

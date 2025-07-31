@@ -40,5 +40,9 @@ public class UsuarioController implements UsuarioIController {
     public Usuario findById(Long id) {
         return service.findById(id);
     }
+    @Override
+  public List<Usuario> findByNomeContainingIgnoreCase(String nome){
+      return service.findByNomeContainingIgnoreCase(nome);
+  }
     
 }

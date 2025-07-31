@@ -4,12 +4,15 @@
  */
 package br.com.ifba.parceiro.view;
 
-import br.com.ifba.parceiro.controller.ParceiroIController;
-import br.com.ifba.parceiro.entity.Parceiro;
+import br.com.ifba.usuario.controller.TipoUsuarioIController;
+import br.com.ifba.usuario.controller.UsuarioIController;
+import br.com.ifba.usuario.entity.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.springframework.stereotype.Component;
+
 
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,79 +24,86 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
-    public ParceirosListar(ParceiroIController parceiroController) {
+    public ParceirosListar(UsuarioIController parceiroController,UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais
         this.parceiroController = parceiroController;
+        this.usuarioController = usuarioController;
+        
         initComponents();
  
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
         
-        List<Parceiro> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
-    }
+        //TELA DE SOLICITAÇÕES
+        
+        tableModelS = (DefaultTableModel) tblSolicitantes.getModel();
+        
+        carregarDadosParceiros();
+        
+           }
 
-    List<Parceiro> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
+    List<Usuario> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
     
-     final DefaultTableModel tableModel;
+     final DefaultTableModel tableModel;//tabela dos parceiros
+     final DefaultTableModel tableModelS;//tabela dos solicitantes
      
      int itemSelecionado = -1;
      
      @Autowired
-     ParceiroIController parceiroController;
+    UsuarioIController parceiroController;
     
    // MÉTODOS ESPECÍFICOS
     
-    public void carregarDados(){
+    public void carregarDadosParceiros(){
     
         tableModel.setRowCount(0);// zerar todas as linhas
     
         listaParceiros.clear(); // limpar a lista 
         
-        List <Parceiro> listaCapsula = parceiroController.findAll();
+        List <Usuario> listaCapsula = parceiroController.findAll();
         
-        for(Parceiro parceiros: listaCapsula){
+        for(Usuario parceiros: listaCapsula){
         
             listaParceiros.add(parceiros);
         }
         
-        preencherTabela();
+        preencherTabelaParceiros();
     }
     
-    public void preencherTabela(){
+    public void preencherTabelaParceiros(){
     //método para povoamento da tabela
-        for(Parceiro parceiro: listaParceiros){
+        for(Usuario parceiro: listaParceiros){
         tableModel.addRow(new Object []{
                 parceiro.getNome(),
-                parceiro.getCpf_cnpj(),
-                parceiro.getSegmento_empresarial(),
-                parceiro.getHorario_abertura(),
-                parceiro.getHorario_fechamento()});
+                parceiro.getCnpj(),
+                parceiro.getNomeEmpresa()
+        });
         
         }
     
     }
     
-    public void adicionarParceiro(Parceiro parceiro){
+    public void adicionarParceiro(Usuario usuario){
     
-       if(parceiro == null){
+       if(usuario == null){
        
            System.out.println("Parceiro esta nulo");
            
        return;
        } 
+       
+     usuario.getTipo().setNome("PARCEIRO");// definindo o tipo do usuário
         
-     parceiroController.save(parceiro);
+     parceiroController.save(usuario);
      
-     listaParceiros.add(parceiro);
+     listaParceiros.add(usuario);
         
      tableModel.addRow(new Object []{
-                parceiro.getNome(),
-                parceiro.getCpf_cnpj(),
-                parceiro.getSegmento_empresarial(),
-                parceiro.getHorario_abertura(),
-                parceiro.getHorario_fechamento()});
+                usuario.getNome(),
+                usuario.getCnpj(),
+                usuario.getNomeEmpresa()});
         
     }
     
-    public void editarParceiro(Parceiro parceiro){
+    public void editarParceiro(Usuario parceiro){
         
     if(parceiro == null){
         System.out.println("Parceiro esta nulo");   
@@ -111,10 +121,8 @@ public class ParceirosListar extends javax.swing.JFrame {
     listaParceiros.set(itemSelecionado, parceiro);
     
     tableModel.setValueAt(parceiro.getNome(),itemSelecionado,0);
-    tableModel.setValueAt(parceiro.getCpf_cnpj(),itemSelecionado,1);
-    tableModel.setValueAt(parceiro.getSegmento_empresarial(),itemSelecionado,2);
-    tableModel.setValueAt(parceiro.getHorario_abertura(),itemSelecionado,3);
-    tableModel.setValueAt(parceiro.getHorario_fechamento(),itemSelecionado,4);
+    tableModel.setValueAt(parceiro.getCnpj(),itemSelecionado,1);
+    tableModel.setValueAt(parceiro.getNomeEmpresa(),itemSelecionado,2);
    
     }
     
@@ -140,10 +148,6 @@ public class ParceirosListar extends javax.swing.JFrame {
         lblMudarnome = new javax.swing.JLabel();
         txtnovoSegmentoempresarial = new javax.swing.JTextField();
         lblMudarseguimentoempresarial = new javax.swing.JLabel();
-        lblMudarhorariodeabertura = new javax.swing.JLabel();
-        txtnovoHorariodeabertura = new javax.swing.JTextField();
-        lblMudarHorariodefechamento = new javax.swing.JLabel();
-        txtnovoHorariodefechamento = new javax.swing.JTextField();
         btnconfirmarMudancas = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblParceiros = new javax.swing.JTable();
@@ -166,8 +170,18 @@ public class ParceirosListar extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblSolicitantes);
 
         btnAceitar.setText("ACEITAR");
+        btnAceitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceitarActionPerformed(evt);
+            }
+        });
 
         btnNegar.setText("NEGAR");
+        btnNegar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNegarActionPerformed(evt);
+            }
+        });
 
         btnRetornar.setText("VOLTAR");
 
@@ -203,13 +217,9 @@ public class ParceirosListar extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        lblMudarnome.setText("Mudar nome");
+        lblMudarnome.setText("Mudar nome do titular");
 
-        lblMudarseguimentoempresarial.setText("Mudar seguimento empresarial");
-
-        lblMudarhorariodeabertura.setText("Mudar horário de abertura");
-
-        lblMudarHorariodefechamento.setText("Mudar horário de fechamento");
+        lblMudarseguimentoempresarial.setText("Mudar nome da empresa");
 
         btnconfirmarMudancas.setText("CONFIRMAR");
         btnconfirmarMudancas.addActionListener(new java.awt.event.ActionListener() {
@@ -227,16 +237,12 @@ public class ParceirosListar extends javax.swing.JFrame {
                     .addGroup(EditarParceiroLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(EditarParceiroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtnovoNome)
+                            .addComponent(txtnovoNome, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                             .addComponent(lblMudarnome)
                             .addComponent(lblMudarseguimentoempresarial)
-                            .addComponent(txtnovoSegmentoempresarial)
-                            .addComponent(lblMudarhorariodeabertura)
-                            .addComponent(txtnovoHorariodeabertura)
-                            .addComponent(lblMudarHorariodefechamento)
-                            .addComponent(txtnovoHorariodefechamento, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)))
+                            .addComponent(txtnovoSegmentoempresarial)))
                     .addGroup(EditarParceiroLayout.createSequentialGroup()
-                        .addGap(107, 107, 107)
+                        .addGap(101, 101, 101)
                         .addComponent(btnconfirmarMudancas)))
                 .addContainerGap(9, Short.MAX_VALUE))
         );
@@ -251,17 +257,9 @@ public class ParceirosListar extends javax.swing.JFrame {
                 .addComponent(lblMudarseguimentoempresarial)
                 .addGap(12, 12, 12)
                 .addComponent(txtnovoSegmentoempresarial, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblMudarhorariodeabertura)
-                .addGap(18, 18, 18)
-                .addComponent(txtnovoHorariodeabertura, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblMudarHorariodefechamento)
-                .addGap(18, 18, 18)
-                .addComponent(txtnovoHorariodefechamento, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGap(48, 48, 48)
                 .addComponent(btnconfirmarMudancas, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -300,9 +298,14 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
+        txtbarradePesquisa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                txtbarradePesquisaMouseReleased(evt);
+            }
+        });
         txtbarradePesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtbarradePesquisaKeyTyped(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtbarradePesquisaKeyReleased(evt);
             }
         });
 
@@ -317,8 +320,8 @@ public class ParceirosListar extends javax.swing.JFrame {
                             .addComponent(btnverSolicitacoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(74, 74, 74)
-                        .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(166, 166, 166)
+                        .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
                 .addContainerGap())
@@ -330,10 +333,10 @@ public class ParceirosListar extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -352,11 +355,11 @@ public class ParceirosListar extends javax.swing.JFrame {
         return;
         }
         
-        Parceiro parceiroExcluir = listaParceiros.get(itemSelecionado);
+        Usuario parceriaEncerrada = listaParceiros.get(itemSelecionado);
         
         int resposta = JOptionPane.showConfirmDialog(
                 this,
-                "Deseja realmente excluir o curso:\n" + parceiroExcluir.getNome() + "?",
+                "Deseja realmente encerrar a parceria com:\n" + parceriaEncerrada.getNome() + "?",
                 "Confirmação de exclusão",
                 JOptionPane.YES_NO_OPTION
         );
@@ -364,8 +367,8 @@ public class ParceirosListar extends javax.swing.JFrame {
         if (resposta == JOptionPane.YES_OPTION) {
             listaParceiros.remove(itemSelecionado);
             tableModel.removeRow(itemSelecionado);
-            parceiroController.delete(parceiroExcluir.getId());
-
+           parceriaEncerrada.getTipo().setNome("USUARIOCOMUM");
+           //relação com a parte de caio na próxima sprint
             resetarSelecao();
         }
         
@@ -396,10 +399,6 @@ public class ParceirosListar extends javax.swing.JFrame {
        SolicitacoesParceria.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnverSolicitacoesActionPerformed
 
-    private void txtbarradePesquisaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtbarradePesquisaKeyTyped
-
     private void btnconfirmarMudancasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnconfirmarMudancasActionPerformed
         
         if(listaParceiros.isEmpty()){
@@ -413,7 +412,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         return;
         }
         
-        Parceiro parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
+        Usuario parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
         
         if(txtnovoNome.getText().isEmpty()){
         
@@ -423,22 +422,10 @@ public class ParceirosListar extends javax.swing.JFrame {
         
         if(txtnovoSegmentoempresarial.getText().isEmpty()){
         
-            parceiroEditar.setSegmento_empresarial(parceiroEditar.getSegmento_empresarial());//caso o campo esteja vazio deixar o objeto como ele está
+            parceiroEditar.setNomeEmpresa(parceiroEditar.getNomeEmpresa());//caso o campo esteja vazio deixar o objeto como ele está
         
         }
-      //PROCURAR MELHORES FORMAS DE MUDAR O TEMPO
-      
-        if(txtnovoHorariodeabertura.getText().isEmpty()){
-        
-            txtnovoHorariodeabertura.setText(String.valueOf(parceiroEditar.getHorario_abertura()));
-        
-        }
-        
-         if(txtnovoHorariodefechamento.getText().isEmpty()){
-        
-            txtnovoHorariodefechamento.setText(String.valueOf(parceiroEditar.getHorario_fechamento()));
-        
-        }
+ 
          
          editarParceiro(parceiroEditar);
          
@@ -447,6 +434,144 @@ public class ParceirosListar extends javax.swing.JFrame {
 //procruar melhores metodos para edição de tempo
         
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
+
+    private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
+       
+    }//GEN-LAST:event_txtbarradePesquisaKeyReleased
+
+    private void txtbarradePesquisaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbarradePesquisaMouseReleased
+      String termo = txtbarradePesquisa.getText().trim();
+    
+    //limpar tabela de forma segura na EDT
+    SwingUtilities.invokeLater(() -> {
+        tableModel.setRowCount(0);
+    });
+
+    if (termo.isEmpty()) {
+        preencherTabelaParceiros();
+        return;
+    }
+
+    try {
+        Long id = Long.parseLong(termo);
+        
+        //usar invokeLater para garantir execução na thread correta
+        SwingUtilities.invokeLater(() -> {
+            try {
+                Usuario parceiro = parceiroController.findById(id);
+                //primeiro ver se é numérico
+                if (parceiro != null) {
+                    tableModel.addRow(new Object[]{
+                        parceiro.getNome(),
+                        parceiro.getCnpj(),
+                        parceiro.getNomeEmpresa(),
+                    });
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse ID.");
+                    preencherTabelaParceiros();
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erro ao buscar parceiro: " + e.getMessage());
+            }
+        });
+        
+    } catch (NumberFormatException e) {
+        //se não for numérico procurar por nome
+        SwingUtilities.invokeLater(() -> {
+            List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
+            
+            if (resultados.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
+                preencherTabelaParceiros();
+            } else {
+                for (Usuario  parceiro : resultados) {
+                    tableModel.addRow(new Object[]{
+                       parceiro.getNome(),
+                       parceiro.getCnpj(),
+                        parceiro.getNomeEmpresa()
+                    });
+                }
+            }
+        });
+    }
+        
+        
+    }//GEN-LAST:event_txtbarradePesquisaMouseReleased
+
+    //tela de solicitações
+    
+    public void carregardadosSolicitantes(){
+    
+        tableModelS.setRowCount(0);// zerar todas as linhas
+    
+        listaSolicitantes.clear(); // limpar a lista 
+        
+        List <Usuario> listaCapsula =  usuarioController.findAll();
+        
+        for(Usuario parceiros: listaCapsula){
+        
+            listaParceiros.add(parceiros);
+        }
+        
+        preencherTabelaParceiros();
+    
+    }
+    
+    public void preenchertabelaSolicitantes(){
+    
+    
+    }
+    
+    List <Usuario> listaSolicitantes = new ArrayList();// if (usuario.getSolicitacao ==  true) listaSolicitantes.add(usuario)
+    
+   @Autowired
+    UsuarioIController usuarioController;
+    
+    private void btnAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceitarActionPerformed
+       if(listaSolicitantes.isEmpty()){
+       
+       JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
+        return;
+            
+       }
+       
+       Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
+       
+       if(novoParceiroCapsula == null){
+       
+       JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
+       return;
+       
+       }
+        adicionarParceiro(novoParceiroCapsula);
+        
+        listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
+        
+        JOptionPane.showMessageDialog(null, "O "+novoParceiroCapsula.getNome()+" foi adicionado como parceiro");
+    }//GEN-LAST:event_btnAceitarActionPerformed
+
+    private void btnNegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNegarActionPerformed
+        if(listaSolicitantes.isEmpty()){
+       
+       JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
+        return;
+            
+       }
+       
+       Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
+       
+       if(novoParceiroCapsula == null){
+       
+       JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
+       return;
+       
+       }
+
+        //solicitacao = false e vai sair da lista de solicitantes
+        
+        novoParceiroCapsula.setSocilitacao(false);//como ele foi recusado vai sair da lista de solicitÇão
+       listaSolicitantes.remove(novoParceiroCapsula);
+    }//GEN-LAST:event_btnNegarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -465,16 +590,12 @@ public class ParceirosListar extends javax.swing.JFrame {
     private javax.swing.JButton btnverSolicitacoes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblMudarHorariodefechamento;
-    private javax.swing.JLabel lblMudarhorariodeabertura;
     private javax.swing.JLabel lblMudarnome;
     private javax.swing.JLabel lblMudarseguimentoempresarial;
     private javax.swing.JTable tblParceiros;
     private javax.swing.JTable tblSolicitantes;
     private javax.swing.JTextField txtPesquisar;
     private javax.swing.JTextField txtbarradePesquisa;
-    private javax.swing.JTextField txtnovoHorariodeabertura;
-    private javax.swing.JTextField txtnovoHorariodefechamento;
     private javax.swing.JTextField txtnovoNome;
     private javax.swing.JTextField txtnovoSegmentoempresarial;
     // End of variables declaration//GEN-END:variables

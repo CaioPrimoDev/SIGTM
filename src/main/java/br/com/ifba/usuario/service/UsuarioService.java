@@ -8,12 +8,14 @@ import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.usuario.repository.UsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -88,6 +90,21 @@ public class UsuarioService {
         }
     }
 
+    public List<Usuario> findByNomeContainingIgnoreCase(String nome) {
+        if (!StringUtils.hasText(nome)) {
+            return Collections.emptyList();
+        }
+
+        List<Usuario> resultado = UserRepo.findByNomeContainingIgnoreCase(nome);
+        
+        if (resultado.isEmpty()) {
+            log.info("Nenhum usuário encontrado para o termo: {}", nome);
+        }
+
+        return resultado;
+    }
+
+    
     private void validarUsuario(Usuario user) {
         if (user == null) {
             log.warn("Usuário recebido é nulo.");

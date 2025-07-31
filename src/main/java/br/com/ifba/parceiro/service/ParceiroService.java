@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -124,7 +123,7 @@ public class ParceiroService {
             throw new RegraNegocioException("Horário de abertura e fechamento devem ser informados.");
         }
 
-        if (parceiro.getHorario_abertura().after(parceiro.getHorario_fechamento())) {
+        if (parceiro.getHorario_abertura().isAfter(parceiro.getHorario_fechamento())) {
             log.error("Horário de abertura posterior ao de fechamento.");
             throw new RegraNegocioException("O horário de abertura não pode ser depois do de fechamento.");
         }
