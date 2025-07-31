@@ -28,7 +28,7 @@ public class LoginService {
             Usuario usuario = user.get();
 
             // Verifica senha e status
-            if (usuario.getSenha().equals(senha) && usuario.isStatus()) {
+            if (usuario.getSenha().equals(senha) && usuario.isAtivo()) {
                 return usuario;
             }
         }

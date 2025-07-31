@@ -7,6 +7,7 @@ package br.com.ifba.usuario.controller;
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.usuario.service.UsuarioService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
  *
  * @author User
  */
-
 @Controller
 public class UsuarioController implements UsuarioIController {
 
@@ -40,9 +40,25 @@ public class UsuarioController implements UsuarioIController {
     public Usuario findById(Long id) {
         return service.findById(id);
     }
+
     @Override
-  public List<Usuario> findByNomeContainingIgnoreCase(String nome){
-      return service.findByNomeContainingIgnoreCase(nome);
-  }
-    
+    public List<Usuario> findByNomeContainingIgnoreCase(String nome) {
+        return service.findByNomeContainingIgnoreCase(nome);
+    }
+
+    @Override
+    public List<Usuario> findBySolicitacaoTrue() {
+        return service.findBySolicitacaoTrue();
+    }
+
+    @Override
+    public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
+        return service.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(nome);
+    }
+
+    @Override
+    public Optional<Usuario> findByCnpj(String cnpj){
+     
+     return service.findByCnpj(cnpj);
+     }
 }

@@ -23,14 +23,14 @@ public class Usuario extends Pessoa {
     private String senha;
 
     @Column(nullable = false)
-    private boolean status;
+    private boolean ativo;
 
     @ManyToOne(optional = false)
     private TipoUsuario tipo;
     
     // Verifica para aparecer na tabela de solicitações para parceria
     @Column(nullable = false)
-    private boolean socilitacao;
+    private boolean solicitacao;
 
     // Atributos específicos de parceiro (opcionais)
     @Column(nullable = true, unique = true)
@@ -48,9 +48,9 @@ public class Usuario extends Pessoa {
 
     public Usuario(String senha, TipoUsuario tipo) {
         this.senha = senha;
-        this.status = true;
+        this.ativo = true;
         this.tipo = tipo;
-        this.socilitacao = false;
+        this.solicitacao = false;
         this.cnpj = null;
         this.nomeEmpresa = null;
         this.matricula = null;

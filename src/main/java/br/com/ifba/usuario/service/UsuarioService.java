@@ -11,6 +11,7 @@ import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -107,6 +108,20 @@ public class UsuarioService {
         return resultado;
     }
 
+     public List<Usuario> findBySolicitacaoTrue(){
+         
+      return UserRepo.findBySolicitacaoTrue();
+     }
+    
+     public Optional<Usuario> findByCnpj(String cnpj){
+     
+     return UserRepo.findByCnpj(cnpj);
+     }
+     
+    public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome){
+    
+    return UserRepo.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(nome);
+    }
     
     private void validarUsuario(Usuario user) {
         if (user == null) {

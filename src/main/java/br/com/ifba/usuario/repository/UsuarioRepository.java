@@ -32,4 +32,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByMatricula(String matricula);
 
     boolean existsByMatricula(String matricula);
+    
+    public List<Usuario> findBySolicitacaoTrue();//pesquisar por todos os solicitantes
+    
+    public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
+ 
 }

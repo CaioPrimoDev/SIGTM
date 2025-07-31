@@ -7,6 +7,7 @@ package br.com.ifba.telainicial.view;
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoListar;
+import br.com.ifba.usuario.parceiro.view.ParceirosListar;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,6 +45,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btnCRUDPontoTuristico = new javax.swing.JButton();
         btnLogar = new javax.swing.JButton();
         btnPromocoes = new javax.swing.JButton();
+        btncrudParceiros = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,28 +70,42 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btncrudParceiros.setText("Gestsão de parceiros");
+        btncrudParceiros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncrudParceirosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(btnCRUDPontoTuristico)
-                .addGap(27, 27, 27)
-                .addComponent(btnLogar)
-                .addGap(35, 35, 35)
-                .addComponent(btnPromocoes)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPromocoes)
+                            .addComponent(btncrudParceiros)
+                            .addComponent(btnCRUDPontoTuristico)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(243, 243, 243)
+                        .addComponent(btnLogar)))
+                .addContainerGap(290, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCRUDPontoTuristico)
-                    .addComponent(btnLogar)
-                    .addComponent(btnPromocoes))
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addComponent(btnCRUDPontoTuristico)
+                .addGap(18, 18, 18)
+                .addComponent(btnPromocoes)
+                .addGap(18, 18, 18)
+                .addComponent(btncrudParceiros)
+                .addGap(42, 42, 42)
+                .addComponent(btnLogar)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         pack();
@@ -113,10 +129,16 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         this.dispose();
     }//GEN-LAST:event_btnPromocoesActionPerformed
 
+    private void btncrudParceirosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncrudParceirosActionPerformed
+       ParceirosListar  crudParceiros = new ParceirosListar();
+       crudParceiros.setVisible(true);
+    }//GEN-LAST:event_btncrudParceirosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnLogar;
     private javax.swing.JButton btnPromocoes;
+    private javax.swing.JButton btncrudParceiros;
     // End of variables declaration//GEN-END:variables
 
     @Override

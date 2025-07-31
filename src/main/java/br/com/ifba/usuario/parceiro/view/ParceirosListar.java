@@ -12,9 +12,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  *
  * @author Casa
@@ -23,112 +23,109 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
-    public ParceirosListar(UsuarioIController parceiroController,UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais
-        this.parceiroController = parceiroController;
-        this.usuarioController = usuarioController;
-        
+    public ParceirosListar() {//mantive o nome de parceiroController apenas para fins organiizacionais
+
         initComponents();
- 
+
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
-        
+
         //TELA DE SOLICITAÇÕES
-        
         tableModelS = (DefaultTableModel) tblSolicitantes.getModel();
-        
+
         carregarDadosParceiros();
-        
-           }
+        carregardadosSolicitantes();
+
+    }
 
     List<Usuario> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
-    
-     final DefaultTableModel tableModel;//tabela dos parceiros
-     final DefaultTableModel tableModelS;//tabela dos solicitantes
-     
-     int itemSelecionado = -1;
-     
-     @Autowired
+
+    final DefaultTableModel tableModel;//tabela dos parceiros
+    final DefaultTableModel tableModelS;//tabela dos solicitantes
+
+    int itemSelecionado = -1;
+
+    @Autowired
     UsuarioIController parceiroController;
-    
-   // MÉTODOS ESPECÍFICOS
-    
-    public void carregarDadosParceiros(){
-    
+
+    // MÉTODOS ESPECÍFICOS
+    public void carregarDadosParceiros() {
+
         tableModel.setRowCount(0);// zerar todas as linhas
-    
+
         listaParceiros.clear(); // limpar a lista 
-        
-        List <Usuario> listaCapsula = parceiroController.findAll();
-        
-        for(Usuario parceiros: listaCapsula){
-        
+
+        List<Usuario> listaCapsula = parceiroController.findAll();
+
+        for (Usuario parceiros : listaCapsula) {
+
             listaParceiros.add(parceiros);
         }
-        
+
         preencherTabelaParceiros();
     }
-    
-    public void preencherTabelaParceiros(){
-    //método para povoamento da tabela
-        for(Usuario parceiro: listaParceiros){
-        tableModel.addRow(new Object []{
+
+    public void preencherTabelaParceiros() {
+        //método para povoamento da tabela
+        for (Usuario parceiro : listaParceiros) {
+            tableModel.addRow(new Object[]{
                 parceiro.getNome(),
                 parceiro.getCnpj(),
                 parceiro.getNomeEmpresa()
-        });
-        
+            });
+
         }
-    
+
     }
-    
-    public void adicionarParceiro(Usuario usuario){
-    
-       if(usuario == null){
+
+    public void adicionarParceiro(Usuario usuario) {
+
+        if (usuario == null) {
+
+            System.out.println("Parceiro esta nulo");
+
+            return;
+        }
+
+        usuario.getTipo().setNome("PARCEIRO");// definindo o tipo do usuário
+
+        usuario.setSolicitacao(false);// como ele foi adicionado como parceiro a solicitação não é mais necessária
        
-           System.out.println("Parceiro esta nulo");
-           
-       return;
-       } 
-       
-     usuario.getTipo().setNome("PARCEIRO");// definindo o tipo do usuário
-        
-     parceiroController.save(usuario);
-     
-     listaParceiros.add(usuario);
-        
-     tableModel.addRow(new Object []{
-                usuario.getNome(),
-                usuario.getCnpj(),
-                usuario.getNomeEmpresa()});
-        
+        listaParceiros.add(usuario);
+
+        tableModel.addRow(new Object[]{
+            usuario.getNome(),
+            usuario.getCnpj(),
+            usuario.getNomeEmpresa()});
+
     }
-    
-    public void editarParceiro(Usuario parceiro){
-        
-    if(parceiro == null){
-        System.out.println("Parceiro esta nulo");   
-    
-    return;
+
+    public void editarParceiro(Usuario parceiro) {
+
+        if (parceiro == null) {
+            System.out.println("Parceiro esta nulo");
+
+            return;
+        }
+
+        if (itemSelecionado == -1) {
+
+            System.out.println("Nenhum item selecionado");
+            return;
+        }
+        parceiroController.save(parceiro);//atualizar db
+
+        listaParceiros.set(itemSelecionado, parceiro);
+
+        tableModel.setValueAt(parceiro.getNome(), itemSelecionado, 0);
+        tableModel.setValueAt(parceiro.getCnpj(), itemSelecionado, 1);
+        tableModel.setValueAt(parceiro.getNomeEmpresa(), itemSelecionado, 2);
+
     }
-        
-    if(itemSelecionado == -1){
-    
-        System.out.println("Nenhum item selecionado");
-        return;
-    }
-    parceiroController.save(parceiro);//atualizar db
-    
-    listaParceiros.set(itemSelecionado, parceiro);
-    
-    tableModel.setValueAt(parceiro.getNome(),itemSelecionado,0);
-    tableModel.setValueAt(parceiro.getCnpj(),itemSelecionado,1);
-    tableModel.setValueAt(parceiro.getNomeEmpresa(),itemSelecionado,2);
-   
-    }
-    
-    public void resetarSelecao(){
-    
+
+    public void resetarSelecao() {
+
         itemSelecionado = -1;
-    
+
     }
 
     @SuppressWarnings("unchecked")
@@ -141,7 +138,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         btnAceitar = new javax.swing.JButton();
         btnNegar = new javax.swing.JButton();
         btnRetornar = new javax.swing.JButton();
-        txtPesquisar = new javax.swing.JTextField();
+        txtpesquisarSolicitantes = new javax.swing.JTextField();
         EditarParceiro = new javax.swing.JFrame();
         txtnovoNome = new javax.swing.JTextField();
         lblMudarnome = new javax.swing.JLabel();
@@ -157,13 +154,13 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tblSolicitantes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Razão social", "CNPJ", "Segmento empresarial", "Horário de abertura", "Horário de fechamento", "Status da solicitação"
+                "Razão social", "CNPJ", "Segmento empresarial"
             }
         ));
         jScrollPane2.setViewportView(tblSolicitantes);
@@ -184,6 +181,12 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         btnRetornar.setText("VOLTAR");
 
+        txtpesquisarSolicitantes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisarSolicitantesKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout SolicitacoesParceriaLayout = new javax.swing.GroupLayout(SolicitacoesParceria.getContentPane());
         SolicitacoesParceria.getContentPane().setLayout(SolicitacoesParceriaLayout);
         SolicitacoesParceriaLayout.setHorizontalGroup(
@@ -198,7 +201,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                             .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(btnNegar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(94, 94, 94)
-                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(135, Short.MAX_VALUE))
         );
         SolicitacoesParceriaLayout.setVerticalGroup(
@@ -209,7 +212,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                 .addGap(10, 10, 10)
                 .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNegar, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRetornar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
@@ -265,16 +268,19 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tblParceiros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Razão Social", "CNPJ", "Segmento Empresarial", "Horário de abertura", "Horário de fechamento"
+                "Razão Social", "CNPJ", "Segmento Empresarial"
             }
         ));
         jScrollPane1.setViewportView(tblParceiros);
+        if (tblParceiros.getColumnModel().getColumnCount() > 0) {
+            tblParceiros.getColumnModel().getColumn(0).setResizable(false);
+        }
 
         btnverSolicitacoes.setText("Solicitações");
         btnverSolicitacoes.addActionListener(new java.awt.event.ActionListener() {
@@ -343,19 +349,19 @@ public class ParceirosListar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        if(listaParceiros.isEmpty()){
-        
+        if (listaParceiros.isEmpty()) {
+
             JOptionPane.showMessageDialog(null, "Nenhum parceiro cadastrado");
             return;
         }
-  
-        if(itemSelecionado == -1){
+
+        if (itemSelecionado == -1) {
             JOptionPane.showMessageDialog(null, "Nenhum parceiro foi selecionado");
-        return;
+            return;
         }
-        
+
         Usuario parceriaEncerrada = listaParceiros.get(itemSelecionado);
-        
+
         int resposta = JOptionPane.showConfirmDialog(
                 this,
                 "Deseja realmente encerrar a parceria com:\n" + parceriaEncerrada.getNome() + "?",
@@ -366,216 +372,274 @@ public class ParceirosListar extends javax.swing.JFrame {
         if (resposta == JOptionPane.YES_OPTION) {
             listaParceiros.remove(itemSelecionado);
             tableModel.removeRow(itemSelecionado);
-           parceriaEncerrada.getTipo().setNome("USUARIOCOMUM");
-           //relação com a parte de caio na próxima sprint
+            parceriaEncerrada.getTipo().setNome("USUARIOCOMUM");
+            //relação com a parte de caio na próxima sprint
             resetarSelecao();
         }
-        
+
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        
-        if(listaParceiros.isEmpty()){
-        
+
+        if (listaParceiros.isEmpty()) {
+
             JOptionPane.showMessageDialog(null, "Nenhum parceiro cadastrado");
             return;
         }
-  
-        if(itemSelecionado == -1){
+
+        if (itemSelecionado == -1) {
             JOptionPane.showMessageDialog(null, "Nenhum parceiro foi selecionado");
-        return;
+            return;
         }
-        
+
         EditarParceiro.setVisible(true);
-        EditarParceiro.setSize(343,515);
+        EditarParceiro.setSize(343, 515);
         EditarParceiro.setLocationRelativeTo(null);
-        
+
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnverSolicitacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnverSolicitacoesActionPerformed
-       SolicitacoesParceria.setVisible(true);
-       SolicitacoesParceria.setSize(882,546);
-       SolicitacoesParceria.setLocationRelativeTo(null);
+        SolicitacoesParceria.setVisible(true);
+        SolicitacoesParceria.setSize(882, 546);
+        SolicitacoesParceria.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnverSolicitacoesActionPerformed
 
     private void btnconfirmarMudancasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnconfirmarMudancasActionPerformed
-        
-        if(listaParceiros.isEmpty()){
-        
+
+        if (listaParceiros.isEmpty()) {
+
             JOptionPane.showMessageDialog(null, "Nenhum parceiro cadastrado");
             return;
         }
-  
-        if(itemSelecionado == -1){
+
+        if (itemSelecionado == -1) {
             JOptionPane.showMessageDialog(null, "Nenhum parceiro foi selecionado");
-        return;
+            return;
         }
-        
+
         Usuario parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
-        
-        if(txtnovoNome.getText().isEmpty()){
-        
+
+        if (txtnovoNome.getText().isEmpty()) {
+
             parceiroEditar.setNome(parceiroEditar.getNome());//caso o campo esteja vazio deixar o objeto como ele está
-        
+
         }
-        
-        if(txtnovoSegmentoempresarial.getText().isEmpty()){
-        
+
+        if (txtnovoSegmentoempresarial.getText().isEmpty()) {
+
             parceiroEditar.setNomeEmpresa(parceiroEditar.getNomeEmpresa());//caso o campo esteja vazio deixar o objeto como ele está
-        
+
         }
- 
-         
-         editarParceiro(parceiroEditar);
-         
-         resetarSelecao();
-         
+
+        editarParceiro(parceiroEditar);
+
+        resetarSelecao();
+
 //procruar melhores metodos para edição de tempo
-        
+
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
-       
+
     }//GEN-LAST:event_txtbarradePesquisaKeyReleased
 
     private void txtbarradePesquisaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbarradePesquisaMouseReleased
-      String termo = txtbarradePesquisa.getText().trim();
-    
-    //limpar tabela de forma segura na EDT
-    SwingUtilities.invokeLater(() -> {
-        tableModel.setRowCount(0);
-    });
+        String termo = txtbarradePesquisa.getText().trim();
 
-    if (termo.isEmpty()) {
-        preencherTabelaParceiros();
-        return;
-    }
-
-    try {
-        Long id = Long.valueOf(termo);
-        
-        //usar invokeLater para garantir execução na thread correta
+        //limpar tabela de forma segura na EDT
         SwingUtilities.invokeLater(() -> {
-            try {
-                Usuario parceiro = parceiroController.findById(id);
-                //primeiro ver se é numérico
-                if (parceiro != null) {
-                    tableModel.addRow(new Object[]{
-                        parceiro.getNome(),
-                        parceiro.getCnpj(),
-                        parceiro.getNomeEmpresa(),
-                    });
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse ID.");
+            tableModel.setRowCount(0);
+        });
+
+        if (termo.isEmpty()) {
+            preencherTabelaParceiros();
+            return;
+        }
+
+        try {
+            Long id = Long.valueOf(termo);
+
+            //usar invokeLater para garantir execução na thread correta
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Usuario parceiro = parceiroController.findById(id);
+                    //primeiro ver se é numérico
+                    if (parceiro != null) {
+                        tableModel.addRow(new Object[]{
+                            parceiro.getNome(),
+                            parceiro.getCnpj(),
+                            parceiro.getNomeEmpresa(),});
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse ID.");
+                        preencherTabelaParceiros();
+                    }
+                } catch (HeadlessException e) {
+                    JOptionPane.showMessageDialog(null, "Erro ao buscar parceiro: " + e.getMessage());
+                }
+            });
+
+        } catch (NumberFormatException e) {
+            //se não for numérico procurar por nome
+            SwingUtilities.invokeLater(() -> {
+                List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
+
+                if (resultados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
                     preencherTabelaParceiros();
+                } else {
+                    for (Usuario parceiro : resultados) {
+                        tableModel.addRow(new Object[]{
+                            parceiro.getNome(),
+                            parceiro.getCnpj(),
+                            parceiro.getNomeEmpresa()
+                        });
+                    }
                 }
-            } catch (HeadlessException e) {
-                JOptionPane.showMessageDialog(null, "Erro ao buscar parceiro: " + e.getMessage());
-            }
-        });
-        
-    } catch (NumberFormatException e) {
-        //se não for numérico procurar por nome
-        SwingUtilities.invokeLater(() -> {
-            List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
-            
-            if (resultados.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
-                preencherTabelaParceiros();
-            } else {
-                for (Usuario  parceiro : resultados) {
-                    tableModel.addRow(new Object[]{
-                       parceiro.getNome(),
-                       parceiro.getCnpj(),
-                        parceiro.getNomeEmpresa()
-                    });
-                }
-            }
-        });
-    }
-        
-        
+            });
+        }
+
+
     }//GEN-LAST:event_txtbarradePesquisaMouseReleased
 
     //tela de solicitações
-    
-    public void carregardadosSolicitantes(){
-    
+    public void carregardadosSolicitantes() {
+
         tableModelS.setRowCount(0);// zerar todas as linhas
-    
+
         listaSolicitantes.clear(); // limpar a lista 
-        
-        List <Usuario> listaCapsula =  usuarioController.findAll();
-        
-        for(Usuario parceiros: listaCapsula){
-        
-            listaParceiros.add(parceiros);
+
+        List<Usuario> listaCapsula = usuarioController.findBySolicitacaoTrue();
+
+        for (Usuario solicitantes : listaCapsula) {
+
+            listaSolicitantes.add(solicitantes);
         }
-        
-        preencherTabelaParceiros();
-    
+
+        preenchertabelaSolicitantes();
+
     }
-    
-    public void preenchertabelaSolicitantes(){
-    
-    
+
+    public void preenchertabelaSolicitantes() {
+
+        for (Usuario solicitantes : listaSolicitantes) {
+            tableModel.addRow(new Object[]{
+                solicitantes.getNome(),
+                solicitantes.getCnpj(),
+                solicitantes.getNomeEmpresa()
+            });
+        }
     }
-    
-    List <Usuario> listaSolicitantes = new ArrayList();// if (usuario.getSolicitacao ==  true) listaSolicitantes.add(usuario)
-    
-   @Autowired
+
+    List<Usuario> listaSolicitantes = new ArrayList();// if (usuario.getSolicitacao ==  true) listaSolicitantes.add(usuario)
+
+    @Autowired
     UsuarioIController usuarioController;
-    
+
     private void btnAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceitarActionPerformed
-       if(listaSolicitantes.isEmpty()){
-       
-       JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
-        return;
-            
-       }
-       
-       Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
-       
-       if(novoParceiroCapsula == null){
-       
-       JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
-       return;
-       
-       }
+        if (listaSolicitantes.isEmpty()) {
+
+            JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
+            return;
+
+        }
+
+        Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
+
+        if (novoParceiroCapsula == null) {
+
+            JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
+            return;
+
+        }
         adicionarParceiro(novoParceiroCapsula);
-        
+
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
-        
-        JOptionPane.showMessageDialog(null, "O "+novoParceiroCapsula.getNome()+" foi adicionado como parceiro");
+
+        JOptionPane.showMessageDialog(null, "O " + novoParceiroCapsula.getNome() + " foi adicionado como parceiro");
     }//GEN-LAST:event_btnAceitarActionPerformed
 
     private void btnNegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNegarActionPerformed
-        if(listaSolicitantes.isEmpty()){
-       
-       JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
-        return;
-            
-       }
-       
-       Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
-       
-       if(novoParceiroCapsula == null){
-       
-       JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
-       return;
-       
-       }
+        if (listaSolicitantes.isEmpty()) {
+
+            JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
+            return;
+
+        }
+
+        Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
+
+        if (novoParceiroCapsula == null) {
+
+            JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
+            return;
+
+        }
 
         //solicitacao = false e vai sair da lista de solicitantes
-        
-        novoParceiroCapsula.setSocilitacao(false);//como ele foi recusado vai sair da lista de solicitÇão
-       listaSolicitantes.remove(novoParceiroCapsula);
+        novoParceiroCapsula.setSolicitacao(false);//como ele foi recusado vai sair da lista de solicitÇão
+        listaSolicitantes.remove(novoParceiroCapsula);
     }//GEN-LAST:event_btnNegarActionPerformed
+
+    private void txtpesquisarSolicitantesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarSolicitantesKeyReleased
+          String termo = txtpesquisarSolicitantes.getText().trim();
+
+        //limpar tabela de forma segura na EDT
+        SwingUtilities.invokeLater(() -> {
+            tableModel.setRowCount(0);
+        });
+
+        if (termo.isEmpty()) {
+            preencherTabelaParceiros();
+            return;
+        }
+
+        try {
+            Long id = Long.valueOf(termo);
+
+            //usar invokeLater para garantir execução na thread correta
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Usuario solicitante= usuarioController.findById(id);
+                    //primeiro ver se é numérico
+                    if (solicitante != null) {
+                        tableModelS.addRow(new Object[]{
+                            solicitante.getNome(),
+                            solicitante.getCnpj(),
+                            solicitante.getNomeEmpresa(),});
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
+                        preencherTabelaParceiros();
+                    }
+                } catch (HeadlessException e) {
+                    JOptionPane.showMessageDialog(null, "Erro ao buscar solicitante: " + e.getMessage());
+                }
+            });
+
+        } catch (NumberFormatException e) {
+            //se não for numérico procurar por nome
+            SwingUtilities.invokeLater(() -> {
+                List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
+
+                if (resultados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
+                    preencherTabelaParceiros();
+                } else {
+                    for (Usuario solicitante : resultados) {
+                        tableModelS.addRow(new Object[]{
+                           solicitante.getNome(),
+                            solicitante.getCnpj(),
+                            solicitante.getNomeEmpresa()
+                        });
+                    }
+                }
+            });
+        }
+
+    }//GEN-LAST:event_txtpesquisarSolicitantesKeyReleased
 
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame EditarParceiro;
@@ -593,9 +657,9 @@ public class ParceirosListar extends javax.swing.JFrame {
     private javax.swing.JLabel lblMudarseguimentoempresarial;
     private javax.swing.JTable tblParceiros;
     private javax.swing.JTable tblSolicitantes;
-    private javax.swing.JTextField txtPesquisar;
     private javax.swing.JTextField txtbarradePesquisa;
     private javax.swing.JTextField txtnovoNome;
     private javax.swing.JTextField txtnovoSegmentoempresarial;
+    private javax.swing.JTextField txtpesquisarSolicitantes;
     // End of variables declaration//GEN-END:variables
 }

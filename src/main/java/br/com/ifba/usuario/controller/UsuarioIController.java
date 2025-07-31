@@ -6,6 +6,7 @@ package br.com.ifba.usuario.controller;
 
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -17,4 +18,7 @@ public interface UsuarioIController {
     List<Usuario> findAll();
     Usuario findById(Long id);
     List <Usuario> findByNomeContainingIgnoreCase(String nome);
+    List<Usuario> findBySolicitacaoTrue();//pesquisar por todos os solicitantes
+    List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
+    Optional<Usuario> findByCnpj(String cnpj);
 }
