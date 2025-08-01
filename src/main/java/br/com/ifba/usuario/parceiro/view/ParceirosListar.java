@@ -594,7 +594,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         if (termo.isEmpty()) {
             preencherTabelaParceiros();
             return;
-        }
+        }//
 
         try {
             Long id = Long.valueOf(termo);
