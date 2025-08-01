@@ -5,6 +5,7 @@
 package br.com.ifba.usuario.parceiro.view;
 
 import br.com.ifba.usuario.controller.UsuarioIController;
+import br.com.ifba.usuario.entity.TipoUsuario;
 import br.com.ifba.usuario.entity.Usuario;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
@@ -20,11 +21,14 @@ import org.springframework.stereotype.Component;
  *
  * @author Casa
  */
+@Component
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
-    public ParceirosListar() {//mantive o nome de parceiroController apenas para fins organiizacionais
-
+    public ParceirosListar(UsuarioIController parceiroController, UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
+        this.parceiroController = parceiroController;
+        this.usuarioController = usuarioController;
+        
         initComponents();
 
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
@@ -54,7 +58,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         listaParceiros.clear(); // limpar a lista 
 
-        List<Usuario> listaCapsula = parceiroController.findAll();
+        List<Usuario> listaCapsula = parceiroController.findAll();//acessa todos os usuarios onde tipo.getNome() = PARCEIRO
 
         for (Usuario parceiros : listaCapsula) {
 
@@ -440,9 +444,62 @@ public class ParceirosListar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
+ String termo = txtbarradePesquisa.getText().trim();
+
+        //limpar tabela de forma segura na EDT
+        SwingUtilities.invokeLater(() -> {
+            tableModel.setRowCount(0);
+        });
+
+        if (termo.isEmpty()) {
+            preencherTabelaParceiros();
+            return;
+        }
+
+        try {
+            Long id = Long.valueOf(termo);
+
+            //usar invokeLater para garantir execução na thread correta
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Usuario solicitante= parceiroController.findById(id);
+                    //primeiro ver se é numérico
+                    if (solicitante != null) {
+                        tableModelS.addRow(new Object[]{
+                            solicitante.getNome(),
+                            solicitante.getCnpj(),
+                            solicitante.getNomeEmpresa(),});
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
+                        preencherTabelaParceiros();
+                    }
+                } catch (HeadlessException e) {
+                    JOptionPane.showMessageDialog(null, "Erro ao buscar solicitante: " + e.getMessage());
+                }
+            });
+
+        } catch (NumberFormatException e) {
+            //se não for numérico procurar por nome
+            SwingUtilities.invokeLater(() -> {
+                List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
+
+                if (resultados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
+                    preencherTabelaParceiros();
+                } else {
+                    for (Usuario solicitante : resultados) {
+                        tableModelS.addRow(new Object[]{
+                           solicitante.getNome(),
+                            solicitante.getCnpj(),
+                            solicitante.getNomeEmpresa()
+                        });
+                    }
+                }
+            });
+        }
 
     }//GEN-LAST:event_txtbarradePesquisaKeyReleased
-
+    
     private void txtbarradePesquisaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbarradePesquisaMouseReleased
         String termo = txtbarradePesquisa.getText().trim();
 

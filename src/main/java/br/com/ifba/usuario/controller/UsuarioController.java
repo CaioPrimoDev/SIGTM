@@ -9,6 +9,7 @@ import br.com.ifba.usuario.service.UsuarioService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -57,8 +58,20 @@ public class UsuarioController implements UsuarioIController {
     }
 
     @Override
-    public Optional<Usuario> findByCnpj(String cnpj){
-     
-     return service.findByCnpj(cnpj);
-     }
+    public Optional<Usuario> findByCnpj(String cnpj) {
+
+        return service.findByCnpj(cnpj);
+    }
+
+   /* @Override
+    public List<Usuario> findParceirosPorNomeTipo() {
+
+        return service.findParceirosPorNomeTipo();
+    }*/
+/*
+    @Override
+    public List<Usuario> findParceirosByNome(@Param("nome") String nome) {
+
+        return service.findParceirosByNome(nome);
+    }*/
 }

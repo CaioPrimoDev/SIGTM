@@ -7,6 +7,7 @@ package br.com.ifba.usuario.controller;
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -21,4 +22,6 @@ public interface UsuarioIController {
     List<Usuario> findBySolicitacaoTrue();//pesquisar por todos os solicitantes
     List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
     Optional<Usuario> findByCnpj(String cnpj);
+   // List<Usuario> findParceirosPorNomeTipo();
+   // List<Usuario> findParceirosByNome(@Param("nome") String nome);// pesquisar parceiro via metodo
 }

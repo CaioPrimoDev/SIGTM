@@ -4,10 +4,13 @@
  */
 package br.com.ifba.usuario.repository;
 
+import br.com.ifba.usuario.entity.TipoUsuario;
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -36,5 +39,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     public List<Usuario> findBySolicitacaoTrue();//pesquisar por todos os solicitantes
     
     public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
+    
+   /* @Query("SELECT u FROM Usuario u WHERE u.tipo.name = 'PARCEIRO'")
+      List<Usuario> findParceirosPorNomeTipo();//RETORNA TODOS OS PARCEIOS*/
+      
+   /*@Query("SELECT u FROM Usuario u " +
+           "WHERE u.tipo = :tipo " + 
+           "AND LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
+    List<Usuario> findByTipoAndNome(@Param("tipo") TipoUsuario tipo,@Param("nome") String nome);//PESQUISA O parceiro pelo nome*/
  
 }

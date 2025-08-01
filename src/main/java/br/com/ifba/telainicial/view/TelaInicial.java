@@ -131,7 +131,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
 
 
     private void btncrudParceirosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncrudParceirosActionPerformed
-       ParceirosListar  crudParceiros = new ParceirosListar();
+       ParceirosListar crudParceiros = applicationContext.getBean(ParceirosListar.class);
        crudParceiros.setVisible(true);
     }//GEN-LAST:event_btncrudParceirosActionPerformed
 
