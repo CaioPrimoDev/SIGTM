@@ -41,8 +41,9 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         this.pontoTuristicoController = pontoTuristicoController;
         initComponents();
         
+        carregarDados(); // carrega os dados na tabela
         // Define um tamanho fixo 
-        this.setSize(800, 400); 
+        this.setSize(1000, 400); 
 
         // Impede que o usuário redimensione a janela
         this.setResizable(false);
@@ -97,15 +98,15 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 if (linha >= 0) {
 
                     // AÇÃO DE EDITAR
-                    if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Editar")
+                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")
                         PontoTuristico pontoParaEditar = listaDePontos.get(linha);
 
-                        //PontoTuristico telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
-                        //telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList_OLD.this);
-                        //telaAtualizacao.setVisible(true);
+                        PontoTuristicoUpdate telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
+                        telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
+                        telaAtualizacao.setVisible(true);
                     } 
                     // AÇÃO DE REMOVER
-                    else if (coluna == 7) { // Verifica se o clique foi na 8ª coluna ("Remover")
+                    else if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Remover")
                         PontoTuristico pontoParaRemover = listaDePontos.get(linha);
                         // Pede confirmação ao usuário antes de remover
                         int resposta = JOptionPane.showConfirmDialog(PontoTuristicoList.this, // Parent component
@@ -156,7 +157,6 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
                 // adiciona linha 
                 model.addRow(new Object[]{
-                    pontoTuristico.getId(),
                     pontoTuristico.getNome(),
                     pontoTuristico.getDescricao(),
                     pontoTuristico.getLocalizacao(), 
@@ -184,10 +184,10 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         // Define a altura da linha para 40 pixels. Ajuste conforme necessário.
         tblPontosTuristicos.setRowHeight(32);
         
+        // Pega a coluna na posição 5 (a sexta coluna)
+        tblPontosTuristicos.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         // Pega a coluna na posição 6 (a setima coluna)
         tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
-        // Pega a coluna na posição 7 (a oitava coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
     }
 
     /**
@@ -232,36 +232,36 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
         tblPontosTuristicos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nome", "Descrição", "Localização", "Nivel de Acessibilidade", "Horario de Funcionamento", "Editar", "Remover"
+                "Nome", "Descrição", "Localização", "Horario de Funcionamento", "Nivel de Acessibilidade", "Editar", "Remover"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, true
+                false, false, false, false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -290,7 +290,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -303,13 +303,13 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAdiciona)
-                            .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(16, 16, 16)
+                        .addComponent(btnAdiciona)
+                        .addGap(0, 5, Short.MAX_VALUE)))
+                .addGap(13, 13, 13)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -363,12 +363,11 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
                     // adiciona linha
                     model.addRow(new Object[]{
-                        pontoTuristico.getId(),
                         pontoTuristico.getNome(),
                         pontoTuristico.getDescricao(),
-                        pontoTuristico.getLocalizacao(), 
-                        pontoTuristico.getNivelAcessibilidade(), 
+                        pontoTuristico.getLocalizacao(),  
                         horarioFuncionamento,
+                        pontoTuristico.getNivelAcessibilidade(),
                         "Editar",
                         "Remover"
                     });

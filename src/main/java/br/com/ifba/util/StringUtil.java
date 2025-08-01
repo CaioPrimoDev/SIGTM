@@ -4,6 +4,11 @@
  */
 package br.com.ifba.util;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+
 /**
  *
  * @author User
@@ -121,5 +126,24 @@ public class StringUtil {
         return valor.length() == 11 ? isCpfValido(valor)
              : valor.length() == 14 ? isCnpjValido(valor)
              : false;
+    }
+    
+    public static boolean isValidHorario(String horario) {
+        if (horario == null) {
+            return false;
+        }
+
+        // Define o formato estrito "HH:mm" (horas 00-23, minutos 00-59)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm")
+                                                     .withResolverStyle(ResolverStyle.STRICT);
+
+        try {
+            // Se o parse funciona, o formato e os valores são válidos.
+            LocalTime.parse(horario, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            // A string não corresponde ao formato esperado.
+            return false;
+        }
     }
 }

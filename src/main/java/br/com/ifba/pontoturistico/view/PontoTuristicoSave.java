@@ -6,6 +6,7 @@ package br.com.ifba.pontoturistico.view;
 
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.util.StringUtil;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -229,6 +230,19 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(
                     null, "Existem campos vazios ou invalido(s), preencha todos e tente novamente!",
                     "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+            // Valida o formato do horário de abertura
+            if (!StringUtil.isValidHorario(txtHorarioAber.getText())) {
+                 JOptionPane.showMessageDialog(this, "Formato do horário de abertura inválido. Use HH:mm (ex: 08:00).", 
+                                               "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                 return; // Para a execução
+            }
+            
+            // Valida o formato do horário de fechamento
+            if (!StringUtil.isValidHorario(txtHorarioFecha.getText())) {
+                 JOptionPane.showMessageDialog(this, "Formato do horário de fechamento inválido. Use HH:mm (ex: 18:00).", 
+                                               "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                 return;
             }
             else{
                 // Cria o objeto Curso com os dados da tela

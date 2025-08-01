@@ -66,9 +66,9 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
             setBackground(UIManager.getColor("Button.background"));
         }
 
-        if (column == 4) { // Coluna Editar
+        if (column == 5) { // Coluna Editar
             setIcon(editIcon);
-        } else if (column == 5) { // Coluna Remover
+        } else if (column == 6) { // Coluna Remover
             setIcon(deleteIcon);
         }
         
