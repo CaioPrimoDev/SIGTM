@@ -52,9 +52,17 @@ public class PontoTuristicoService implements PontoTuristicoIService {
         if (StringUtil.isNullOrEmpty(pontoTuristico.getHorarioAbertura())) {
             throw new IllegalArgumentException("O campo 'horarioAbertura' é obrigatório.");
         }
+        // Valida o formato do horário de abertura
+        if (!StringUtil.isValidHorario(pontoTuristico.getHorarioAbertura())) {
+            throw new IllegalArgumentException("O formato do horário de abertura é inválido. Use HH:mm.");
+        }
         // Verifica se o campo foi preenchido devidamente
         if (StringUtil.isNullOrEmpty(pontoTuristico.getHorarioFechamento())) {
             throw new IllegalArgumentException("O campo 'horarioFechamento' é obrigatório.");
+        }
+        // Valida o formato do horário de fechamento
+        if (!StringUtil.isValidHorario(pontoTuristico.getHorarioFechamento())) {
+            throw new IllegalArgumentException("O formato do horário de fechamento é inválido. Use HH:mm.");
         }
     }
 

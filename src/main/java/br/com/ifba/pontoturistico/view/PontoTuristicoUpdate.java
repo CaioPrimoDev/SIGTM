@@ -52,6 +52,7 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
         sliNivelAcess.setValue(this.pontoTuristicoEditar.getNivelAcessibilidade()); 
         txtLocalizacao.setText(this.pontoTuristicoEditar.getLocalizacao());
         txtHorarioAber.setText(this.pontoTuristicoEditar.getHorarioAbertura());
+        txtHorarioFecha.setText(this.pontoTuristicoEditar.getHorarioFechamento());
     }
 
     /**
@@ -260,8 +261,8 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
                 pontoTuristicoEditar.setHorarioAbertura(txtHorarioAber.getText());
                 pontoTuristicoEditar.setHorarioFechamento(txtHorarioFecha.getText());
 
-                // salva o objeto no banco
-                pontoTuristicoController.save(pontoTuristicoEditar);
+                // atualiza o objeto no banco
+                pontoTuristicoController.update(pontoTuristicoEditar);
 
                 // Exibe uma mensagem de sucesso para o usuário
                 JOptionPane.showMessageDialog(this, "Ponto Turistico atualizado com sucesso!",
