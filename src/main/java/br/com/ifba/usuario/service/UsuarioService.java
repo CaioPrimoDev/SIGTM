@@ -159,31 +159,59 @@ public class UsuarioService {
         return usuario;
     }
      
-      
-      //LOCALIZAR TODOS OS PARCEIROS
-     /*  public List<Usuario> findParceirosPorNomeTipo() {
-        log.info("Iniciando busca por parceiros por nome e tipo...");
-
-        List<Usuario> parceiros = null;
+      //localizar todos os parceiros
+       public List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo) {
         try {
-            parceiros = UserRepo.findParceirosPorNomeTipo();
-
-            if (parceiros.isEmpty()) {
-                log.warn("Nenhum parceiro encontrado com os critérios de nome e tipo definidos.");
-            } else {
-                log.info("Busca por parceiros por nome e tipo concluída. Encontrados {} parceiros.", parceiros.size());
+            log.info("Iniciando busca por tipo de usuário: {}", nomeTipo);
+            
+            // Verificação de entrada
+            if (!StringUtils.hasText(nomeTipo)) {
+                log.warn("Parâmetro 'nomeTipo' está vazio ou nulo");
+                return Collections.emptyList();
             }
-        } catch (org.springframework.dao.DataAccessException e) {
-            // Captura exceções de acesso a dados (SQL, JPA, Hibernate)
-            log.error("Erro de acesso a dados ao buscar parceiros por nome e tipo: {}", e.getMessage(), e);
-            throw new RegraNegocioException("Erro ao buscar parceiros. Tente novamente mais tarde.");
+
+            List<Usuario> resultado = UserRepo.findByTipoNomeIgnoreCase(nomeTipo);
+            
+            // Verificação de resultado
+            if (resultado.isEmpty()) {
+                log.info("Nenhum usuário encontrado para o tipo: {}", nomeTipo);
+            } else {
+                log.info("Encontrados {} usuários do tipo: {}", resultado.size(), nomeTipo);
+            }
+            
+            return resultado;
         } catch (Exception e) {
-            // Captura outras exceções inesperadas
-            log.error("Erro inesperado ao buscar parceiros por nome e tipo: {}", e.getMessage(), e);
-            throw new RegraNegocioException("Ocorreu um erro interno ao buscar parceiros.");
+            log.error("Erro ao buscar usuários por tipo: {}", nomeTipo, e);
+            return Collections.emptyList();
         }
-        return parceiros;
-    }*/
+    }
+
+    //localizar parceiros por nome 
+    public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome) {
+        try {
+            log.info("Buscando parceiros com tipo: {} e nome: {}", tipoNome, nome);
+            
+            // Verificação de entrada
+            if (!StringUtils.hasText(tipoNome) || !StringUtils.hasText(nome)) {
+                log.warn("Parâmetros inválidos - tipoNome: {}, nome: {}", tipoNome, nome);
+                return Collections.emptyList();
+            }
+
+            List<Usuario> resultado = UserRepo.findByTipoNomeAndNomeContainingIgnoreCase(tipoNome, nome);
+            
+            // Verificação de resultado
+            if (resultado.isEmpty()) {
+                log.info("Nenhum parceiro encontrado para nome: {}", nome);
+            } else {
+                log.info("Encontrados {} parceiros para nome: {}", resultado.size(), nome);
+            }
+            
+            return resultado;
+        } catch (Exception e) {
+            log.error("Erro ao buscar parceiros por nome: {}", nome, e);
+            return Collections.emptyList();
+        }
+    }
      
    public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
         log.info("Iniciando busca por usuários pelo nome '{}' com solicitação TRUE e ativo TRUE...", nome);

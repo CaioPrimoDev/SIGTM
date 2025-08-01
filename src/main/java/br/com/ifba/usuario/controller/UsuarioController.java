@@ -63,15 +63,14 @@ public class UsuarioController implements UsuarioIController {
         return service.findByCnpj(cnpj);
     }
 
-   /* @Override
-    public List<Usuario> findParceirosPorNomeTipo() {
-
-        return service.findParceirosPorNomeTipo();
-    }*/
-/*
     @Override
-    public List<Usuario> findParceirosByNome(@Param("nome") String nome) {
+    public  List<Usuario> findByTipoNomeIgnoreCase(String nome){
+    return service.findByTipoNomeIgnoreCase(nome);
+    }
+    
+    @Override
+    public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome){
+      return service.findByTipoNomeAndNomeContainingIgnoreCase(tipoNome, nome);
+      }
 
-        return service.findParceirosByNome(nome);
-    }*/
 }

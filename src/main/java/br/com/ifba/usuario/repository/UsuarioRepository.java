@@ -40,12 +40,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
     
-   /* @Query("SELECT u FROM Usuario u WHERE u.tipo.name = 'PARCEIRO'")
-      List<Usuario> findParceirosPorNomeTipo();//RETORNA TODOS OS PARCEIOS*/
+   List<Usuario> findByTipoNomeIgnoreCase(String nome);//RETorna todos os parceiros
       
-   /*@Query("SELECT u FROM Usuario u " +
-           "WHERE u.tipo = :tipo " + 
-           "AND LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
-    List<Usuario> findByTipoAndNome(@Param("tipo") TipoUsuario tipo,@Param("nome") String nome);//PESQUISA O parceiro pelo nome*/
+   List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome); //procurar pelo nome do parceiro
  
 }

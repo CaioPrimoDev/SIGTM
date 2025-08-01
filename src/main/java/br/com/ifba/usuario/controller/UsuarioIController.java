@@ -22,6 +22,7 @@ public interface UsuarioIController {
     List<Usuario> findBySolicitacaoTrue();//pesquisar por todos os solicitantes
     List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
     Optional<Usuario> findByCnpj(String cnpj);
-   // List<Usuario> findParceirosPorNomeTipo();
+   List<Usuario> findByTipoNomeIgnoreCase(String nome);
+   List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome);
    // List<Usuario> findParceirosByNome(@Param("nome") String nome);// pesquisar parceiro via metodo
 }
