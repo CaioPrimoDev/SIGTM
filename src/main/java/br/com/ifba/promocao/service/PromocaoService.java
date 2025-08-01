@@ -22,77 +22,89 @@ import org.springframework.stereotype.Service;
 @Service
 public class PromocaoService implements PromocaoIService {
     
+    // Permite acesso ao banco de dados sem instanciação manual
     @Autowired
     private PromocaoRepository promocaoRepository;
      
+    // Cria um logger para registrar atividades da classe
     private static final Logger log = LoggerFactory.
                             getLogger(PromocaoService.class);
        
+    // Salva uma nova promoção/cupom/pacote
     @Override
     public Promocao save(Promocao promocao) {
-        log.info("Salvando promoção: {}", promocao.getTitulo());
-        validatePromocao(promocao);
-        return promocaoRepository.save(promocao);
+        log.info("Salvando {}", promocao.getTitulo());
+        validatePromocao(promocao); //Valida os dados
+        return promocaoRepository.save(promocao); //Repassa para o repositório salvar no banco
     }
 
+    // Atualiza uma promoção/cupom/pacote existente
     @Override
     public Promocao update(Promocao promocao) {
-        log.info("Atualizando promoção ID {}: {}", promocao.getId(), promocao.getTitulo());
-        validatePromocao(promocao);
-        return promocaoRepository.save(promocao);
+        log.info("Atualizando ID {}: {}", promocao.getId(), promocao.getTitulo());
+        validatePromocao(promocao); //Valida os dados
+        return promocaoRepository.save(promocao); //Repassa para o repositório salvar no banco
     }
 
+    // Exclui uma promoção/cupom/pacote
     @Override
     public void delete(Promocao promocao) {
         log.info("Removendo promoção ID {}: {}", promocao.getId(), promocao.getTitulo());
 
-        String mensagem = String.format("Deseja realmente apagar a promoção %s - %s?", 
+        String mensagem = String.format("Deseja realmente apagar %s - %s?", 
                                       promocao.getTipo(), 
                                       promocao.getTitulo());
-
+        //Mostra diálogo de confirmação
         int confirmacao = JOptionPane.showConfirmDialog(
             null, 
             mensagem, 
             "Confirmar Exclusão", 
-            JOptionPane.YES_NO_OPTION);
+            JOptionPane.YES_NO_OPTION); 
 
+        //Se confirmado, remove do banco e mostra mensagem
         if (confirmacao == JOptionPane.YES_OPTION) {
             promocaoRepository.delete(promocao);
             JOptionPane.showMessageDialog(null, "Promoção excluída com sucesso!");
         }
     }
 
+    // Retorna todas as promoções//cupons/pacotes cadastradas
     @Override
     public List<Promocao> findAll() {
         log.info("Listando todas as promoções");
         return promocaoRepository.findAll();
     }
     
+    // Busca itens por ID
     @Override
     public Promocao findById(Long id) {
-        log.info("Buscando promoção por ID: {}", id);
-        return promocaoRepository.findById(id).orElse(null);
+        log.info("Buscando promoção por ID: {}", id); 
+        return promocaoRepository.findById(id).orElse(null); // Retorna null se não encontrar (orElse(null))
     }
     
-    public List<Promocao> filtrarPromocoes(String termo, String tipo) {
+    // Filtra promoções por tipo e termo de busca
+    public List<Promocao> filtrarPromocoes(String termo, String tipo) { 
         return promocaoRepository.filtrar(
-            tipo == null || tipo.equals("TODOS") ? "TODOS" : tipo,
+            tipo == null || tipo.equals("TODOS") ? "TODOS" : tipo, //Trata valores nulos (default para "TODOS" e string vazia)
             termo == null ? "" : termo
-        );
+        ); 
     }
 
-    // Validações adicionais
+    // Validação geral da promoção
+    
+    // Verifica se não é nula e chama validadores específicos
     public void validatePromocao(Promocao promocao) {
         if (promocao == null) {
             throw new IllegalArgumentException("Preencha todos os campos");
         }
         
-        validateTitulo(promocao.getTitulo());
+        validateTitulo(promocao.getTitulo()); 
         validateDescricao(promocao.getDescricao());
         validateDatas(promocao.getDataInicio(), promocao.getDataTermino());
         validateRegras(promocao.getRegras());
     }
     
+    // Validações específicas do título
     private void validateTitulo(String titulo) {
         if (StringUtil.isNullOrEmpty(titulo)) {
             throw new IllegalArgumentException("Título não pode ser vazio");
@@ -102,6 +114,7 @@ public class PromocaoService implements PromocaoIService {
         }
     }
     
+    // Validações da descrição
     private void validateDescricao(String descricao) {
         if (StringUtil.isNullOrEmpty(descricao)) {
             throw new IllegalArgumentException("Descrição não pode ser vazia");
@@ -111,6 +124,7 @@ public class PromocaoService implements PromocaoIService {
         }
     }
     
+    // Validações das datas
     private void validateDatas(Date dataInicio, Date dataTermino) {
         if (dataInicio == null || dataTermino == null) {
             throw new IllegalArgumentException("Datas de início e término são obrigatórias");
@@ -120,7 +134,7 @@ public class PromocaoService implements PromocaoIService {
             throw new IllegalArgumentException("Data de término deve ser após a data de início");
         }
     }
-    
+    // Validações das regras
     private void validateRegras(String regras) {
         if (!StringUtil.isNullOrEmpty(regras) && !StringUtil.hasValidLength(regras, 0, 100)) {
             throw new IllegalArgumentException("Regras não podem exceder 100 caracteres");

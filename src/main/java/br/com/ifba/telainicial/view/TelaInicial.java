@@ -6,7 +6,7 @@ package br.com.ifba.telainicial.view;
 
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
-import br.com.ifba.promocao.view.PromocaoListar;
+import br.com.ifba.promocao.view.PromocaoList;
 import br.com.ifba.usuario.parceiro.view.ParceirosListar;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -124,7 +124,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
 
     private void btnPromocoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromocoesActionPerformed
         // TODO add your handling code here:
-        PromocaoListar telaPromocaoListar = applicationContext.getBean(PromocaoListar.class);
+        PromocaoList telaPromocaoListar = applicationContext.getBean(PromocaoList.class);
         telaPromocaoListar.setVisible(true);
         
     }//GEN-LAST:event_btnPromocoesActionPerformed

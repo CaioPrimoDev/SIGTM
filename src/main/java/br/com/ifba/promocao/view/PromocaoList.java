@@ -6,8 +6,13 @@ package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.PromocaoIController;
 import br.com.ifba.promocao.entity.Promocao;
+import br.com.ifba.telainicial.view.TelaInicial;
+import br.com.ifba.util.ButtonRenderer;
+import jakarta.annotation.PostConstruct;
+import java.awt.Image;
 import java.util.List;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -20,31 +25,46 @@ import org.springframework.stereotype.Component;
  * @author Joice
  */
 @Component
-public class PromocaoListar extends javax.swing.JFrame {
+public class PromocaoList extends javax.swing.JFrame {
     
     @Autowired
     private PromocaoIController controller;
     
     @Autowired
     private ApplicationContext context;
+    
+    private List<Promocao> listaDePromocoes;
 
     /**
      * Creates new form PromocoesListar
      */
-    public PromocaoListar() {
+    public PromocaoList() {
         initComponents();
-        this.controller = controller; 
+    }
+    
+       @PostConstruct
+    private void init() {
+        tblPromocoes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {
+                "TITULO", "REGRAS", "DESCRIÇÃO", "INICIO", "TERMINO", "TIPO", "EDITAR", "REMOVER"
+            }
+        ));
         
-        // Configura o combobox de tipos
-       // cbbTipoPesquisa.setModel(new DefaultComboBoxModel<>(new String[]{"TODOS", "PROMOÇÃO", "CUPOM", "PACOTE"}));
-
+        // Configura a tabela
+        configurarTabela();
+        
         // Configura a pesquisa dinâmica
-       // setupPesquisaDinamica();
+        setupPesquisaDinamica();
 
         // Carrega todos os dados inicialmente
-        //carregarDadosIniciais();
+        carregarDados();
+        
+        // Adiciona listeners de clique na tabela
+        adicionarListenerDeCliqueNaTabela();
     }
-
+    
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -114,6 +134,11 @@ public class PromocaoListar extends javax.swing.JFrame {
         btnHome.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnHome.setForeground(new java.awt.Color(0, 0, 51));
         btnHome.setText("HOME");
+        btnHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHomeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlPricipalLayout = new javax.swing.GroupLayout(pnlPricipal);
         pnlPricipal.setLayout(pnlPricipalLayout);
@@ -184,6 +209,105 @@ public class PromocaoListar extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void adicionarListenerDeCliqueNaTabela() {
+        this.tblPromocoes.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int linha = tblPromocoes.rowAtPoint(evt.getPoint());
+                int coluna = tblPromocoes.columnAtPoint(evt.getPoint());
+
+                if (linha >= 0) {
+                    Promocao promocaoSelecionada = listaDePromocoes.get(linha);
+
+                    // AÇÃO DE EDITAR
+                    if (coluna == 6) { // Coluna "Editar"
+                        abrirTelaEdicao(promocaoSelecionada);
+                    } 
+                    // AÇÃO DE REMOVER
+                    else if (coluna == 7) { // Coluna "Remover"
+                        confirmarRemocao(promocaoSelecionada);
+                    }
+                }
+            }
+        });
+    }
+
+    private void abrirTelaEdicao(Promocao promocao) {
+        try {
+            PromocaoUpdate telaUpdate = context.getBean(PromocaoUpdate.class);
+            telaUpdate.carregarPromocao(promocao);
+            telaUpdate.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao abrir tela de edição: " + e.getMessage(),
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void confirmarRemocao(Promocao promocao) {
+        int resposta = JOptionPane.showConfirmDialog(this,
+                "Deseja realmente remover esta promoção: \"" + promocao.getTitulo() + "\"?", 
+                "Confirmar Remoção", 
+                JOptionPane.YES_NO_OPTION);
+
+        if (resposta == JOptionPane.YES_OPTION) {
+            try {
+                controller.delete(promocao);
+                JOptionPane.showMessageDialog(this, "Promoção removida com sucesso!");
+                carregarDados();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Erro ao remover promoção: " + e.getMessage(), 
+                    "Erro", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    
+    private void configurarTabela() {
+        // Define a altura das linhas
+        tblPromocoes.setRowHeight(32);
+        
+        // Configura os renderers para as colunas de Editar e Remover
+        if (tblPromocoes.getColumnCount() >= 8) { // Verifica se as colunas existem
+            tblPromocoes.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
+            tblPromocoes.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
+        }
+    }
+    
+    public void carregarDados() {
+        try {
+            this.listaDePromocoes = controller.findAll();
+            DefaultTableModel model = (DefaultTableModel) tblPromocoes.getModel();
+            model.setRowCount(0);
+
+            for (Promocao promocao : listaDePromocoes) {
+                model.addRow(new Object[]{
+                    promocao.getTitulo(),
+                    promocao.getRegras(),
+                    promocao.getDescricao(),
+                    promocao.getDataInicio(),
+                    promocao.getDataTermino(),
+                    promocao.getTipo(),
+                    "Editar",
+                    "Remover"
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao conectar ao banco de dados para listar as promoções.\n" +
+                "Verifique sua conexão e as configurações de firewall.\n\n" +
+                "Detalhes do erro: " + e.getMessage(),
+                "Erro de Conexão", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
     
     private void setupPesquisaDinamica() {
         txtPesquisa.getDocument().addDocumentListener(new DocumentListener() {
@@ -214,26 +338,29 @@ public class PromocaoListar extends javax.swing.JFrame {
                 p.getDescricao(),
                 p.getDataInicio(),
                 p.getDataTermino(),
-                p.getTipo()
+                p.getTipo(),
+                "Editar",
+                "Remover"
             });
         }
     }
-   
-    private void carregarDadosIniciais() {
-
-    PromocaoListar tela = context.getBean(PromocaoListar.class);
-    tela.setVisible(true);;
-    }    
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-        new PromocaoCadastrar().setVisible(true);
+        PromocaoSave telaCadastrar = context.getBean(PromocaoSave.class);
+        telaCadastrar.setVisible(true);
+        this.dispose(); //
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void cbbTipoPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbTipoPesquisaActionPerformed
         // TODO add your handling code here:
         
     }//GEN-LAST:event_cbbTipoPesquisaActionPerformed
+
+    private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
+        // TODO add your handling code here:
+        TelaInicial telaInicial = context.getBean(TelaInicial.class);
+        telaInicial.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnHomeActionPerformed
 
 
 

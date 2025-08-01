@@ -4,16 +4,18 @@
  */
 package br.com.ifba.promocao.view;
 
-import br.com.ifba.promocao.controller.PromocaoController;
 import br.com.ifba.promocao.controller.PromocaoIController;
 import br.com.ifba.promocao.entity.Promocao;
 import br.com.ifba.telainicial.view.TelaInicial;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,32 +23,34 @@ import org.springframework.stereotype.Component;
  * @author Joice
  */
 @Component
-public class PromocaoEditar extends javax.swing.JFrame {
-    
+public class PromocaoUpdate extends javax.swing.JFrame {
+     
+    // Injeção do controller de promoções
     @Autowired
     private PromocaoIController promocaoController;
     
+    // Objeto para armazenar a promoção sendo editada
     private Promocao promocaoAtual;
+    
+    // Contexto do Spring para injeção de dependências
+    @Autowired
+    private ApplicationContext context;
 
-
-    /**
-     * Creates new form PromocoesEditar
-     */
-    public PromocaoEditar() {
+    // Construtor da classe
+    public PromocaoUpdate() {
         initComponents();
     }
     
+      // Método para carregar os dados da promoção nos campos
     public void carregarPromocao(Promocao promocao) {
-    this.promocaoAtual = promocao;
-    txtTitulo.setText(promocao.getTitulo());
-    txtRegras.setText(promocao.getRegras());
-    txtDescricao.setText(promocao.getDescricao());
-    txtDataInicio.setText(promocao.getDataInicio().toString()); // yyyy-MM-dd
-    txtDataTermino.setText(promocao.getDataTermino().toString());
-    cbbTipo.setSelectedItem(promocao.getTipo());
-}
-
-
+        this.promocaoAtual = promocao;
+        txtTitulo.setText(promocao.getTitulo());
+        txtRegras.setText(promocao.getRegras());
+        txtDescricao.setText(promocao.getDescricao());
+        txtDataInicio.setText(promocao.getDataInicio().toString());
+        txtDataTermino.setText(promocao.getDataTermino().toString());
+        cbbTipo.setSelectedItem(promocao.getTipo());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -174,52 +178,110 @@ public class PromocaoEditar extends javax.swing.JFrame {
 
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
         // TODO add your handling code here:
-        TelaInicial telaInicial = new TelaInicial();
+        TelaInicial telaInicial = context.getBean(TelaInicial.class);
         telaInicial.setVisible(true);
         this.dispose();
-        
     }//GEN-LAST:event_btnHomeActionPerformed
 
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
-        // TODO add your handling code here:
-        PromocaoListar telaListar = new PromocaoListar();
-        telaListar.setVisible(true);
-        this.dispose();
+    try {
+       // Obtém a tela de listagem do contexto Spring
+            PromocaoList telaListar = context.getBean(PromocaoList.class);
+            
+            // Recarrega os dados antes de mostrar
+            telaListar.carregarDados();
+            
+            // Mostra a tela e fecha a atual
+            telaListar.setVisible(true);
+            this.dispose();
+        } catch (Exception e) {
+            // Trata erros ao voltar para listagem
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao voltar para listagem: " + e.getMessage(),
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnListarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
-         try {
-        String titulo = txtTitulo.getText();
-        String regras = txtRegras.getText();
-        String descricao = txtDescricao.getText();
-        String dataInicioStr = txtDataInicio.getText();
-        String dataTerminoStr = txtDataTermino.getText();
-        String tipo = (String) cbbTipo.getSelectedItem();
+        try {
+            // Obtém valores dos campos
+            String titulo = txtTitulo.getText().trim();
+            String regras = txtRegras.getText().trim();
+            String descricao = txtDescricao.getText().trim();
+            String dataInicioStr = txtDataInicio.getText().trim();
+            String dataTerminoStr = txtDataTermino.getText().trim();
+            String tipo = (String) cbbTipo.getSelectedItem();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            // Valida campos obrigatórios
+            if (titulo.isEmpty() || descricao.isEmpty() || dataInicioStr.isEmpty() || dataTerminoStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Preencha todos os campos obrigatórios!", 
+                    "Erro de Validação", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        LocalDate dataInicio = LocalDate.parse(txtDataInicio.getText(), formatter);
-        LocalDate dataTermino = LocalDate.parse(txtDataTermino.getText(), formatter);
+            // Converte as datas
+            Date dataInicioDate;
+            Date dataTerminoDate;
 
-        Date dataInicioDate = Date.from(dataInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date dataTerminoDate = Date.from(dataTermino.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            try {
+                // Formatação das datas
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        promocaoAtual.setTitulo(titulo);
-        promocaoAtual.setRegras(regras);
-        promocaoAtual.setDescricao(descricao);
-        promocaoAtual.setDataInicio(dataInicioDate);
-        promocaoAtual.setDataTermino(dataTerminoDate);
-        promocaoAtual.setTipo(tipo);
+                // Parse para LocalDate
+                LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
+                LocalDate dataTermino = LocalDate.parse(dataTerminoStr, formatter);
 
-        // Atualiza via controller
-        //PromocaoController controller = new PromocaoController();
-        promocaoController.update(promocaoAtual);
+                // Conversão para Date
+                dataInicioDate = Date.from(dataInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                dataTerminoDate = Date.from(dataTermino.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        JOptionPane.showMessageDialog(this, "Promoção atualizada com sucesso!");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Erro ao salvar promoção: " + e.getMessage());
-    }
+                // Valida intervalo de datas
+                if (dataTermino.isBefore(dataInicio)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Data de término deve ser após data de início", 
+                        "Erro de Validação", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (DateTimeParseException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Formato de data inválido. Use dd/MM/aaaa", 
+                    "Erro de Formato", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Atualiza o objeto promoção
+            promocaoAtual.setTitulo(titulo);
+            promocaoAtual.setRegras(regras);
+            promocaoAtual.setDescricao(descricao);
+            promocaoAtual.setDataInicio(dataInicioDate);
+            promocaoAtual.setDataTermino(dataTerminoDate);
+            promocaoAtual.setTipo(tipo);
+
+            // Chama o controller para salvar
+            promocaoController.update(promocaoAtual);
+
+            // Mensagem de sucesso
+            JOptionPane.showMessageDialog(this, 
+                "Promoção atualizada com sucesso!", 
+                "Sucesso", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+            // Volta para a listagem
+            btnListarActionPerformed(evt);
+
+        } catch (Exception e) {
+            // Trata erros na atualização
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao atualizar promoção: " + e.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
 

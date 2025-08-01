@@ -17,12 +17,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PromocaoRepository extends JpaRepository<Promocao, Long> {
-    
-    @Query("SELECT p FROM Promocao p WHERE " +
-           "(:tipo = 'TODOS' OR p.tipo = :tipo) AND " +
-           "(LOWER(p.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))")
-    List<Promocao> filtrar(@Param("tipo") String tipo, @Param("termo") String termo);
+    // Define uma consulta JPQL personalizada
+    @Query("SELECT p FROM Promocao p WHERE " + //Seleciona promoções (p) onde:
+           "(:tipo = 'TODOS' OR p.tipo = :tipo) AND " + //O tipo é igual ao parâmetro OU o parâmetro tipo é 'TODOS'
+           "(LOWER(p.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " + //E o termo de busca aparece no título OU na descrição
+           "LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))") // LOWER converte para minúsculas para busca case-insensitive, CONCAT adiciona % antes e depois do termo para busca parcial
+    List<Promocao> filtrar(@Param("tipo") String tipo, @Param("termo") String termo);// // Declara o método que executa a consulta e retorna uma lista de Promocoes que atendem aos critérios
 }
 
 
