@@ -7,7 +7,7 @@ package br.com.ifba.login.view;
 import br.com.ifba.login.controller.LoginController;
 import br.com.ifba.usuario.comum.view.TelaUsuarioCadastrarUI;
 import br.com.ifba.usuario.comum.view.TelaUsuarioComumUI;
-import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

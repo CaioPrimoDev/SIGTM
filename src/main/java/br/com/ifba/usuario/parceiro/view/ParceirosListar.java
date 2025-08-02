@@ -4,9 +4,8 @@
  */
 package br.com.ifba.usuario.parceiro.view;
 
-import br.com.ifba.usuario.controller.UsuarioIController;
-import br.com.ifba.usuario.entity.TipoUsuario;
-import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.comum.controller.UsuarioIController;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +68,9 @@ public class ParceirosListar extends javax.swing.JFrame {
     }
 
     public void preencherTabelaParceiros() {
+        // PEDRO
+        // um metodo para buscar os dados de usuario pelo parceiro é:
+        // usuario.findByNomeContainingIgnoreCase(parceiro.getNome());
         //método para povoamento da tabela
         for (Usuario parceiro : listaParceiros) {
             tableModel.addRow(new Object[]{

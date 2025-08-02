@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.usuario.controller;
+package br.com.ifba.gestor.controller;
 
-import br.com.ifba.usuario.entity.TipoUsuario;
-import br.com.ifba.usuario.service.TipoUsuarioService;
+import br.com.ifba.gestor.entity.Gestor;
+import br.com.ifba.gestor.service.GestorService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Controller;
  * @author User
  */
 @Controller
-public class TipoUsuarioController implements TipoUsuarioIController {
-
+public class GestorController implements GestorIController {
+    
     @Autowired
-    private TipoUsuarioService service;
+    private GestorService service;
 
     @Override
-    public boolean save(TipoUsuario tipoUsuario) {
-        return service.save(tipoUsuario);
+    public boolean save(Gestor user) {
+        return service.save(user);
     }
 
     @Override
@@ -31,18 +31,18 @@ public class TipoUsuarioController implements TipoUsuarioIController {
     }
 
     @Override
-    public List<TipoUsuario> findAll() {
+    public List<Gestor> findAll() {
         return service.findAll();
     }
 
     @Override
-    public TipoUsuario findById(Long id) {
+    public Gestor findById(Long id) {
         return service.findById(id);
     }
-    
-    @Override
-    public TipoUsuario findByNome(String nome) {
-        return service.findByNome(nome);
-    }
 
+    @Override
+    public List<Gestor> findByNomeContainingIgnoreCase(String nome) {
+        return service.findByNomeContainingIgnoreCase(nome);
+    }
+    
 }

@@ -4,8 +4,8 @@
  */
 package br.com.ifba.login.service;
 
-import br.com.ifba.usuario.entity.Usuario;
-import br.com.ifba.usuario.repository.UsuarioRepository;
+import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

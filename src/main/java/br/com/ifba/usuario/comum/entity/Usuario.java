@@ -2,13 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.usuario.entity;
+package br.com.ifba.usuario.comum.entity;
 
 import br.com.ifba.infrastructure.entity.Pessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -16,6 +17,7 @@ import lombok.Setter;
  * @author User
  */
 @Entity
+@NoArgsConstructor
 @Getter  @Setter
 public class Usuario extends Pessoa {
 
@@ -31,33 +33,4 @@ public class Usuario extends Pessoa {
     // Verifica para aparecer na tabela de solicitações para parceria
     @Column(nullable = false)
     private boolean solicitacao;
-
-    // Atributos específicos de parceiro (opcionais)
-    @Column(nullable = true, unique = true)
-    private String cnpj;
-
-    @Column(nullable = true)
-    private String nomeEmpresa;
-    
-    // Atributos específicos de gestor (opcionais)
-    @Column(nullable = true, unique = true)
-    private String matricula;
-    
-    @Column(nullable = true)
-    private String cargo;
-
-    public Usuario(String senha, TipoUsuario tipo) {
-        this.senha = senha;
-        this.ativo = true;
-        this.tipo = tipo;
-        this.solicitacao = false;
-        this.cnpj = null;
-        this.nomeEmpresa = null;
-        this.matricula = null;
-        this.cargo = null;
-    }
-
-    
-    
-    
 }

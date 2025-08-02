@@ -2,14 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.usuario.controller;
+package br.com.ifba.usuario.comum.controller;
 
-import br.com.ifba.usuario.entity.Usuario;
-import br.com.ifba.usuario.service.UsuarioService;
+import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.comum.service.UsuarioService;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -55,12 +53,6 @@ public class UsuarioController implements UsuarioIController {
     @Override
     public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
         return service.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(nome);
-    }
-
-    @Override
-    public Optional<Usuario> findByCnpj(String cnpj) {
-
-        return service.findByCnpj(cnpj);
     }
 
     @Override

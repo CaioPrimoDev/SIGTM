@@ -4,10 +4,10 @@
  */
 package br.com.ifba.usuario.comum.view;
 
-import br.com.ifba.usuario.controller.TipoUsuarioController;
-import br.com.ifba.usuario.controller.UsuarioController;
-import br.com.ifba.usuario.entity.TipoUsuario;
-import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.comum.controller.TipoUsuarioController;
+import br.com.ifba.usuario.comum.controller.UsuarioController;
+import br.com.ifba.usuario.comum.entity.TipoUsuario;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -151,7 +151,9 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
             TipoUsuario tipoComum = tipoUsuarioController.findByNome("USUARIO_COMUM");
 
             // Cria o usuário com o tipo e a senha
-            Usuario user = new Usuario(senha1Texto, tipoComum);
+            Usuario user = new Usuario();
+            user.setSenha(senha1Texto);
+            user.setTipo(tipoComum);
             user.setNome(nome);
             user.setTelefone(telefone);
             user.setEmail(email);

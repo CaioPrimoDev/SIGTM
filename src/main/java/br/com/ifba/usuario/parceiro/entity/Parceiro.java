@@ -1,0 +1,28 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package br.com.ifba.usuario.parceiro.entity;
+
+import br.com.ifba.usuario.comum.entity.Usuario;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ *
+ * @author User
+ */
+@Entity
+@Getter  @Setter
+@NoArgsConstructor
+public class Parceiro extends Usuario {
+    @Column(nullable = false, unique = true)
+    private String cnpj;
+
+    @Column(nullable = false)
+    private String nomeEmpresa;
+    
+}

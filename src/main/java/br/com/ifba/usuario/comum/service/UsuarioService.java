@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.usuario.service;
+package br.com.ifba.usuario.comum.service;
 
-import br.com.ifba.usuario.entity.TipoUsuario;
-import br.com.ifba.usuario.entity.Usuario;
-import br.com.ifba.usuario.repository.TipoUsuarioRepository;
-import br.com.ifba.usuario.repository.UsuarioRepository;
+import br.com.ifba.usuario.comum.entity.TipoUsuario;
+import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.comum.repository.TipoUsuarioRepository;
+import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -32,8 +31,6 @@ import org.springframework.util.StringUtils;
 public class UsuarioService {
     
         private final UsuarioRepository UserRepo;
-        
-        private final TipoUsuarioRepository TipoUserRepo;
         
         public boolean save(Usuario user) {
         validarUsuario(user);
@@ -130,33 +127,6 @@ public class UsuarioService {
             throw new RegraNegocioException("Ocorreu um erro interno ao buscar usuários pendentes.");
         }
         return usuarios;
-    }
-    
-      public Optional<Usuario> findByCnpj(String cnpj) {
-        log.info("Iniciando busca por usuário com CNPJ: {}", cnpj);
-        // 1. Verificação de entrada
-        if (cnpj == null || cnpj.trim().isEmpty()) {
-            log.error("CNPJ fornecido para busca é nulo ou vazio.");
-            throw new IllegalArgumentException("O CNPJ não pode ser nulo ou vazio para a busca.");
-        }
-
-        Optional<Usuario> usuario = Optional.empty(); // Inicializa com Optional vazio
-        try {
-            usuario = UserRepo.findByCnpj(cnpj);
-
-            if (usuario.isPresent()) {
-                log.info("Busca por CNPJ: {} concluída. Usuário encontrado.", cnpj);
-            } else {
-                log.warn("Nenhum usuário encontrado para o CNPJ: {}", cnpj);
-            }
-        } catch (org.springframework.dao.DataAccessException e) {
-            log.error("Erro de acesso a dados ao buscar usuário por CNPJ {}: {}", cnpj, e.getMessage(), e);
-            throw new RegraNegocioException("Erro ao buscar usuário pelo CNPJ. Tente novamente mais tarde.");
-        } catch (Exception e) {
-            log.error("Erro inesperado ao buscar usuário por CNPJ {}: {}", cnpj, e.getMessage(), e);
-            throw new RegraNegocioException("Ocorreu um erro interno ao buscar usuário pelo CNPJ.");
-        }
-        return usuario;
     }
      
       //localizar todos os parceiros
@@ -264,32 +234,6 @@ public class UsuarioService {
             throw new RegraNegocioException("O nome do Usuário deve ter entre 3 e 30 caracteres.");
         }
         
-        // Validações para parceiro
-        if (user.getTipo().getNome().contains("PARCEIRO")) {
-            
-            if(!StringUtil.isCnpjValido(user.getCnpj()) || StringUtil.isNullOrEmpty(user.getCnpj())) {
-                log.warn("CNPJ vazio ou inválido");
-                throw new RegraNegocioException("Um CNPJ válido é obrigatório");
-            }
-            
-            if(StringUtil.isNullOrEmpty(user.getNomeEmpresa())) {
-                log.warn("O nome da empresa vazio ou inválido");
-                throw new RegraNegocioException("O nome da empresa é obrigatório");
-            }
-            
-        }
-        
-        // Validações para gestor
-        if(user.getTipo().getNome().contains("GESTOR")) {
-            
-            if (StringUtil.isNullOrEmpty(user.getMatricula())) {
-                throw new RegraNegocioException("Cargo do Gestor é obrigatória.");
-            }
-            
-            if (StringUtil.isNullOrEmpty(user.getCargo())) {
-                throw new RegraNegocioException("Cargo do Gestor é obrigatória.");
-            }
-        }
     }
     
 }
