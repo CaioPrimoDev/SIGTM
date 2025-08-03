@@ -78,7 +78,9 @@ public class ParceirosListar extends javax.swing.JFrame {
             tableModel.addRow(new Object[]{
                 parceiro.getNome(),
                 parceiro.getCnpj(),
-                parceiro.getNomeEmpresa()
+                parceiro.getNomeEmpresa(),
+                parceiro.getEmail(),
+                parceiro.getTelefone()
             });
 
         }
@@ -98,15 +100,19 @@ public class ParceirosListar extends javax.swing.JFrame {
        
         listaParceiros.add(parceiroCapsula);
 
-        tableModel.addRow(new Object[]{
-           parceiroCapsula.getNome(),
-            parceiroCapsula.getCnpj(),
-            parceiroCapsula.getNomeEmpresa()});
+        for (Parceiro parceiro : listaParceiros) {
+            tableModel.addRow(new Object[]{
+                parceiro.getNome(),
+                parceiro.getCnpj(),
+                parceiro.getNomeEmpresa(),
+                parceiro.getEmail(),
+                parceiro.getTelefone()
+            });
         
         parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
 
     }
-
+  }
     public void editarParceiro(Parceiro parceiro) {
 
         if (parceiro == null) {
@@ -127,6 +133,8 @@ public class ParceirosListar extends javax.swing.JFrame {
         tableModel.setValueAt(parceiro.getNome(), itemSelecionado, 0);
         tableModel.setValueAt(parceiro.getCnpj(), itemSelecionado, 1);
         tableModel.setValueAt(parceiro.getNomeEmpresa(), itemSelecionado, 2);
+        tableModel.setValueAt(parceiro.getEmail(),itemSelecionado ,3 );
+        tableModel.setValueAt(parceiro.getTelefone(), itemSelecionado, 4);
 
     }
 
@@ -147,12 +155,17 @@ public class ParceirosListar extends javax.swing.JFrame {
         btnNegar = new javax.swing.JButton();
         btnRetornar = new javax.swing.JButton();
         txtpesquisarSolicitantes = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         EditarParceiro = new javax.swing.JFrame();
         txtnovoNome = new javax.swing.JTextField();
         lblMudarnome = new javax.swing.JLabel();
         txtnovoSegmentoempresarial = new javax.swing.JTextField();
         lblMudarseguimentoempresarial = new javax.swing.JLabel();
         btnconfirmarMudancas = new javax.swing.JButton();
+        txtnovoTelefone = new javax.swing.JTextField();
+        lblMudartelefone = new javax.swing.JLabel();
+        txtnovoEmail = new javax.swing.JTextField();
+        lblmudarEmail = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblParceiros = new javax.swing.JTable();
         btnverSolicitacoes = new javax.swing.JButton();
@@ -162,13 +175,13 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tblSolicitantes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Razão social", "CNPJ", "Segmento empresarial"
+                "Razão social", "CNPJ", "Segmento empresarial", "Telfone", "Email"
             }
         ));
         jScrollPane2.setViewportView(tblSolicitantes);
@@ -195,6 +208,8 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Ver Eventos");
+
         javax.swing.GroupLayout SolicitacoesParceriaLayout = new javax.swing.GroupLayout(SolicitacoesParceria.getContentPane());
         SolicitacoesParceria.getContentPane().setLayout(SolicitacoesParceriaLayout);
         SolicitacoesParceriaLayout.setHorizontalGroup(
@@ -206,17 +221,24 @@ public class ParceirosListar extends javax.swing.JFrame {
                     .addComponent(btnRetornar)
                     .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
                         .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                             .addComponent(btnNegar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(94, 94, 94)
-                        .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
+                                .addGap(94, 94, 94)
+                                .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)))))
                 .addContainerGap(135, Short.MAX_VALUE))
         );
         SolicitacoesParceriaLayout.setVerticalGroup(
             SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SolicitacoesParceriaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnAceitar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAceitar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNegar, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -238,6 +260,10 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
+        lblMudartelefone.setText("Mudar telefone");
+
+        lblmudarEmail.setText("Mudar email");
+
         javax.swing.GroupLayout EditarParceiroLayout = new javax.swing.GroupLayout(EditarParceiro.getContentPane());
         EditarParceiro.getContentPane().setLayout(EditarParceiroLayout);
         EditarParceiroLayout.setHorizontalGroup(
@@ -250,10 +276,18 @@ public class ParceirosListar extends javax.swing.JFrame {
                             .addComponent(txtnovoNome, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                             .addComponent(lblMudarnome)
                             .addComponent(lblMudarseguimentoempresarial)
-                            .addComponent(txtnovoSegmentoempresarial)))
+                            .addComponent(txtnovoSegmentoempresarial)
+                            .addComponent(txtnovoTelefone)
+                            .addComponent(txtnovoEmail)))
                     .addGroup(EditarParceiroLayout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(btnconfirmarMudancas)))
+                        .addContainerGap()
+                        .addComponent(lblMudartelefone))
+                    .addGroup(EditarParceiroLayout.createSequentialGroup()
+                        .addGap(96, 96, 96)
+                        .addComponent(btnconfirmarMudancas))
+                    .addGroup(EditarParceiroLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblmudarEmail)))
                 .addContainerGap(9, Short.MAX_VALUE))
         );
         EditarParceiroLayout.setVerticalGroup(
@@ -267,22 +301,30 @@ public class ParceirosListar extends javax.swing.JFrame {
                 .addComponent(lblMudarseguimentoempresarial)
                 .addGap(12, 12, 12)
                 .addComponent(txtnovoSegmentoempresarial, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
+                .addGap(25, 25, 25)
+                .addComponent(lblMudartelefone)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtnovoTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(lblmudarEmail)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtnovoEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65)
                 .addComponent(btnconfirmarMudancas, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         tblParceiros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Razão Social", "CNPJ", "Segmento Empresarial"
+                "Razão Social", "CNPJ", "Segmento Empresarial", "Email", "Telefone"
             }
         ));
         jScrollPane1.setViewportView(tblParceiros);
@@ -438,12 +480,27 @@ public class ParceirosListar extends javax.swing.JFrame {
             parceiroEditar.setNomeEmpresa(parceiroEditar.getNomeEmpresa());//caso o campo esteja vazio deixar o objeto como ele está
 
         }
+        
+        
+        if (txtnovoEmail.getText().isEmpty()) {
+
+            parceiroEditar.setEmail(parceiroEditar.getEmail());//caso o campo esteja vazio deixar o objeto como ele está
+
+        }
+        
+        if (txtnovoTelefone.getText().isEmpty()) {
+
+            parceiroEditar.setTelefone(parceiroEditar.getTelefone());//caso o campo esteja vazio deixar o objeto como ele está
+
+        }
+        
+        
 
         editarParceiro(parceiroEditar);
 
         resetarSelecao();
 
-//procruar melhores metodos para edição de tempo
+
 
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
@@ -664,15 +721,20 @@ public class ParceirosListar extends javax.swing.JFrame {
     private javax.swing.JButton btnRetornar;
     private javax.swing.JButton btnconfirmarMudancas;
     private javax.swing.JButton btnverSolicitacoes;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblMudarnome;
     private javax.swing.JLabel lblMudarseguimentoempresarial;
+    private javax.swing.JLabel lblMudartelefone;
+    private javax.swing.JLabel lblmudarEmail;
     private javax.swing.JTable tblParceiros;
     private javax.swing.JTable tblSolicitantes;
     private javax.swing.JTextField txtbarradePesquisa;
+    private javax.swing.JTextField txtnovoEmail;
     private javax.swing.JTextField txtnovoNome;
     private javax.swing.JTextField txtnovoSegmentoempresarial;
+    private javax.swing.JTextField txtnovoTelefone;
     private javax.swing.JTextField txtpesquisarSolicitantes;
     // End of variables declaration//GEN-END:variables
 }

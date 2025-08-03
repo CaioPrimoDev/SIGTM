@@ -4,12 +4,16 @@
  */
 package br.com.ifba.usuario.parceiro.entity;
 
+import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 /**
  *
@@ -25,4 +29,6 @@ public class Parceiro extends Usuario {
     @Column(nullable = false)
     private String nomeEmpresa;
     
+    @OneToMany
+    List<Evento> evento;
 }
