@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.controller;
 
+import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.usuario.parceiro.service.ParceiroService;
 import java.util.List;
@@ -49,6 +50,12 @@ public class ParceiroController implements ParceiroIController {
     @Override
     public Optional<Parceiro> findByCnpj(String cnpj) {
         return service.findByCnpj(cnpj);
+    }
+
+    @Override
+    public  Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
+    
+    return service.tornarParceiro(usuario,cnpj,nomeEmpresa);
     }
     
 }

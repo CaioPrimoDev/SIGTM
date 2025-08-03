@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.controller;
 
+import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,5 @@ public interface ParceiroIController {
     Parceiro findById(Long id);
     List<Parceiro> findByNomeContainingIgnoreCase(String nome);
     Optional<Parceiro> findByCnpj(String cnpj);
+    Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa);
 }

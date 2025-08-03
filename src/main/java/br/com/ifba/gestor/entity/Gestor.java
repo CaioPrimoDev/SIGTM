@@ -6,6 +6,7 @@ package br.com.ifba.gestor.entity;
 
 import br.com.ifba.infrastructure.entity.Pessoa;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Getter  @Setter
 @NoArgsConstructor
+@Entity
 public class Gestor extends Pessoa {
     @Column(nullable = false, unique = true)
     private String matricula;

@@ -6,6 +6,8 @@ package br.com.ifba.usuario.parceiro.view;
 
 import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.parceiro.controller.ParceiroIController;
+import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
-    public ParceirosListar(UsuarioIController parceiroController, UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
+    public ParceirosListar(ParceiroIController parceiroController, UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
         this.parceiroController = parceiroController;
         this.usuarioController = usuarioController;
         
@@ -40,7 +42,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
     }
 
-    List<Usuario> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
+    List<Parceiro> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela
 
     final DefaultTableModel tableModel;//tabela dos parceiros
     final DefaultTableModel tableModelS;//tabela dos solicitantes
@@ -48,7 +50,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     int itemSelecionado = -1;
 
     @Autowired
-    UsuarioIController parceiroController;
+   ParceiroIController parceiroController;
 
     // MÉTODOS ESPECÍFICOS
     public void carregarDadosParceiros() {
@@ -57,9 +59,9 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         listaParceiros.clear(); // limpar a lista 
 
-        List<Usuario> listaCapsula = parceiroController.findByTipoNomeIgnoreCase("PARCEIRO");//acessa todos os usuarios onde tipo.getNome() = PARCEIRO
+        List<Parceiro> listaCapsula = parceiroController.findAll();//acessa todos os parceiros
 
-        for (Usuario parceiros : listaCapsula) {
+        for (Parceiro parceiros : listaCapsula) {
 
             listaParceiros.add(parceiros);
         }
@@ -72,7 +74,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         // um metodo para buscar os dados de usuario pelo parceiro é:
         // usuario.findByNomeContainingIgnoreCase(parceiro.getNome());
         //método para povoamento da tabela
-        for (Usuario parceiro : listaParceiros) {
+        for (Parceiro parceiro : listaParceiros) {
             tableModel.addRow(new Object[]{
                 parceiro.getNome(),
                 parceiro.getCnpj(),
@@ -83,7 +85,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
     }
 
-    public void adicionarParceiro(Usuario usuario) {
+    public void adicionarParceiro(Usuario usuario, String cnpj,String nomeEmpresa) {
 
         if (usuario == null) {
 
@@ -91,21 +93,21 @@ public class ParceirosListar extends javax.swing.JFrame {
 
             return;
         }
-
-        usuario.getTipo().setNome("PARCEIRO");// definindo o tipo do usuário
-
-        usuario.setSolicitacao(false);// como ele foi adicionado como parceiro a solicitação não é mais necessária
+        
+      Parceiro parceiroCapsula =  parceiroController.tornarParceiro(usuario, cnpj, nomeEmpresa);
        
-        listaParceiros.add(usuario);
+        listaParceiros.add(parceiroCapsula);
 
         tableModel.addRow(new Object[]{
-            usuario.getNome(),
-            usuario.getCnpj(),
-            usuario.getNomeEmpresa()});
+           parceiroCapsula.getNome(),
+            parceiroCapsula.getCnpj(),
+            parceiroCapsula.getNomeEmpresa()});
+        
+        parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
 
     }
 
-    public void editarParceiro(Usuario parceiro) {
+    public void editarParceiro(Parceiro parceiro) {
 
         if (parceiro == null) {
             System.out.println("Parceiro esta nulo");
@@ -423,7 +425,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             return;
         }
 
-        Usuario parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
+        Parceiro parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
 
         if (txtnovoNome.getText().isEmpty()) {
 
@@ -464,7 +466,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             //usar invokeLater para garantir execução na thread correta
             SwingUtilities.invokeLater(() -> {
                 try {
-                    Usuario parceiro= parceiroController.findById(id);
+                    Parceiro parceiro= parceiroController.findById(id);
                     //primeiro ver se é numérico
                     if (parceiro != null) {
                         tableModelS.addRow(new Object[]{
@@ -483,13 +485,13 @@ public class ParceirosListar extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             //se não for numérico procurar por nome
             SwingUtilities.invokeLater(() -> {
-                List<Usuario> resultados = parceiroController.findByTipoNomeAndNomeContainingIgnoreCase("PARCEIRO", termo);//procura por usuários do tipo PARCEIRO e com o nome termo
+                List<Parceiro> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);//procura por usuários do tipo PARCEIRO e com o nome termo
 
                 if (resultados.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
                     preencherTabelaParceiros();
                 } else {
-                    for (Usuario solicitante : resultados) {
+                    for (Parceiro solicitante : resultados) {
                         tableModel.addRow(new Object[]{
                            solicitante.getNome(),
                             solicitante.getCnpj(),
@@ -529,8 +531,8 @@ public class ParceirosListar extends javax.swing.JFrame {
         for (Usuario solicitantes : listaSolicitantes) {
             tableModel.addRow(new Object[]{
                 solicitantes.getNome(),
-                solicitantes.getCnpj(),
-                solicitantes.getNomeEmpresa()
+                solicitantes.getTelefone(),
+                solicitantes.getEmail()
             });
         }
     }
@@ -556,7 +558,13 @@ public class ParceirosListar extends javax.swing.JFrame {
             return;
 
         }
-        adicionarParceiro(novoParceiroCapsula);
+        
+        String cnpj = "12351462414";// esses parametros serão devidamente preenchidos a partir da tela de solicitação que fica com o usuario
+        String nomeEmpresa = "Cleide";
+        
+        adicionarParceiro(novoParceiroCapsula,cnpj,nomeEmpresa);
+        
+        
 
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
 
@@ -609,8 +617,8 @@ public class ParceirosListar extends javax.swing.JFrame {
                     if (solicitante != null) {
                         tableModelS.addRow(new Object[]{
                             solicitante.getNome(),
-                            solicitante.getCnpj(),
-                            solicitante.getNomeEmpresa(),});
+                            solicitante.getTelefone(),
+                            solicitante.getEmail(),});
                     } else {
                         JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
                         preencherTabelaParceiros();
@@ -623,7 +631,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             //se não for numérico procurar por nome
             SwingUtilities.invokeLater(() -> {
-                List<Usuario> resultados = parceiroController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
+                List<Usuario> resultados = usuarioController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
 
                 if (resultados.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
@@ -632,8 +640,8 @@ public class ParceirosListar extends javax.swing.JFrame {
                     for (Usuario solicitante : resultados) {
                         tableModelS.addRow(new Object[]{
                            solicitante.getNome(),
-                            solicitante.getCnpj(),
-                            solicitante.getNomeEmpresa()
+                            solicitante.getTelefone(),
+                            solicitante.getEmail()
                         });
                     }
                 }

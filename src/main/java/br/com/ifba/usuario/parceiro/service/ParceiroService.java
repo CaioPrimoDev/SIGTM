@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.service;
 
+import br.com.ifba.usuario.comum.entity.TipoUsuario;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.usuario.parceiro.repository.ParceiroRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -149,5 +151,33 @@ public class ParceiroService {
                 throw new RegraNegocioException("O nome da empresa é obrigatório");
             }
     }
+    
+    public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
+    
+    Parceiro parceiro = new Parceiro();
+    
+    TipoUsuario tipo = new TipoUsuario();
+    tipo.setNome("PARCEIRO");
+    tipo.setDescricao("");
+    
+    //como a herança é obrigtatória eu passo os dados de usuario para parceiro via cópia
+    //DADOS DA PESSOA
+       parceiro.setNome(usuario.getNome());
+       parceiro.setEmail(usuario.getEmail());
+       parceiro.setTelefone(usuario.getTelefone());
+       
+      // DADOS DO USUÁRIO
+      parceiro.setSenha(usuario.getSenha());
+      parceiro.setAtivo(usuario.isAtivo());
+      parceiro.setTipo(tipo);
+      parceiro.setSolicitacao(false);// como ele esta sendo aprovado  para ser parceiro não há necessidade de manter a solicitação
+    
+      //DADOS DO PARCEIRO
+      parceiro.setCnpj(cnpj);
+      parceiro.setNomeEmpresa(nomeEmpresa);
+    
+    return parceiro;
+    }
+
     
 }

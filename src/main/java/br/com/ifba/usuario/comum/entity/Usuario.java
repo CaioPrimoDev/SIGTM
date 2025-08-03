@@ -33,4 +33,9 @@ public class Usuario extends Pessoa {
     // Verifica para aparecer na tabela de solicitações para parceria
     @Column(nullable = false)
     private boolean solicitacao;
+    
+    //GAMBIARRA PARA RODAR
+    @Column(nullable = true, unique = true)
+    private String matricula;
+    
 }
