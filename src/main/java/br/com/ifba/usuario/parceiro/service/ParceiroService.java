@@ -28,11 +28,11 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ParceiroService {
+public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository repo;
     
-    
+    @Override
     public boolean save(Parceiro user) {
         validarParceiro(user);
         try {
@@ -49,6 +49,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Parceiro com ID inválido: {}", id);
@@ -67,6 +68,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public List<Parceiro> findAll() {
         try {
             return repo.findAll();
@@ -76,6 +78,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public Parceiro findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca: {}", id);
@@ -94,6 +97,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public List<Parceiro> findByNomeContainingIgnoreCase(String nome) {
         if (!StringUtils.hasText(nome)) {
             return Collections.emptyList();
@@ -107,7 +111,7 @@ public class ParceiroService {
 
         return resultado;
     }
-    
+    @Override
     public Optional<Parceiro> findByCnpj(String cnpj) {
         log.info("Iniciando busca por Parceiro com CNPJ: {}", cnpj);
         // 1. Verificação de entrada
@@ -116,6 +120,7 @@ public class ParceiroService {
             throw new IllegalArgumentException("O CNPJ não pode ser nulo ou vazio para a busca.");
         }
 
+       
         Optional<Parceiro> parceiro = Optional.empty(); // Inicializa com Optional vazio
         try {
             parceiro = repo.findByCnpj(cnpj);
@@ -134,8 +139,8 @@ public class ParceiroService {
         }
         return parceiro;
     }
-   
-    private void validarParceiro(Parceiro user) {
+   @Override
+    public void validarParceiro(Parceiro user) {
         if (user == null) {
             log.warn("Parceiro recebido é nulo.");
             throw new RegraNegocioException("O Parceiro não pode ser nulo.");
@@ -151,7 +156,7 @@ public class ParceiroService {
                 throw new RegraNegocioException("O nome da empresa é obrigatório");
             }
     }
-    
+    @Override
     public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
     
     Parceiro parceiro = new Parceiro();
@@ -178,6 +183,26 @@ public class ParceiroService {
     
     return parceiro;
     }
+    @Override
+    public Usuario removerParceiria(Parceiro parceiro) {
 
-    
+        Usuario usuario = new Usuario();
+
+        TipoUsuario tipo = new TipoUsuario();
+        tipo.setNome("USUARIO_COMUM");
+        tipo.setDescricao("");
+
+        //DADOS DA PESSOA
+        usuario.setNome(parceiro.getNome());
+        usuario.setEmail(parceiro.getEmail());
+        usuario.setTelefone(parceiro.getTelefone());
+
+        // DADOS DO USUÁRIO
+        usuario.setSenha(parceiro.getSenha());
+        usuario.setAtivo(parceiro.isAtivo());
+        usuario.setTipo(tipo);
+        usuario.setSolicitacao(false);
+
+        return usuario;
+    }
 }

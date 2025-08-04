@@ -58,4 +58,10 @@ public class ParceiroController implements ParceiroIController {
     return service.tornarParceiro(usuario,cnpj,nomeEmpresa);
     }
     
+    @Override
+    public Usuario removerParceiria(Parceiro parceiro){
+    
+    return service.removerParceiria(parceiro);
+    }
+    
 }
