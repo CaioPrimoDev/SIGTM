@@ -21,4 +21,5 @@ public interface ParceiroIController {
     List<Parceiro> findByNomeContainingIgnoreCase(String nome);
     Optional<Parceiro> findByCnpj(String cnpj);
     Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa);
+    Usuario removerParceiria(Parceiro parceiro);
 }

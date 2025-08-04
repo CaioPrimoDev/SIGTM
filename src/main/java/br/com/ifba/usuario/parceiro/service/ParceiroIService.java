@@ -11,16 +11,19 @@ import java.util.Optional;
 
 /**
  *
- * @author User
+ * @author Casa
  */
 public interface ParceiroIService {
-    
+  
     boolean save(Parceiro user);
     void delete(Long id);
     List<Parceiro> findAll();
-    Parceiro findById(Long id);
+    Parceiro findById(Long id); 
     List<Parceiro> findByNomeContainingIgnoreCase(String nome);
     Optional<Parceiro> findByCnpj(String cnpj);
     void validarParceiro(Parceiro user);
     Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa);
+    Usuario removerParceiria(Parceiro parceiro);
+   
 }
+

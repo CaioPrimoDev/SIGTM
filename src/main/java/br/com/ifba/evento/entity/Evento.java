@@ -5,8 +5,10 @@
 package br.com.ifba.evento.entity;
 
 import br.com.ifba.itemturistico.entity.ItemTuristico;
+import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,5 +35,10 @@ public class Evento extends ItemTuristico {
     
     @Column(nullable = false)
     String categoria;
-    
+ 
+    @ManyToOne
+    Parceiro parceiro;
+
+ 
+     
 }

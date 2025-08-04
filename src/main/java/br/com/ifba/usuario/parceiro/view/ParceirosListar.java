@@ -29,7 +29,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     public ParceirosListar(ParceiroIController parceiroController, UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
         this.parceiroController = parceiroController;
         this.usuarioController = usuarioController;
-        
+
         initComponents();
 
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
@@ -50,7 +50,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     int itemSelecionado = -1;
 
     @Autowired
-   ParceiroIController parceiroController;
+    ParceiroIController parceiroController;
 
     // MÉTODOS ESPECÍFICOS
     public void carregarDadosParceiros() {
@@ -87,7 +87,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
     }
 
-    public void adicionarParceiro(Usuario usuario, String cnpj,String nomeEmpresa) {
+    public void adicionarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
 
         if (usuario == null) {
 
@@ -95,9 +95,9 @@ public class ParceirosListar extends javax.swing.JFrame {
 
             return;
         }
-        
-      Parceiro parceiroCapsula =  parceiroController.tornarParceiro(usuario, cnpj, nomeEmpresa);
-       
+
+        Parceiro parceiroCapsula = parceiroController.tornarParceiro(usuario, cnpj, nomeEmpresa);
+
         listaParceiros.add(parceiroCapsula);
 
         for (Parceiro parceiro : listaParceiros) {
@@ -108,11 +108,13 @@ public class ParceirosListar extends javax.swing.JFrame {
                 parceiro.getEmail(),
                 parceiro.getTelefone()
             });
-        
-        parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
 
+            parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
+            usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
+
+        }
     }
-  }
+
     public void editarParceiro(Parceiro parceiro) {
 
         if (parceiro == null) {
@@ -133,7 +135,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         tableModel.setValueAt(parceiro.getNome(), itemSelecionado, 0);
         tableModel.setValueAt(parceiro.getCnpj(), itemSelecionado, 1);
         tableModel.setValueAt(parceiro.getNomeEmpresa(), itemSelecionado, 2);
-        tableModel.setValueAt(parceiro.getEmail(),itemSelecionado ,3 );
+        tableModel.setValueAt(parceiro.getEmail(), itemSelecionado, 3);
         tableModel.setValueAt(parceiro.getTelefone(), itemSelecionado, 4);
 
     }
@@ -144,7 +146,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
     }
 
-    @SuppressWarnings("unchecked")
+   @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -184,6 +186,11 @@ public class ParceirosListar extends javax.swing.JFrame {
                 "Razão social", "CNPJ", "Segmento empresarial", "Telfone", "Email"
             }
         ));
+        tblSolicitantes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSolicitantesMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblSolicitantes);
 
         btnAceitar.setText("ACEITAR");
@@ -327,6 +334,11 @@ public class ParceirosListar extends javax.swing.JFrame {
                 "Razão Social", "CNPJ", "Segmento Empresarial", "Email", "Telefone"
             }
         ));
+        tblParceiros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblParceirosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblParceiros);
         if (tblParceiros.getColumnModel().getColumnCount() > 0) {
             tblParceiros.getColumnModel().getColumn(0).setResizable(false);
@@ -410,7 +422,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             return;
         }
 
-        Usuario parceriaEncerrada = listaParceiros.get(itemSelecionado);
+        Parceiro parceriaEncerrada = listaParceiros.get(itemSelecionado);
 
         int resposta = JOptionPane.showConfirmDialog(
                 this,
@@ -420,10 +432,9 @@ public class ParceirosListar extends javax.swing.JFrame {
         );
         //0 = sim | 1 = não | -1 = nada
         if (resposta == JOptionPane.YES_OPTION) {
+            parceiroController.removerParceiria(parceriaEncerrada);
             listaParceiros.remove(itemSelecionado);
             tableModel.removeRow(itemSelecionado);
-            parceriaEncerrada.getTipo().setNome("USUARIOCOMUM");
-            //relação com a parte de caio na próxima sprint
             resetarSelecao();
         }
 
@@ -480,32 +491,28 @@ public class ParceirosListar extends javax.swing.JFrame {
             parceiroEditar.setNomeEmpresa(parceiroEditar.getNomeEmpresa());//caso o campo esteja vazio deixar o objeto como ele está
 
         }
-        
-        
+
         if (txtnovoEmail.getText().isEmpty()) {
 
             parceiroEditar.setEmail(parceiroEditar.getEmail());//caso o campo esteja vazio deixar o objeto como ele está
 
         }
-        
+
         if (txtnovoTelefone.getText().isEmpty()) {
 
             parceiroEditar.setTelefone(parceiroEditar.getTelefone());//caso o campo esteja vazio deixar o objeto como ele está
 
         }
-        
-        
 
         editarParceiro(parceiroEditar);
 
         resetarSelecao();
 
 
-
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
- String termo = txtbarradePesquisa.getText().trim();
+        String termo = txtbarradePesquisa.getText().trim();
 
         //limpar tabela de forma segura na EDT
         SwingUtilities.invokeLater(() -> {
@@ -523,7 +530,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             //usar invokeLater para garantir execução na thread correta
             SwingUtilities.invokeLater(() -> {
                 try {
-                    Parceiro parceiro= parceiroController.findById(id);
+                    Parceiro parceiro = parceiroController.findById(id);
                     //primeiro ver se é numérico
                     if (parceiro != null) {
                         tableModelS.addRow(new Object[]{
@@ -550,7 +557,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                 } else {
                     for (Parceiro solicitante : resultados) {
                         tableModel.addRow(new Object[]{
-                           solicitante.getNome(),
+                            solicitante.getNome(),
                             solicitante.getCnpj(),
                             solicitante.getNomeEmpresa()
                         });
@@ -560,9 +567,9 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_txtbarradePesquisaKeyReleased
-    
+
     private void txtbarradePesquisaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbarradePesquisaMouseReleased
-    
+
     }//GEN-LAST:event_txtbarradePesquisaMouseReleased
 
     //tela de solicitações
@@ -615,13 +622,11 @@ public class ParceirosListar extends javax.swing.JFrame {
             return;
 
         }
-        
+
         String cnpj = "12351462414";// esses parametros serão devidamente preenchidos a partir da tela de solicitação que fica com o usuario
         String nomeEmpresa = "Cleide";
-        
-        adicionarParceiro(novoParceiroCapsula,cnpj,nomeEmpresa);
-        
-        
+
+        adicionarParceiro(novoParceiroCapsula, cnpj, nomeEmpresa);
 
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
 
@@ -651,7 +656,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNegarActionPerformed
 
     private void txtpesquisarSolicitantesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarSolicitantesKeyReleased
-          String termo = txtpesquisarSolicitantes.getText().trim();
+        String termo = txtpesquisarSolicitantes.getText().trim();
 
         //limpar tabela de forma segura na EDT
         SwingUtilities.invokeLater(() -> {
@@ -669,7 +674,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             //usar invokeLater para garantir execução na thread correta
             SwingUtilities.invokeLater(() -> {
                 try {
-                    Usuario solicitante= usuarioController.findById(id);
+                    Usuario solicitante = usuarioController.findById(id);
                     //primeiro ver se é numérico
                     if (solicitante != null) {
                         tableModelS.addRow(new Object[]{
@@ -696,7 +701,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                 } else {
                     for (Usuario solicitante : resultados) {
                         tableModelS.addRow(new Object[]{
-                           solicitante.getNome(),
+                            solicitante.getNome(),
                             solicitante.getTelefone(),
                             solicitante.getEmail()
                         });
@@ -706,6 +711,14 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_txtpesquisarSolicitantesKeyReleased
+
+    private void tblParceirosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblParceirosMouseClicked
+         itemSelecionado = tblParceiros.getSelectedRow();
+    }//GEN-LAST:event_tblParceirosMouseClicked
+
+    private void tblSolicitantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSolicitantesMouseClicked
+       itemSelecionado = tblSolicitantes.getSelectedRow();
+    }//GEN-LAST:event_tblSolicitantesMouseClicked
 
     /**
      * @param args the command line arguments

@@ -190,10 +190,10 @@ public class EventoService {
 
         }
 
-        if (strUtil.isNullOrEmpty(evento.getCategoria())) {
+        if (!StringUtil.isNullOrEmpty(evento.getCategoria())) {
+        } else {
             log.info("Categoria é obrigatória");
             throw new RegraNegocioException("A categoria não pode ser nula ou vazia");
-
         }
 
         if (strUtil.isNullOrEmpty(evento.getDescricao())) {

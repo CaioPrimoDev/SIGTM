@@ -5,13 +5,17 @@
 package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.PromocaoIController;
+import br.com.ifba.promocao.controller.TipoPromocaoIController;
 import br.com.ifba.promocao.entity.Promocao;
+import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.telainicial.view.TelaInicial;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +33,14 @@ public class PromocaoUpdate extends javax.swing.JFrame {
     @Autowired
     private PromocaoIController promocaoController;
     
+    @Autowired
+    private TipoPromocaoIController tiporomocaoController;
+    
     // Objeto para armazenar a promoção sendo editada
     private Promocao promocaoAtual;
+    
+    private java.util.List<TipoPromocao> tiposDisponiveis = new ArrayList<>();
+
     
     // Contexto do Spring para injeção de dependências
     @Autowired
@@ -41,6 +51,14 @@ public class PromocaoUpdate extends javax.swing.JFrame {
         initComponents();
     }
     
+    @PostConstruct
+    public void carregarTiposPromocao() {
+        tiposDisponiveis = tiporomocaoController.getTodosTiposPromocao();
+        for (TipoPromocao tipo : tiposDisponiveis) {
+            cbbTipo.addItem(tipo.getNome());
+        }
+    }
+
       // Método para carregar os dados da promoção nos campos
     public void carregarPromocao(Promocao promocao) {
         this.promocaoAtual = promocao;
@@ -49,7 +67,11 @@ public class PromocaoUpdate extends javax.swing.JFrame {
         txtDescricao.setText(promocao.getDescricao());
         txtDataInicio.setText(promocao.getDataInicio().toString());
         txtDataTermino.setText(promocao.getDataTermino().toString());
-        cbbTipo.setSelectedItem(promocao.getTipo());
+        TipoPromocao tipo = promocao.getTipo();
+        if (tipo != null) {
+            cbbTipo.setSelectedItem(tipo.getNome());
+        }
+
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -128,7 +150,6 @@ public class PromocaoUpdate extends javax.swing.JFrame {
         });
         jPanel1.add(btnSalvar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, -1, -1));
 
-        cbbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PROMOCAO", "CUPOM", "PACOTE" }));
         jPanel1.add(cbbTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 390, 170, -1));
         jPanel1.add(txtTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 570, -1));
         jPanel1.add(txtRegras, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, 570, 50));
@@ -211,7 +232,8 @@ public class PromocaoUpdate extends javax.swing.JFrame {
             String descricao = txtDescricao.getText().trim();
             String dataInicioStr = txtDataInicio.getText().trim();
             String dataTerminoStr = txtDataTermino.getText().trim();
-            String tipo = (String) cbbTipo.getSelectedItem();
+            int indexSelecionado = cbbTipo.getSelectedIndex();
+            TipoPromocao tipoSelecionado = tiposDisponiveis.get(indexSelecionado);
 
             // Valida campos obrigatórios
             if (titulo.isEmpty() || descricao.isEmpty() || dataInicioStr.isEmpty() || dataTerminoStr.isEmpty()) {
@@ -260,7 +282,7 @@ public class PromocaoUpdate extends javax.swing.JFrame {
             promocaoAtual.setDescricao(descricao);
             promocaoAtual.setDataInicio(dataInicioDate);
             promocaoAtual.setDataTermino(dataTerminoDate);
-            promocaoAtual.setTipo(tipo);
+            promocaoAtual.setTipo(tipoSelecionado);
 
             // Chama o controller para salvar
             promocaoController.update(promocaoAtual);

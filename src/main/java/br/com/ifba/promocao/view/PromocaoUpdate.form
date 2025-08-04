@@ -186,11 +186,7 @@
         <Component class="javax.swing.JComboBox" name="cbbTipo">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
-                <StringItem index="0" value="PROMOCAO"/>
-                <StringItem index="1" value="CUPOM"/>
-                <StringItem index="2" value="PACOTE"/>
-              </StringArray>
+              <StringArray count="0"/>
             </Property>
           </Properties>
           <AuxValues>

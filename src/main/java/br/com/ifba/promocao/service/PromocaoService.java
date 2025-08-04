@@ -5,7 +5,9 @@
 package br.com.ifba.promocao.service;
 
 import br.com.ifba.promocao.entity.Promocao;
+import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.PromocaoRepository;
+import br.com.ifba.promocao.repository.TipoPromocaoRepository;
 import br.com.ifba.util.StringUtil;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,10 @@ public class PromocaoService implements PromocaoIService {
     // Permite acesso ao banco de dados sem instanciação manual
     @Autowired
     private PromocaoRepository promocaoRepository;
+    
+    
+    @Autowired
+    private TipoPromocaoRepository tipoPromocaoRepository;
      
     // Cria um logger para registrar atividades da classe
     private static final Logger log = LoggerFactory.
@@ -83,13 +89,14 @@ public class PromocaoService implements PromocaoIService {
     }
     
     // Filtra promoções por tipo e termo de busca
-    public List<Promocao> filtrarPromocoes(String termo, String tipo) { 
-        return promocaoRepository.filtrar(
-            tipo == null || tipo.equals("TODOS") ? "TODOS" : tipo, //Trata valores nulos (default para "TODOS" e string vazia)
-            termo == null ? "" : termo
-        ); 
-    }
+    public List<Promocao> filtrarPromocoes(String termo, String tipo) {
+        // Primeiro obtém as promoções por tipo
+        List<Promocao> promocoesPorTipo = (List<Promocao>) tipoPromocaoRepository.findByNome(tipo);
 
+        // Filtra pelo termo de busca
+        String termoFiltrado = termo == null ? "" : termo;
+        return promocaoRepository.filtrar((TipoPromocao) promocoesPorTipo, termoFiltrado);
+    }
     // Validação geral da promoção
     
     // Verifica se não é nula e chama validadores específicos

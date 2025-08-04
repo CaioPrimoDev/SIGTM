@@ -121,6 +121,7 @@ public class ParceiroService implements ParceiroIService {
             throw new IllegalArgumentException("O CNPJ não pode ser nulo ou vazio para a busca.");
         }
 
+       
         Optional<Parceiro> parceiro = Optional.empty(); // Inicializa com Optional vazio
         try {
             parceiro = repo.findByCnpj(cnpj);
@@ -185,6 +186,26 @@ public class ParceiroService implements ParceiroIService {
     
     return parceiro;
     }
+    @Override
+    public Usuario removerParceiria(Parceiro parceiro) {
 
-    
+        Usuario usuario = new Usuario();
+
+        TipoUsuario tipo = new TipoUsuario();
+        tipo.setNome("USUARIO_COMUM");
+        tipo.setDescricao("");
+
+        //DADOS DA PESSOA
+        usuario.setNome(parceiro.getNome());
+        usuario.setEmail(parceiro.getEmail());
+        usuario.setTelefone(parceiro.getTelefone());
+
+        // DADOS DO USUÁRIO
+        usuario.setSenha(parceiro.getSenha());
+        usuario.setAtivo(parceiro.isAtivo());
+        usuario.setTipo(tipo);
+        usuario.setSolicitacao(false);
+
+        return usuario;
+    }
 }

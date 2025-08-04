@@ -279,7 +279,6 @@ public class PromocaoList extends javax.swing.JFrame {
             tblPromocoes.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
         }
     }
-    
     public void carregarDados() {
         try {
             this.listaDePromocoes = controller.findAll();
@@ -293,7 +292,7 @@ public class PromocaoList extends javax.swing.JFrame {
                     promocao.getDescricao(),
                     promocao.getDataInicio(),
                     promocao.getDataTermino(),
-                    promocao.getTipo(),
+                    promocao.getTipo().getNome(),  // Alterado para pegar apenas o nome
                     "Editar",
                     "Remover"
                 });
@@ -307,8 +306,7 @@ public class PromocaoList extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-    }
-    
+    }    
     private void setupPesquisaDinamica() {
         txtPesquisa.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { filtrarTabela(); }
