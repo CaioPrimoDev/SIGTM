@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
  *
  * @author Casa
  */
+
+//GERENCIAMENTO DO GESTOR
+
 @Component
 public class EventoListar extends javax.swing.JFrame {
 

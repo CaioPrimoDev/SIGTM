@@ -437,7 +437,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             tableModel.removeRow(itemSelecionado);
             resetarSelecao();
         }
-
+        
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed

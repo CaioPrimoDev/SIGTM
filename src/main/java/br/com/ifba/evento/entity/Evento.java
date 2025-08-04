@@ -36,9 +36,5 @@ public class Evento extends ItemTuristico {
     @Column(nullable = false)
     String categoria;
  
-    @ManyToOne
-    Parceiro parceiro;
-
- 
-     
+    Parceiro parceiro;  
 }
