@@ -7,6 +7,8 @@ package br.com.ifba.promocao.entity;
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -43,6 +45,8 @@ public class Promocao extends PersistenceEntity {
     @Column(name = "dataTermino") // Mapeia o campo 'dataTermino' para coluna 'dataTermino'
     private Date dataTermino;
     
-    @Column(name = "tipo") // Mapeia o campo 'tipo' para coluna 'tipo'
-    private String tipo; //variavel para guardar o tipo, se é promoção, cupom ou pacote
+    @ManyToOne
+    @JoinColumn(name = "tipo_id", nullable = false) // Mapeia o campo 'tipo' para coluna 'tipo'
+    private TipoPromocao tipo; //variavel para guardar o tipo, se é promoção, cupom ou pacote
+
 }
