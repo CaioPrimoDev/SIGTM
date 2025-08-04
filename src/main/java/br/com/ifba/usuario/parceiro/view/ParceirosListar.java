@@ -186,6 +186,11 @@ public class ParceirosListar extends javax.swing.JFrame {
                 "Razão social", "CNPJ", "Segmento empresarial", "Telfone", "Email"
             }
         ));
+        tblSolicitantes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSolicitantesMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblSolicitantes);
 
         btnAceitar.setText("ACEITAR");
@@ -329,6 +334,11 @@ public class ParceirosListar extends javax.swing.JFrame {
                 "Razão Social", "CNPJ", "Segmento Empresarial", "Email", "Telefone"
             }
         ));
+        tblParceiros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblParceirosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblParceiros);
         if (tblParceiros.getColumnModel().getColumnCount() > 0) {
             tblParceiros.getColumnModel().getColumn(0).setResizable(false);
@@ -701,6 +711,14 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_txtpesquisarSolicitantesKeyReleased
+
+    private void tblParceirosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblParceirosMouseClicked
+         itemSelecionado = tblParceiros.getSelectedRow();
+    }//GEN-LAST:event_tblParceirosMouseClicked
+
+    private void tblSolicitantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSolicitantesMouseClicked
+       itemSelecionado = tblSolicitantes.getSelectedRow();
+    }//GEN-LAST:event_tblSolicitantesMouseClicked
 
     /**
      * @param args the command line arguments
