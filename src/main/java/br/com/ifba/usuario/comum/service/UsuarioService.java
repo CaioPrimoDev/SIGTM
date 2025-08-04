@@ -4,15 +4,12 @@
  */
 package br.com.ifba.usuario.comum.service;
 
-import br.com.ifba.usuario.comum.entity.TipoUsuario;
 import br.com.ifba.usuario.comum.entity.Usuario;
-import br.com.ifba.usuario.comum.repository.TipoUsuarioRepository;
 import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,10 +25,11 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UsuarioService {
+public class UsuarioService implements UsuarioIService {
     
         private final UsuarioRepository UserRepo;
         
+        @Override
         public boolean save(Usuario user) {
         validarUsuario(user);
         try {
@@ -40,7 +38,7 @@ public class UsuarioService {
         } catch (DataIntegrityViolationException e) {
             // Violação de constraints do banco (ex: unique ou not null)
             log.error("Violação de integridade ao salvar Usuário: {}", user.getNome(), e);
-            throw new RegraNegocioException("Já existe um usuário com esse nome ou dados inválidos.");
+            throw new RegraNegocioException("Já existe um usuário com esse email ou dados inválidos.");
         } catch (RuntimeException e) {
             // Falha inesperada
             log.error("Erro inesperado ao salvar Usuário.", e);
@@ -48,7 +46,8 @@ public class UsuarioService {
         }
     }
 
-    public void delete(Long id) {
+        @Override
+        public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Usuário com ID inválido: {}", id);
             throw new RegraNegocioException("ID de Usuário inválido.");
@@ -66,7 +65,8 @@ public class UsuarioService {
         }
     }
 
-    public List<Usuario> findAll() {
+        @Override
+        public List<Usuario> findAll() {
         try {
             return UserRepo.findAll();
         } catch (RuntimeException e) {
@@ -75,7 +75,8 @@ public class UsuarioService {
         }
     }
 
-    public Usuario findById(Long id) {
+        @Override
+        public Usuario findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca: {}", id);
             throw new RegraNegocioException("ID inválido para busca.");
@@ -93,7 +94,8 @@ public class UsuarioService {
         }
     }
 
-    public List<Usuario> findByNomeContainingIgnoreCase(String nome) {
+        @Override
+        public List<Usuario> findByNomeContainingIgnoreCase(String nome) {
         if (!StringUtils.hasText(nome)) {
             return Collections.emptyList();
         }
@@ -107,7 +109,8 @@ public class UsuarioService {
         return resultado;
     }
 
-      public List<Usuario> findBySolicitacaoTrue() {
+        @Override
+        public List<Usuario> findBySolicitacaoTrue() {
         log.info("Iniciando busca por usuários com solicitação TRUE...");
         List<Usuario> usuarios = null;
         try {
@@ -129,8 +132,9 @@ public class UsuarioService {
         return usuarios;
     }
      
-      //localizar todos os parceiros
-       public List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo) {
+        //localizar todos os parceiros
+        @Override
+        public List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo) {
         try {
             log.info("Iniciando busca por tipo de usuário: {}", nomeTipo);
             
@@ -156,8 +160,9 @@ public class UsuarioService {
         }
     }
 
-    //localizar parceiros por nome 
-    public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome) {
+        //localizar parceiros por nome 
+        @Override
+        public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome) {
         try {
             log.info("Buscando parceiros com tipo: {} e nome: {}", tipoNome, nome);
             
@@ -183,7 +188,8 @@ public class UsuarioService {
         }
     }
      
-   public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
+        @Override
+        public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
         log.info("Iniciando busca por usuários pelo nome '{}' com solicitação TRUE e ativo TRUE...", nome);
 
         // 1. Verificação de entrada
@@ -212,13 +218,9 @@ public class UsuarioService {
         }
         return usuarios;
     }
- /*   
-   public List<Usuario> findParceirosByNome(@Param("nome") String nome){
    
-       return UserRepo.findParceirosByNome(nome);
-   }*/
-   
-    private void validarUsuario(Usuario user) {
+        @Override
+        public void validarUsuario(Usuario user) {
         if (user == null) {
             log.warn("Usuário recebido é nulo.");
             throw new RegraNegocioException("O Usuário não pode ser nulo.");

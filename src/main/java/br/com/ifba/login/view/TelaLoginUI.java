@@ -5,8 +5,8 @@
 package br.com.ifba.login.view;
 
 import br.com.ifba.login.controller.LoginController;
+import br.com.ifba.login.controller.LoginIController;
 import br.com.ifba.usuario.comum.view.TelaUsuarioCadastrarUI;
-import br.com.ifba.usuario.comum.view.TelaUsuarioComumUI;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class TelaLoginUI extends javax.swing.JFrame {
     
     @Autowired
-    private LoginController loginController;
+    private LoginIController loginController;
     
     @Autowired
     private ApplicationContext context; // para chamar a tela de cadastro
@@ -201,18 +201,10 @@ public class TelaLoginUI extends javax.swing.JFrame {
             String tipo = usuario.getTipo().getNome().toUpperCase();
 
             switch (tipo) {
-                case "GESTOR":
-                    //new TelaGestorUI().setVisible(true);
-                    break;
-                case "PARCEIRO":
-                    //new TelaParceiroUI().setVisible(true);
-                    break;
-                case "USUARIO_COMUM":
-                    new TelaUsuarioComumUI().setVisible(true);
-                    break;
-                default:
-                    MostrarMensagem.erro(this, "Tipo de usuário desconhecido.", "Erro");
-                    break;
+                case "GESTOR" -> MostrarMensagem.info(this, "Gestor cadastrado com sucesso!", "Sucesso");
+                case "PARCEIRO" -> MostrarMensagem.info(this, "Parceiro cadastrado com sucesso!", "Sucesso");
+                case "USUARIO_COMUM" -> MostrarMensagem.info(this, "Usuario comum cadastrado com sucesso!", "Sucesso");
+                default -> MostrarMensagem.erro(this, "Tipo de usuário desconhecido.", "Erro");
             }
 
         } else {

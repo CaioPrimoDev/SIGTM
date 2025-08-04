@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -28,11 +27,12 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ParceiroService {
+public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository repo;
     
     
+    @Override
     public boolean save(Parceiro user) {
         validarParceiro(user);
         try {
@@ -49,6 +49,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Parceiro com ID inválido: {}", id);
@@ -67,6 +68,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public List<Parceiro> findAll() {
         try {
             return repo.findAll();
@@ -76,6 +78,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public Parceiro findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca: {}", id);
@@ -94,6 +97,7 @@ public class ParceiroService {
         }
     }
 
+    @Override
     public List<Parceiro> findByNomeContainingIgnoreCase(String nome) {
         if (!StringUtils.hasText(nome)) {
             return Collections.emptyList();
@@ -108,6 +112,7 @@ public class ParceiroService {
         return resultado;
     }
     
+    @Override
     public Optional<Parceiro> findByCnpj(String cnpj) {
         log.info("Iniciando busca por Parceiro com CNPJ: {}", cnpj);
         // 1. Verificação de entrada
@@ -135,7 +140,8 @@ public class ParceiroService {
         return parceiro;
     }
    
-    private void validarParceiro(Parceiro user) {
+    @Override
+    public void validarParceiro(Parceiro user) {
         if (user == null) {
             log.warn("Parceiro recebido é nulo.");
             throw new RegraNegocioException("O Parceiro não pode ser nulo.");
@@ -152,6 +158,7 @@ public class ParceiroService {
             }
     }
     
+    @Override
     public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
     
     Parceiro parceiro = new Parceiro();

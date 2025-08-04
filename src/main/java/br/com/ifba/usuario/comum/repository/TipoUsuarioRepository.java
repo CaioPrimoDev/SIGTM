@@ -6,7 +6,6 @@ package br.com.ifba.usuario.comum.repository;
 
 import br.com.ifba.usuario.comum.entity.TipoUsuario;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface TipoUsuarioRepository extends JpaRepository<TipoUsuario, Long> {
 
-    Optional<TipoUsuario> findByNome(String nome);
+    TipoUsuario findByNome(String nome);
 
     List<TipoUsuario> findByNomeContainingIgnoreCase(String nome);
 

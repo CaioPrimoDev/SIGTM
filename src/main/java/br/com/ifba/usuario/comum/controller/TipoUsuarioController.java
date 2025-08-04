@@ -5,8 +5,9 @@
 package br.com.ifba.usuario.comum.controller;
 
 import br.com.ifba.usuario.comum.entity.TipoUsuario;
-import br.com.ifba.usuario.comum.service.TipoUsuarioService;
+import br.com.ifba.usuario.comum.service.TipoUsuarioIService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Controller;
 public class TipoUsuarioController implements TipoUsuarioIController {
 
     @Autowired
-    private TipoUsuarioService service;
+    private TipoUsuarioIService service;
 
     @Override
     public boolean save(TipoUsuario tipoUsuario) {

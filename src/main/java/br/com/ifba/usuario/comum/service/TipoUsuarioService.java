@@ -9,6 +9,7 @@ import br.com.ifba.usuario.comum.repository.TipoUsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,10 +23,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TipoUsuarioService {
+public class TipoUsuarioService implements TipoUsuarioIService {
 
     private final TipoUsuarioRepository tipoUsuarioRepository;
 
+    @Override
     public boolean save(TipoUsuario tipoUsuario) {
         validarTipoUsuario(tipoUsuario);
         try {
@@ -42,6 +44,7 @@ public class TipoUsuarioService {
         }
     }
 
+    @Override
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Tipo de Usuário com ID inválido: {}", id);
@@ -60,6 +63,7 @@ public class TipoUsuarioService {
         }
     }
 
+    @Override
     public List<TipoUsuario> findAll() {
         try {
             return tipoUsuarioRepository.findAll();
@@ -69,6 +73,7 @@ public class TipoUsuarioService {
         }
     }
 
+    @Override
     public TipoUsuario findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca: {}", id);
@@ -87,7 +92,8 @@ public class TipoUsuarioService {
         }
     }
 
-    private void validarTipoUsuario(TipoUsuario tipoUsuario) {
+    @Override
+    public void validarTipoUsuario(TipoUsuario tipoUsuario) {
         if (tipoUsuario == null) {
             log.warn("Tipo de Usuário recebido é nulo.");
             throw new RegraNegocioException("O Tipo de Usuário não pode ser nulo.");
@@ -104,9 +110,9 @@ public class TipoUsuarioService {
         }
     }
     
+    @Override
     public TipoUsuario findByNome(String nome) {
-        return tipoUsuarioRepository.findByNome(nome)
-            .orElseThrow(() -> new RegraNegocioException("Tipo de usuário não encontrado: " + nome));
+        return tipoUsuarioRepository.findByNome(nome);
     }
 
 }

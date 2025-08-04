@@ -7,7 +7,11 @@ package br.com.ifba.usuario.comum.entity;
 import br.com.ifba.infrastructure.entity.Pessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +23,8 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Getter  @Setter
+@Table(name = "usuario")
+@Inheritance(strategy = InheritanceType.JOINED) // Separa as tabelas herdadas
 public class Usuario extends Pessoa {
 
     @Column(nullable = false)
@@ -28,6 +34,7 @@ public class Usuario extends Pessoa {
     private boolean ativo;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "tipo_usuario_id", nullable = false)
     private TipoUsuario tipo;
     
     // Verifica para aparecer na tabela de solicitações para parceria

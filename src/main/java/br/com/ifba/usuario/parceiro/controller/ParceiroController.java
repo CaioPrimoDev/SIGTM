@@ -6,7 +6,7 @@ package br.com.ifba.usuario.parceiro.controller;
 
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
-import br.com.ifba.usuario.parceiro.service.ParceiroService;
+import br.com.ifba.usuario.parceiro.service.ParceiroIService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Controller;
 public class ParceiroController implements ParceiroIController {
     
     @Autowired
-    private ParceiroService service;
+    private ParceiroIService service;
 
     @Override
     public boolean save(Parceiro user) {
