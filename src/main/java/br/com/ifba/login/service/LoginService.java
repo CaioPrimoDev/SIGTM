@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
  * @author User
  */
 @Service
-public class LoginService {
+public class LoginService implements LoginIService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Override
     public Usuario autenticar(String email, String senha) {
         Optional<Usuario> user = usuarioRepository.findByEmail(email);
 

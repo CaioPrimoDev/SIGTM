@@ -4,7 +4,7 @@
  */
 package br.com.ifba.login.controller;
 
-import br.com.ifba.login.service.LoginService;
+import br.com.ifba.login.service.LoginIService;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,11 +14,12 @@ import org.springframework.stereotype.Controller;
  * @author User
  */
 @Controller
-public class LoginController {
+public class LoginController implements LoginIController {
 
     @Autowired
-    private LoginService loginService;
+    private LoginIService loginService;
 
+    @Override
     public Usuario login(String email, String senha) {
         return loginService.autenticar(email, senha);
     }

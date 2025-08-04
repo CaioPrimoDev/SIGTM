@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -8,7 +9,7 @@ import br.com.ifba.itemturistico.entity.ItemTuristico;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,5 +37,6 @@ public class Evento extends ItemTuristico {
     @Column(nullable = false)
     String categoria;
  
+   // @OneToMany
     Parceiro parceiro;  
 }

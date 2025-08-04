@@ -4,23 +4,25 @@
  */
 package br.com.ifba.gestor.entity;
 
-import br.com.ifba.infrastructure.entity.Pessoa;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Controller;
 //
 /**
  *
  * @author User
  */
-@Controller
 @Getter  @Setter
 @NoArgsConstructor
 @Entity
-public class Gestor extends Pessoa {
+@Table(name = "gestor")
+@PrimaryKeyJoinColumn(name = "usuario_id")
+public class Gestor extends Usuario {
     @Column(nullable = false, unique = true)
     private String matricula;
     

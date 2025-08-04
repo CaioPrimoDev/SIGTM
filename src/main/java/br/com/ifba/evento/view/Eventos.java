@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 
 //AREA DE VIZUALIZAÇÃO DO PARCEIRO
-@Component
+//@Component
 public class Eventos extends javax.swing.JFrame {
 
     /**

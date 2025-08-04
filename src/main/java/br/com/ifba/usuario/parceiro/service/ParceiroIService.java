@@ -26,3 +26,4 @@ public interface ParceiroIService {
     Usuario removerParceiria(Parceiro parceiro);
    
 }
+

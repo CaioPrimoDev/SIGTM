@@ -24,10 +24,11 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class GestorService {
+public class GestorService implements GestorIService {
     
     private final GestorRepository repo;
         
+    @Override
     public boolean save(Gestor user) {
         validarGestor(user);
         try {
@@ -44,6 +45,7 @@ public class GestorService {
         }
     }
 
+    @Override
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Usuário com ID inválido: {}", id);
@@ -62,6 +64,7 @@ public class GestorService {
         }
     }
 
+    @Override
     public List<Gestor> findAll() {
         try {
             return repo.findAll();
@@ -71,6 +74,7 @@ public class GestorService {
         }
     }
 
+    @Override
     public Gestor findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca: {}", id);
@@ -89,6 +93,7 @@ public class GestorService {
         }
     }
 
+    @Override
     public List<Gestor> findByNomeContainingIgnoreCase(String nome) {
         if (!StringUtils.hasText(nome)) {
             return Collections.emptyList();
@@ -103,7 +108,8 @@ public class GestorService {
         return resultado;
     }
    
-    private void validarGestor(Gestor user) {
+    @Override
+    public void validarGestor(Gestor user) {
         if (user == null) {
             log.warn("Usuário recebido é nulo.");
             throw new RegraNegocioException("O Usuário não pode ser nulo.");

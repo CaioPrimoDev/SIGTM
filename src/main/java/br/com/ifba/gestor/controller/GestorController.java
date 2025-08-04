@@ -5,7 +5,7 @@
 package br.com.ifba.gestor.controller;
 
 import br.com.ifba.gestor.entity.Gestor;
-import br.com.ifba.gestor.service.GestorService;
+import br.com.ifba.gestor.service.GestorIService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 public class GestorController implements GestorIController {
     
     @Autowired
-    private GestorService service;
+    private GestorIService service;
 
     @Override
     public boolean save(Gestor user) {

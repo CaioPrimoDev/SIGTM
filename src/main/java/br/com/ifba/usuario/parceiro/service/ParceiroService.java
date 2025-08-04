@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,7 @@ import org.springframework.util.StringUtils;
 public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository repo;
+    
     
     @Override
     public boolean save(Parceiro user) {
@@ -111,6 +111,7 @@ public class ParceiroService implements ParceiroIService {
 
         return resultado;
     }
+    
     @Override
     public Optional<Parceiro> findByCnpj(String cnpj) {
         log.info("Iniciando busca por Parceiro com CNPJ: {}", cnpj);
@@ -139,7 +140,8 @@ public class ParceiroService implements ParceiroIService {
         }
         return parceiro;
     }
-   @Override
+   
+    @Override
     public void validarParceiro(Parceiro user) {
         if (user == null) {
             log.warn("Parceiro recebido é nulo.");
@@ -156,6 +158,7 @@ public class ParceiroService implements ParceiroIService {
                 throw new RegraNegocioException("O nome da empresa é obrigatório");
             }
     }
+    
     @Override
     public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
     
