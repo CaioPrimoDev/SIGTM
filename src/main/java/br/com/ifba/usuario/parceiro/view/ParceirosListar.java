@@ -507,8 +507,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         editarParceiro(parceiroEditar);
 
         resetarSelecao();
-
-
+        
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased

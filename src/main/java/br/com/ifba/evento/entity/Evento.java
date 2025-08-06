@@ -9,10 +9,10 @@ import br.com.ifba.itemturistico.entity.ItemTuristico;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -22,11 +22,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity
+@NoArgsConstructor
 public class Evento extends ItemTuristico {
     @Column(nullable = false)
-    LocalDateTime dataHora;
+    LocalDateTime hora;
+    
+    @Column(nullable = false)
+    LocalDate data;
     
     @Column(nullable = false)
     String publicoAlvo;

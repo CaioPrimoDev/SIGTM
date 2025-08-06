@@ -77,9 +77,9 @@ public class Eventos extends javax.swing.JFrame {
         tableModel.addRow(new Object[]{
             evento.getParceiro().getNomeEmpresa(),
             evento.getNome(),
-            evento.getDataHora().toLocalTime(),            
-            evento.getDataHora().plusHours(2).toLocalTime(),
-            evento.getDataHora().toLocalDate(),
+            evento.getHora().toLocalTime(),            
+            evento.getHora().plusHours(2).toLocalTime(),
+            evento.getData(),
             evento.getPublicoAlvo(),
             evento.getNivelAcessibilidade()
         });
@@ -124,18 +124,54 @@ public class Eventos extends javax.swing.JFrame {
         0
     );
     tableModel.setValueAt(eventoEditado.getNome(), itemSelecionado, 1);
-    tableModel.setValueAt(eventoEditado.getDataHora().toLocalTime(), itemSelecionado, 2);
+    tableModel.setValueAt(eventoEditado.getHora().toLocalTime(), itemSelecionado, 2);
     tableModel.setValueAt(
-        eventoEditado.getDataHora().plusHours(2).toLocalTime(), // Assumindo 2h de duração
+        eventoEditado.getHora().plusHours(2).toLocalTime(), // Assumindo 2h de duração
         itemSelecionado, 
         3
     );
-    tableModel.setValueAt(eventoEditado.getDataHora().toLocalDate(), itemSelecionado, 4);
+    tableModel.setValueAt(eventoEditado.getData(), itemSelecionado, 4);
     tableModel.setValueAt(eventoEditado.getPublicoAlvo(), itemSelecionado, 5);
     tableModel.setValueAt(eventoEditado.getNivelAcessibilidade(), itemSelecionado, 6);
     tableModel.setValueAt(eventoEditado.getLocalizacao(), itemSelecionado, 7);
 }
 
+   public int nivelAcessibilidade (javax.swing.JComboBox<String> comboBox){
+   
+      int nivelAcessibilidade = (int) comboBox.getSelectedItem(); 
+ 
+   return nivelAcessibilidade;
+   }
+   
+   public LocalDateTime formatarHora(String hora){
+   
+   LocalTime horarioInicio = LocalTime.parse(hora, DateTimeFormatter.ofPattern("HH:mm"));//formatando o tempo
+   LocalDateTime horarioFormatado = LocalDateTime.of(LocalDate.now(), horarioInicio);
+        
+        return horarioFormatado;
+   }
+   
+   public LocalDate formatarData(String data){
+   
+   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");//formatando data
+   LocalDate dataFormatada = LocalDate.parse(data, formatter);
+        
+        return dataFormatada;
+   }
+   
+   public Parceiro procurarParceirocnpj(String cnpj){
+   
+    Parceiro parceiro = parceiroController.findByCnpj(cnpj)
+                           .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
+   
+    return parceiro;
+   }
+   
+   public void resetarSelecao(){
+   itemSelecionado = -1;
+   
+   }
+   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -146,21 +182,47 @@ public class Eventos extends javax.swing.JFrame {
         txtData = new javax.swing.JTextField();
         txthorarioInicio = new javax.swing.JTextField();
         txtPublicoAlvo = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblParceiro = new javax.swing.JLabel();
+        lblparceiroNome = new javax.swing.JLabel();
+        lblDatar = new javax.swing.JLabel();
+        lblhorarioInicio = new javax.swing.JLabel();
+        lblpublcioAlvo = new javax.swing.JLabel();
         cbxnivelAcessibilidade = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         btnConfirmarEvento = new javax.swing.JButton();
         txtLocalizacao = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        lblLocalizacao = new javax.swing.JLabel();
         txtProgramacao = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        lblProgramacao = new javax.swing.JLabel();
         txtCategoria = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        lblCategoria = new javax.swing.JLabel();
+        txtDescricao = new javax.swing.JTextField();
+        lblDescricao = new javax.swing.JLabel();
+        JEdit = new javax.swing.JFrame();
+        txtnovoParceiro = new javax.swing.JTextField();
+        txtnovoEvento = new javax.swing.JTextField();
+        txtnovaCategoria = new javax.swing.JTextField();
+        txtnovaLocalizacao = new javax.swing.JTextField();
+        novaProgramacao = new javax.swing.JTextField();
+        txtnovaData = new javax.swing.JTextField();
+        txtnovoHorario = new javax.swing.JTextField();
+        txtnovopublicoAlvo = new javax.swing.JTextField();
+        cbxnovaAcessibilidade = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        btnconfirmarAlteracoes = new javax.swing.JButton();
+        txtnovaDescricao = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEvenetos = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
@@ -168,17 +230,28 @@ public class Eventos extends javax.swing.JFrame {
         btnRemover = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
-        jLabel1.setText("CNPJ do parceiro");
+        txthorarioInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txthorarioInicioActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("Nome do evento");
+        lblParceiro.setText("CNPJ do parceiro");
 
-        jLabel3.setText("Data (DD/MM/AAAA)");
+        lblparceiroNome.setText("Nome do evento");
 
-        jLabel4.setText("Horário de início");
+        lblDatar.setText("Data (DD/MM/AAAA)");
 
-        jLabel5.setText("Público alvo");
+        lblhorarioInicio.setText("Horário de início");
+
+        lblpublcioAlvo.setText("Público alvo");
 
         cbxnivelAcessibilidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        cbxnivelAcessibilidade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxnivelAcessibilidadeActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Nível de acessibilidade");
 
@@ -195,7 +268,7 @@ public class Eventos extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("Localização");
+        lblLocalizacao.setText("Localização");
 
         txtProgramacao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -203,7 +276,7 @@ public class Eventos extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setText("Programacap");
+        lblProgramacao.setText("Programação");
 
         txtCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,7 +284,15 @@ public class Eventos extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("Categoria");
+        lblCategoria.setText("Categoria");
+
+        txtDescricao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDescricaoActionPerformed(evt);
+            }
+        });
+
+        lblDescricao.setText("Descrição do evento");
 
         javax.swing.GroupLayout jAdicionarLayout = new javax.swing.GroupLayout(jAdicionar.getContentPane());
         jAdicionar.getContentPane().setLayout(jAdicionarLayout);
@@ -228,19 +309,19 @@ public class Eventos extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addGroup(jAdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jAdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel1)
+                                        .addComponent(lblParceiro)
                                         .addComponent(txtcnpj, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                                        .addComponent(jLabel2)
+                                        .addComponent(lblparceiroNome)
                                         .addComponent(txtnomeEvento)
                                         .addComponent(txtData)
                                         .addComponent(txthorarioInicio)
                                         .addComponent(txtPublicoAlvo))
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
+                                    .addComponent(lblDatar)
+                                    .addComponent(lblhorarioInicio)
+                                    .addComponent(lblpublcioAlvo)
                                     .addComponent(cbxnivelAcessibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6)
-                                    .addComponent(jLabel7)))
+                                    .addComponent(lblLocalizacao)))
                             .addGroup(jAdicionarLayout.createSequentialGroup()
                                 .addGap(127, 127, 127)
                                 .addComponent(btnConfirmarEvento)))
@@ -249,46 +330,53 @@ public class Eventos extends javax.swing.JFrame {
                 .addGap(52, 52, 52))
             .addGroup(jAdicionarLayout.createSequentialGroup()
                 .addGroup(jAdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCategoria)
                     .addGroup(jAdicionarLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel8))
-                    .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addContainerGap(58, Short.MAX_VALUE))
+                        .addGroup(jAdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblProgramacao)
+                            .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDescricao))))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         jAdicionarLayout.setVerticalGroup(
             jAdicionarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jAdicionarLayout.createSequentialGroup()
                 .addGap(37, 37, 37)
-                .addComponent(jLabel1)
+                .addComponent(lblParceiro)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
-                .addComponent(jLabel2)
+                .addComponent(lblparceiroNome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtnomeEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9)
-                .addGap(2, 2, 2)
-                .addComponent(txtCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                .addComponent(lblCategoria)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
+                .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDescricao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblProgramacao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtProgramacao, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(lblDatar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7)
+                .addComponent(lblLocalizacao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtLocalizacao, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
+                .addComponent(lblhorarioInicio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txthorarioInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
+                .addComponent(lblpublcioAlvo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtPublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -300,7 +388,176 @@ public class Eventos extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTextField3.setText("jTextField3");
+        txtnovoParceiro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovoParceiroActionPerformed(evt);
+            }
+        });
+
+        txtnovoEvento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovoEventoActionPerformed(evt);
+            }
+        });
+
+        txtnovaCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovaCategoriaActionPerformed(evt);
+            }
+        });
+
+        txtnovaLocalizacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovaLocalizacaoActionPerformed(evt);
+            }
+        });
+
+        novaProgramacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novaProgramacaoActionPerformed(evt);
+            }
+        });
+
+        txtnovaData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovaDataActionPerformed(evt);
+            }
+        });
+
+        txtnovoHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovoHorarioActionPerformed(evt);
+            }
+        });
+
+        txtnovopublicoAlvo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovopublicoAlvoActionPerformed(evt);
+            }
+        });
+
+        cbxnovaAcessibilidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+
+        jLabel12.setText("Novo parceiro por CNPJ");
+
+        jLabel14.setText("Novo nome do evento");
+
+        jLabel16.setText("Nova categoria");
+
+        jLabel17.setText("Nova localização");
+
+        jLabel18.setText("Nova programação");
+
+        jLabel19.setText("Nova data(DD/MM/AAAA)");
+
+        jLabel21.setText("Público alvo");
+
+        jLabel22.setText("Novo horário");
+
+        jLabel23.setText("Novo nível de acessibilidade");
+
+        btnconfirmarAlteracoes.setText("jButton1");
+        btnconfirmarAlteracoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnconfirmarAlteracoesActionPerformed(evt);
+            }
+        });
+
+        txtnovaDescricao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovaDescricaoActionPerformed(evt);
+            }
+        });
+
+        jLabel20.setText("Nova descrição");
+
+        javax.swing.GroupLayout JEditLayout = new javax.swing.GroupLayout(JEdit.getContentPane());
+        JEdit.getContentPane().setLayout(JEditLayout);
+        JEditLayout.setHorizontalGroup(
+            JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JEditLayout.createSequentialGroup()
+                .addGroup(JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(JEditLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtnovoParceiro, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovoEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovaLocalizacao, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(novaProgramacao, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovaData, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovopublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbxnovaAcessibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel19)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel22)
+                            .addComponent(jLabel23)
+                            .addComponent(txtnovaDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel20)))
+                    .addGroup(JEditLayout.createSequentialGroup()
+                        .addGap(138, 138, 138)
+                        .addComponent(btnconfirmarAlteracoes)))
+                .addContainerGap(65, Short.MAX_VALUE))
+        );
+        JEditLayout.setVerticalGroup(
+            JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JEditLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtnovoParceiro, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14)
+                .addGap(2, 2, 2)
+                .addComponent(txtnovoEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel20)
+                .addGap(2, 2, 2)
+                .addComponent(txtnovaDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtnovaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel17)
+                .addGap(8, 8, 8)
+                .addComponent(txtnovaLocalizacao, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(novaProgramacao, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel19)
+                .addGap(8, 8, 8)
+                .addComponent(txtnovaData, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel22)
+                .addGap(8, 8, 8)
+                .addComponent(txtnovoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtnovopublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel23)
+                .addGap(7, 7, 7)
+                .addComponent(cbxnovaAcessibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnconfirmarAlteracoes)
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+
+        jLabel11.setText("jLabel11");
+
+        jLabel13.setText("jLabel13");
+
+        jLabel15.setText("jLabel15");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -327,6 +584,11 @@ public class Eventos extends javax.swing.JFrame {
         btnRemover.setText("REMOVER");
 
         btnEditar.setText("EDITAR");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -411,21 +673,28 @@ public class Eventos extends javax.swing.JFrame {
        JOptionPane.showMessageDialog(null, "o campo categoria deve ser preenchido");
        return;
        }
+
+       //adicionando objeto capsula
+       Evento eventoCapsula = new Evento();
        
-        LocalTime horarioInicio = LocalTime.parse(txthorarioInicio.getText(), DateTimeFormatter.ofPattern("HH:mm"));
-    
-      LocalDateTime horarioFormatado = LocalDateTime.of(LocalDate.now(), horarioInicio);
+       Parceiro parceiro = procurarParceirocnpj(txtcnpj.getText());
        
-      Parceiro parceiro = parceiroController.findByCnpj(txtcnpj.getText())
-                           .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
-      
-       
-       Evento eventoCapsula = new Evento(horarioFormatado,txtPublicoAlvo.getText(),txtProgramacao.getText(),txtCategoria.getText(),parceiro);
+       eventoCapsula.setNome(txtnomeEvento.getText());
+       eventoCapsula.setDescricao(txtDescricao.getText());
+       eventoCapsula.setLocalizacao(txtLocalizacao.getText());
+       eventoCapsula.setNivelAcessibilidade(nivelAcessibilidade(cbxnivelAcessibilidade));
+       eventoCapsula.setHora(formatarHora(txthorarioInicio.getText()));
+       eventoCapsula.setData(formatarData(txtData.getText()));
+       eventoCapsula.setPublicoAlvo(txtPublicoAlvo.getText());
+       eventoCapsula.setProgramacao(txtProgramacao.getText());
+       eventoCapsula.setCategoria(txtCategoria.getText()); 
+       eventoCapsula.setParceiro(parceiro);
        
         adicionarEvento(parceiro, eventoCapsula);
        
     }//GEN-LAST:event_btnConfirmarEventoActionPerformed
 
+    
     private void txtLocalizacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLocalizacaoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtLocalizacaoActionPerformed
@@ -438,35 +707,176 @@ public class Eventos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCategoriaActionPerformed
 
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void txtDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescricaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescricaoActionPerformed
+
+    private void txthorarioInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txthorarioInicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txthorarioInicioActionPerformed
+
+    private void txtnovoParceiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovoParceiroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovoParceiroActionPerformed
+
+    private void txtnovoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovoEventoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovoEventoActionPerformed
+
+    private void txtnovaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovaCategoriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovaCategoriaActionPerformed
+
+    private void txtnovaLocalizacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovaLocalizacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovaLocalizacaoActionPerformed
+
+    private void txtnovaDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovaDataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovaDataActionPerformed
+
+    private void txtnovoHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovoHorarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovoHorarioActionPerformed
+
+    private void txtnovopublicoAlvoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovopublicoAlvoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovopublicoAlvoActionPerformed
+
+    private void cbxnivelAcessibilidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxnivelAcessibilidadeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxnivelAcessibilidadeActionPerformed
+
+    private void novaProgramacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novaProgramacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_novaProgramacaoActionPerformed
+
+    private void btnconfirmarAlteracoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnconfirmarAlteracoesActionPerformed
+        if (listaEventos.isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Nenhum evento cadastrado");
+    return;
+}
+
+if (itemSelecionado == -1) {
+    JOptionPane.showMessageDialog(null, "Nenhum evento foi selecionado");
+    return;
+}
+
+Evento eventoEditar = listaEventos.get(itemSelecionado);
+
+// Atualiza apenas campos preenchidos
+if (!txtnomeEvento.getText().isEmpty()) {
+    eventoEditar.setNome(txtnomeEvento.getText());
+}
+
+if (!txtDescricao.getText().isEmpty()) {
+    eventoEditar.setDescricao(txtDescricao.getText());
+}
+
+if (!txtLocalizacao.getText().isEmpty()) {
+    eventoEditar.setLocalizacao(txtLocalizacao.getText());
+}
+
+// O combobox sempre terá um valor selecionado
+eventoEditar.setNivelAcessibilidade(nivelAcessibilidade(cbxnivelAcessibilidade));
+
+// Atualiza hora se preenchida
+if (!txthorarioInicio.getText().isEmpty()) {
+    eventoEditar.setHora(formatarHora(txthorarioInicio.getText()));
+}
+
+// Atualiza data se preenchida
+if (!txtData.getText().isEmpty()) {
+    eventoEditar.setData(formatarData(txtData.getText()));
+}
+
+if (!txtPublicoAlvo.getText().isEmpty()) {
+    eventoEditar.setPublicoAlvo(txtPublicoAlvo.getText());
+}
+
+if (!txtProgramacao.getText().isEmpty()) {
+    eventoEditar.setProgramacao(txtProgramacao.getText());
+}
+
+if (!txtCategoria.getText().isEmpty()) {
+    eventoEditar.setCategoria(txtCategoria.getText());
+}
+
+Parceiro novoParceiro = procurarParceirocnpj(txtnovoParceiro.getText());
+
+if(novoParceiro != null){
+
+ eventoEditar.setParceiro(novoParceiro);
+}
+
+editarEvento(eventoEditar);
+resetarSelecao();
+
+    }//GEN-LAST:event_btnconfirmarAlteracoesActionPerformed
+
+    private void txtnovaDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovaDescricaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovaDescricaoActionPerformed
+
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JFrame JEdit;
     private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnConfirmarEvento;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnRemover;
+    private javax.swing.JButton btnconfirmarAlteracoes;
     private javax.swing.JComboBox<String> cbxnivelAcessibilidade;
+    private javax.swing.JComboBox<String> cbxnovaAcessibilidade;
     private javax.swing.JFrame jAdicionar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JLabel lblCategoria;
+    private javax.swing.JLabel lblDatar;
+    private javax.swing.JLabel lblDescricao;
+    private javax.swing.JLabel lblLocalizacao;
+    private javax.swing.JLabel lblParceiro;
+    private javax.swing.JLabel lblProgramacao;
+    private javax.swing.JLabel lblhorarioInicio;
+    private javax.swing.JLabel lblparceiroNome;
+    private javax.swing.JLabel lblpublcioAlvo;
+    private javax.swing.JTextField novaProgramacao;
     private javax.swing.JTable tblEvenetos;
     private javax.swing.JTextField txtCategoria;
     private javax.swing.JTextField txtData;
+    private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtLocalizacao;
     private javax.swing.JTextField txtProgramacao;
     private javax.swing.JTextField txtPublicoAlvo;
     private javax.swing.JTextField txtcnpj;
     private javax.swing.JTextField txthorarioInicio;
     private javax.swing.JTextField txtnomeEvento;
+    private javax.swing.JTextField txtnovaCategoria;
+    private javax.swing.JTextField txtnovaData;
+    private javax.swing.JTextField txtnovaDescricao;
+    private javax.swing.JTextField txtnovaLocalizacao;
+    private javax.swing.JTextField txtnovoEvento;
+    private javax.swing.JTextField txtnovoHorario;
+    private javax.swing.JTextField txtnovoParceiro;
+    private javax.swing.JTextField txtnovopublicoAlvo;
     // End of variables declaration//GEN-END:variables
 }
