@@ -73,10 +73,6 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
 
         jLabel5.setText("CONFIRME A SENHA:");
 
-        senha1.setText("jPasswordField1");
-
-        senha2.setText("jPasswordField1");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,6 +149,7 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
 
             // Cria o usuário com o tipo e a senha
             Usuario user = new Usuario();
+            user.setAtivo(true);
             user.setSenha(senha1Texto);
             user.setTipo(tipoComum);
             user.setNome(nome);

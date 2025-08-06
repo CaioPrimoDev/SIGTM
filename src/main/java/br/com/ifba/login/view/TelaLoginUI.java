@@ -66,7 +66,6 @@ public class TelaLoginUI extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/user.png"))); // NOI18N
 
-        txtCampoSenha.setText("txtCampoSenha");
         txtCampoSenha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCampoSenhaActionPerformed(evt);
@@ -201,9 +200,9 @@ public class TelaLoginUI extends javax.swing.JFrame {
             String tipo = usuario.getTipo().getNome().toUpperCase();
 
             switch (tipo) {
-                case "GESTOR" -> MostrarMensagem.info(this, "Gestor cadastrado com sucesso!", "Sucesso");
-                case "PARCEIRO" -> MostrarMensagem.info(this, "Parceiro cadastrado com sucesso!", "Sucesso");
-                case "USUARIO_COMUM" -> MostrarMensagem.info(this, "Usuario comum cadastrado com sucesso!", "Sucesso");
+                case "GESTOR" -> MostrarMensagem.info(this, "Gestor logado com sucesso!", "Sucesso");
+                case "PARCEIRO" -> MostrarMensagem.info(this, "Parceiro logado com sucesso!", "Sucesso");
+                case "USUARIO_COMUM" -> MostrarMensagem.info(this, "Usuario comum logado com sucesso!", "Sucesso");
                 default -> MostrarMensagem.erro(this, "Tipo de usuário desconhecido.", "Erro");
             }
 

@@ -35,6 +35,7 @@ public class Usuario extends Pessoa {
 
     @ManyToOne
     private TipoUsuario tipo;
+
     
     // Verifica para aparecer na tabela de solicitações para parceria
     @Column(nullable = false)
