@@ -69,6 +69,14 @@ public class ParceirosListar extends javax.swing.JFrame {
         preencherTabelaParceiros();
     }
 
+      public Parceiro procurarParceirocnpj(String cnpj){
+   
+    Parceiro parceiro = parceiroController.findByCnpj(cnpj)
+                           .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
+   
+    return parceiro;
+   }
+    
     public void preencherTabelaParceiros() {
         // PEDRO
         // um metodo para buscar os dados de usuario pelo parceiro é:
@@ -177,13 +185,10 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tblSolicitantes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Razão social", "CNPJ", "Segmento empresarial", "Telfone", "Email"
+                "Parceiro", "CNPJ", "Segmento empresarial", "Telfone", "Email", "CNPJ", "Nome da empresa"
             }
         ));
         tblSolicitantes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -524,12 +529,10 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         try {
-            Long id = Long.valueOf(termo);
-
             //usar invokeLater para garantir execução na thread correta
             SwingUtilities.invokeLater(() -> {
                 try {
-                    Parceiro parceiro = parceiroController.findById(id);
+                    Parceiro parceiro = procurarParceirocnpj(termo);
                     //primeiro ver se é numérico
                     if (parceiro != null) {
                         tableModelS.addRow(new Object[]{
@@ -578,7 +581,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         listaSolicitantes.clear(); // limpar a lista 
 
-        List<Usuario> listaCapsula = usuarioController.findBySolicitacaoTrue();
+        List<Usuario> listaCapsula = usuarioController.findBySolicitacaoSolicitouParceriaTrue();
 
         for (Usuario solicitantes : listaCapsula) {
 
@@ -595,7 +598,9 @@ public class ParceirosListar extends javax.swing.JFrame {
             tableModel.addRow(new Object[]{
                 solicitantes.getNome(),
                 solicitantes.getTelefone(),
-                solicitantes.getEmail()
+                solicitantes.getEmail(),
+                solicitantes.getSolicitacao().getCnpj(),
+                solicitantes.getSolicitacao().getNomeEmpresa()
             });
         }
     }
@@ -622,9 +627,9 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         }
 
-        String cnpj = "12351462414";// esses parametros serão devidamente preenchidos a partir da tela de solicitação que fica com o usuario
-        String nomeEmpresa = "Cleide";
-
+        String cnpj = novoParceiroCapsula.getSolicitacao().getCnpj();
+        String nomeEmpresa = novoParceiroCapsula.getSolicitacao().getNomeEmpresa(); // coloquei nesse formato para melhorar a leitura de código  
+        
         adicionarParceiro(novoParceiroCapsula, cnpj, nomeEmpresa);
 
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
@@ -650,7 +655,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         //solicitacao = false e vai sair da lista de solicitantes
-        novoParceiroCapsula.setSolicitacao(false);//como ele foi recusado vai sair da lista de solicitÇão
+        novoParceiroCapsula.getSolicitacao().setSolicitouParceria(false); 
         listaSolicitantes.remove(novoParceiroCapsula);
     }//GEN-LAST:event_btnNegarActionPerformed
 

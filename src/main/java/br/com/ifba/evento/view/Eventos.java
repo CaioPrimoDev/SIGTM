@@ -9,6 +9,7 @@ import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.usuario.parceiro.controller.ParceiroIController;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.util.StringUtil;
+import java.awt.HeadlessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -81,7 +83,8 @@ public class Eventos extends javax.swing.JFrame {
             evento.getHora().plusHours(2).toLocalTime(),
             evento.getData(),
             evento.getPublicoAlvo(),
-            evento.getNivelAcessibilidade()
+            evento.getNivelAcessibilidade(),
+            evento.getLocalizacao()
         });
     }
 }
@@ -198,7 +201,7 @@ public class Eventos extends javax.swing.JFrame {
         lblCategoria = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         lblDescricao = new javax.swing.JLabel();
-        JEdit = new javax.swing.JFrame();
+        jEdit = new javax.swing.JFrame();
         txtnovoParceiro = new javax.swing.JTextField();
         txtnovoEvento = new javax.swing.JTextField();
         txtnovaCategoria = new javax.swing.JTextField();
@@ -225,8 +228,8 @@ public class Eventos extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEvenetos = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        btnAdicionar = new javax.swing.JButton();
+        txtpesquisarEvento = new javax.swing.JTextField();
+        btnadicionarEvento = new javax.swing.JButton();
         btnRemover = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
 
@@ -471,15 +474,15 @@ public class Eventos extends javax.swing.JFrame {
 
         jLabel20.setText("Nova descrição");
 
-        javax.swing.GroupLayout JEditLayout = new javax.swing.GroupLayout(JEdit.getContentPane());
-        JEdit.getContentPane().setLayout(JEditLayout);
-        JEditLayout.setHorizontalGroup(
-            JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JEditLayout.createSequentialGroup()
-                .addGroup(JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(JEditLayout.createSequentialGroup()
+        javax.swing.GroupLayout jEditLayout = new javax.swing.GroupLayout(jEdit.getContentPane());
+        jEdit.getContentPane().setLayout(jEditLayout);
+        jEditLayout.setHorizontalGroup(
+            jEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jEditLayout.createSequentialGroup()
+                .addGroup(jEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jEditLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtnovoParceiro, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtnovoEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtnovaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -500,14 +503,14 @@ public class Eventos extends javax.swing.JFrame {
                             .addComponent(jLabel23)
                             .addComponent(txtnovaDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20)))
-                    .addGroup(JEditLayout.createSequentialGroup()
+                    .addGroup(jEditLayout.createSequentialGroup()
                         .addGap(138, 138, 138)
                         .addComponent(btnconfirmarAlteracoes)))
                 .addContainerGap(65, Short.MAX_VALUE))
         );
-        JEditLayout.setVerticalGroup(
-            JEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JEditLayout.createSequentialGroup()
+        jEditLayout.setVerticalGroup(
+            jEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jEditLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -574,14 +577,25 @@ public class Eventos extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblEvenetos);
 
-        btnAdicionar.setText("ADICIONAR");
-        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+        txtpesquisarEvento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisarEventoKeyReleased(evt);
+            }
+        });
+
+        btnadicionarEvento.setText("ADICIONAR");
+        btnadicionarEvento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAdicionarActionPerformed(evt);
+                btnadicionarEventoActionPerformed(evt);
             }
         });
 
         btnRemover.setText("REMOVER");
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         btnEditar.setText("EDITAR");
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -598,13 +612,13 @@ public class Eventos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnadicionarEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(btnEditar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnRemover)
                         .addGap(162, 162, 162)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtpesquisarEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(372, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1030, Short.MAX_VALUE)
         );
@@ -613,12 +627,12 @@ public class Eventos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnadicionarEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRemover, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpesquisarEvento, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -626,12 +640,12 @@ public class Eventos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+    private void btnadicionarEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadicionarEventoActionPerformed
         jAdicionar.setVisible(true);
          jAdicionar.setSize(343, 515);
          jAdicionar.setLocationRelativeTo(null);
 
-    }//GEN-LAST:event_btnAdicionarActionPerformed
+    }//GEN-LAST:event_btnadicionarEventoActionPerformed
 
     private void btnConfirmarEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarEventoActionPerformed
        if(stringUtil.isNullOrEmpty(txtcnpj.getText()) || stringUtil.isCnpjValido(txtcnpj.getText())){
@@ -822,18 +836,96 @@ resetarSelecao();
         // TODO add your handling code here:
     }//GEN-LAST:event_txtnovaDescricaoActionPerformed
 
+    private void txtpesquisarEventoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarEventoKeyReleased
+       String termo = txtpesquisarEvento.getText().trim(); 
+
+// Limpar tabela de forma segura na EDT
+SwingUtilities.invokeLater(() -> {
+    tableModel.setRowCount(0); // Supondo que o modelo da tabela de eventos é tableModelEventos
+});
+
+if (termo.isEmpty()) {
+    preencherTabelaEventos(); // Método que preenche a tabela com todos os eventos
+    return;
+}
+
+// Pesquisar apenas por nome (não precisa da parte numérica)
+SwingUtilities.invokeLater(() -> {
+    try {
+        List<Evento> resultados = eventoController.findByNomeContainingIgnoreCase(termo);
+
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum evento encontrado com esse nome.");
+            preencherTabelaEventos(); // Preenche com todos os eventos novamente
+        } else {
+             for (Evento evento : resultados) {
+        tableModel.addRow(new Object[]{
+            evento.getParceiro().getNomeEmpresa(),
+            evento.getNome(),
+            evento.getHora().toLocalTime(),            
+            evento.getHora().plusHours(2).toLocalTime(),
+            evento.getData(),
+            evento.getPublicoAlvo(),
+            evento.getNivelAcessibilidade(),
+            evento.getLocalizacao()
+        });
+    }
+        }
+    } catch (HeadlessException e) {
+        JOptionPane.showMessageDialog(null, "Erro ao buscar eventos: " + e.getMessage());
+    }
+});
+    }//GEN-LAST:event_txtpesquisarEventoKeyReleased
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        if (itemSelecionado == -1) {
+    JOptionPane.showMessageDialog(null, "Nenhum evento selecionado. Tente novamente.");
+    return;
+}
+
+Evento eventoExcluir = listaEventos.get(itemSelecionado);
+
+int resposta = JOptionPane.showConfirmDialog(
+        this,
+        "Deseja realmente excluir o evento:\n" + eventoExcluir.getNome() + "?",
+        "Confirmação de exclusão",
+        JOptionPane.YES_NO_OPTION
+);
+
+// 0 = sim | 1 = não | -1 = nada
+if (resposta == JOptionPane.YES_OPTION) {
+    try {
+        // Remove da lista
+        listaEventos.remove(itemSelecionado);
+        
+        // Remove da tabela
+        tableModel.removeRow(itemSelecionado);
+        
+        // Exclui do banco de dados
+        eventoController.delete(eventoExcluir.getId());
+        
+        resetarSelecao();
+        
+        JOptionPane.showMessageDialog(null, "Evento excluído com sucesso!");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Erro ao excluir evento: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+    
+    }
+}
+    }//GEN-LAST:event_btnRemoverActionPerformed
+
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JFrame JEdit;
-    private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnConfirmarEvento;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnRemover;
+    private javax.swing.JButton btnadicionarEvento;
     private javax.swing.JButton btnconfirmarAlteracoes;
     private javax.swing.JComboBox<String> cbxnivelAcessibilidade;
     private javax.swing.JComboBox<String> cbxnovaAcessibilidade;
     private javax.swing.JFrame jAdicionar;
+    private javax.swing.JFrame jEdit;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -849,7 +941,6 @@ resetarSelecao();
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblCategoria;
     private javax.swing.JLabel lblDatar;
     private javax.swing.JLabel lblDescricao;
@@ -878,5 +969,6 @@ resetarSelecao();
     private javax.swing.JTextField txtnovoHorario;
     private javax.swing.JTextField txtnovoParceiro;
     private javax.swing.JTextField txtnovopublicoAlvo;
+    private javax.swing.JTextField txtpesquisarEvento;
     // End of variables declaration//GEN-END:variables
 }

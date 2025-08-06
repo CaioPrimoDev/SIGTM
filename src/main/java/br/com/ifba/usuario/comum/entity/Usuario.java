@@ -4,13 +4,16 @@
  */
 package br.com.ifba.usuario.comum.entity;
 
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.infrastructure.entity.Pessoa;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,10 +39,9 @@ public class Usuario extends Pessoa {
     @ManyToOne
     private TipoUsuario tipo;
 
-    
     // Verifica para aparecer na tabela de solicitações para parceria
-    @Column(nullable = false)
-    private boolean solicitacao;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Solicitacao solicitacao;
     
     //GAMBIARRA PARA RODAR
     @Column(nullable = true, unique = true)

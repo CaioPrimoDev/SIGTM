@@ -19,7 +19,7 @@ public interface UsuarioIService {
     List<Usuario> findAll();
     Usuario findById(Long id);
     List<Usuario> findByNomeContainingIgnoreCase(String nome);
-    List<Usuario> findBySolicitacaoTrue();
+    List<Usuario> findBySolicitacaoSolicitouParceriaTrue();
     List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo);
     List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome);
     List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);

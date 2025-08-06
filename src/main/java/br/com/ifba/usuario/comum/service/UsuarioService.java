@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -110,11 +110,11 @@ public class UsuarioService implements UsuarioIService {
     }
 
         @Override
-        public List<Usuario> findBySolicitacaoTrue() {
+        public List<Usuario> findBySolicitacaoSolicitouParceriaTrue() {
         log.info("Iniciando busca por usuários com solicitação TRUE...");
         List<Usuario> usuarios = null;
         try {
-            usuarios = UserRepo.findBySolicitacaoTrue();
+            usuarios = UserRepo.findBySolicitacaoSolicitouParceriaTrue();
             if (usuarios.isEmpty()) {
                 log.warn("Nenhum usuário com solicitação TRUE foi encontrado.");
             } else {

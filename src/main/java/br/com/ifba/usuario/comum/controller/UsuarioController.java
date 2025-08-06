@@ -46,8 +46,8 @@ public class UsuarioController implements UsuarioIController {
     }
 
     @Override
-    public List<Usuario> findBySolicitacaoTrue() {
-        return service.findBySolicitacaoTrue();
+    public List<Usuario> findBySolicitacaoSolicitouParceriaTrue() {
+        return service.findBySolicitacaoSolicitouParceriaTrue();
     }
 
     @Override

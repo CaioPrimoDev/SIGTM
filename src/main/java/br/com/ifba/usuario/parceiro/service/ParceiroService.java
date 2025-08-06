@@ -178,8 +178,10 @@ public class ParceiroService implements ParceiroIService {
       parceiro.setSenha(usuario.getSenha());
       parceiro.setAtivo(usuario.isAtivo());
       parceiro.setTipo(tipo);
-      parceiro.setSolicitacao(false);// como ele esta sendo aprovado  para ser parceiro não há necessidade de manter a solicitação
-    
+      parceiro.getSolicitacao().setCnpj(cnpj);// como ele esta sendo aprovado  para ser parceiro não há necessidade de manter a solicitação
+      parceiro.getSolicitacao().setNomeEmpresa(nomeEmpresa);
+      parceiro.getSolicitacao().setSolicitouParceria(false);
+      
       //DADOS DO PARCEIRO
       parceiro.setCnpj(cnpj);
       parceiro.setNomeEmpresa(nomeEmpresa);
@@ -204,7 +206,7 @@ public class ParceiroService implements ParceiroIService {
         usuario.setSenha(parceiro.getSenha());
         usuario.setAtivo(parceiro.isAtivo());
         usuario.setTipo(tipo);
-        usuario.setSolicitacao(false);
+        parceiro.getSolicitacao().setSolicitouParceria(false);
 
         return usuario;
     }
