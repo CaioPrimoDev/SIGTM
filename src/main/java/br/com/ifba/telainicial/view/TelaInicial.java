@@ -4,6 +4,7 @@
  */
 package br.com.ifba.telainicial.view;
 
+import br.com.ifba.central.view.TelaCentralInformacoesUI;
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoList;
@@ -46,6 +47,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btnLogar = new javax.swing.JButton();
         btnPromocoes = new javax.swing.JButton();
         btncrudParceiros = new javax.swing.JButton();
+        btnCentral = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,6 +79,13 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btnCentral.setText("Central de Informações Turísticas");
+        btnCentral.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCentralActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -88,17 +97,22 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnPromocoes)
                             .addComponent(btncrudParceiros)
-                            .addComponent(btnCRUDPontoTuristico)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnCRUDPontoTuristico)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
+                                .addComponent(btnCentral))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(243, 243, 243)
                         .addComponent(btnLogar)))
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addGap(48, 48, 48))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addComponent(btnCRUDPontoTuristico)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCRUDPontoTuristico)
+                    .addComponent(btnCentral))
                 .addGap(18, 18, 18)
                 .addComponent(btnPromocoes)
                 .addGap(18, 18, 18)
@@ -135,8 +149,14 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
        crudParceiros.setVisible(true);
     }//GEN-LAST:event_btncrudParceirosActionPerformed
 
+    private void btnCentralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCentralActionPerformed
+        TelaCentralInformacoesUI central = applicationContext.getBean(TelaCentralInformacoesUI.class);
+        central.setVisible(true);
+    }//GEN-LAST:event_btnCentralActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
+    private javax.swing.JButton btnCentral;
     private javax.swing.JButton btnLogar;
     private javax.swing.JButton btnPromocoes;
     private javax.swing.JButton btncrudParceiros;
