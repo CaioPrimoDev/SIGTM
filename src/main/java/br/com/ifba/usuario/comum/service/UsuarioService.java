@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.comum.service;
 
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import br.com.ifba.util.RegraNegocioException;
@@ -163,30 +164,30 @@ public class UsuarioService implements UsuarioIService {
         //localizar parceiros por nome 
         @Override
         public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome) {
-        try {
-            log.info("Buscando parceiros com tipo: {} e nome: {}", tipoNome, nome);
-            
-            // Verificação de entrada
-            if (!StringUtils.hasText(tipoNome) || !StringUtils.hasText(nome)) {
-                log.warn("Parâmetros inválidos - tipoNome: {}, nome: {}", tipoNome, nome);
+            try {
+                log.info("Buscando parceiros com tipo: {} e nome: {}", tipoNome, nome);
+
+                // Verificação de entrada
+                if (!StringUtils.hasText(tipoNome) || !StringUtils.hasText(nome)) {
+                    log.warn("Parâmetros inválidos - tipoNome: {}, nome: {}", tipoNome, nome);
+                    return Collections.emptyList();
+                }
+
+                List<Usuario> resultado = UserRepo.findByTipoNomeAndNomeContainingIgnoreCase(tipoNome, nome);
+
+                // Verificação de resultado
+                if (resultado.isEmpty()) {
+                    log.info("Nenhum parceiro encontrado para nome: {}", nome);
+                } else {
+                    log.info("Encontrados {} parceiros para nome: {}", resultado.size(), nome);
+                }
+
+                return resultado;
+            } catch (Exception e) {
+                log.error("Erro ao buscar parceiros por nome: {}", nome, e);
                 return Collections.emptyList();
             }
-
-            List<Usuario> resultado = UserRepo.findByTipoNomeAndNomeContainingIgnoreCase(tipoNome, nome);
-            
-            // Verificação de resultado
-            if (resultado.isEmpty()) {
-                log.info("Nenhum parceiro encontrado para nome: {}", nome);
-            } else {
-                log.info("Encontrados {} parceiros para nome: {}", resultado.size(), nome);
-            }
-            
-            return resultado;
-        } catch (Exception e) {
-            log.error("Erro ao buscar parceiros por nome: {}", nome, e);
-            return Collections.emptyList();
         }
-    }
      
         @Override
         public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
@@ -218,6 +219,22 @@ public class UsuarioService implements UsuarioIService {
         }
         return usuarios;
     }
+        
+        @Override
+        public void processarSolicitacaoParceria(Usuario usuario, String cnpj, String nomeEmpresa) {
+            Solicitacao solicitacao = usuario.getSolicitacao();
+
+            if (solicitacao == null) {
+                solicitacao = new Solicitacao();
+                usuario.setSolicitacao(solicitacao);
+            }
+
+            solicitacao.setCnpj(cnpj);
+            solicitacao.setNomeEmpresa(nomeEmpresa);
+            solicitacao.setSolicitouParceria(true);
+
+            UserRepo.save(usuario); // Salva usuário + solicitação
+        }
    
         @Override
         public void validarUsuario(Usuario user) {
@@ -234,6 +251,14 @@ public class UsuarioService implements UsuarioIService {
         if (!StringUtil.hasValidLength(user.getNome(), 3, 30)) {
             log.warn("Nome do Usuário fora do tamanho permitido: '{}'", user.getNome());
             throw new RegraNegocioException("O nome do Usuário deve ter entre 3 e 30 caracteres.");
+        }
+        
+        if(user.getSolicitacao() != null) {
+            
+            if(!StringUtil.isCnpjValido(user.getSolicitacao().getCnpj())) {
+                log.warn("CNPJ inválido!");
+                throw new RegraNegocioException("O CNPJ do Usuário é invalido.");
+            }
         }
         
     }

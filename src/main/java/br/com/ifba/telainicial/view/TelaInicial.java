@@ -4,12 +4,16 @@
  */
 package br.com.ifba.telainicial.view;
 
+import br.com.ifba.Solicitacao.view.SolicitarParceria;
 import br.com.ifba.central.view.TelaCentralInformacoesUI;
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoList;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.parceiro.view.ParceirosListar;
+import br.com.ifba.util.MostrarMensagem;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -22,6 +26,10 @@ import org.springframework.stereotype.Component;
 public class TelaInicial extends javax.swing.JFrame implements ApplicationContextAware{
 
     private ApplicationContext applicationContext;
+    
+    @Autowired
+    private UsuarioSession usuarioSession;
+    
     /**
      * Creates new form TelaInicial
      */
@@ -48,6 +56,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btnPromocoes = new javax.swing.JButton();
         btncrudParceiros = new javax.swing.JButton();
         btnCentral = new javax.swing.JButton();
+        btnSolicitar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,6 +95,13 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btnSolicitar.setText("Solicitar Parceria");
+        btnSolicitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSolicitarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -105,6 +121,10 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                         .addGap(243, 243, 243)
                         .addComponent(btnLogar)))
                 .addGap(48, 48, 48))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(219, 219, 219)
+                .addComponent(btnSolicitar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +139,9 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                 .addComponent(btncrudParceiros)
                 .addGap(42, 42, 42)
                 .addComponent(btnLogar)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnSolicitar)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -154,11 +176,22 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         central.setVisible(true);
     }//GEN-LAST:event_btnCentralActionPerformed
 
+    private void btnSolicitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarActionPerformed
+        if(!usuarioSession.isLogado()) {
+           MostrarMensagem.erro(this, "O Usuario precisa estar logado", "Erro");
+        } else {
+            SolicitarParceria soc = applicationContext.getBean(SolicitarParceria.class);
+            soc.setLocationRelativeTo(this); // posiciona centralizado
+            soc.setVisible(true);
+        }  
+    }//GEN-LAST:event_btnSolicitarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnCentral;
     private javax.swing.JButton btnLogar;
     private javax.swing.JButton btnPromocoes;
+    private javax.swing.JButton btnSolicitar;
     private javax.swing.JButton btncrudParceiros;
     // End of variables declaration//GEN-END:variables
 

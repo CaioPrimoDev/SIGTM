@@ -23,5 +23,6 @@ public interface UsuarioIService {
     List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo);
     List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome);
     List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);
+    void processarSolicitacaoParceria(Usuario usuario, String cnpj, String nomeEmpresa);
     void validarUsuario(Usuario user);    
 }

@@ -25,6 +25,9 @@ public class DialogOrientacaoUI extends JDialog {
 
     /**
      * Creates new form DialogOrientacaoUI
+     * @param parent
+     * @param modal
+     * @param controller
      */
     public DialogOrientacaoUI(java.awt.Frame parent, boolean modal, OrientacaoIController controller) {
         super(parent, modal);

@@ -6,6 +6,7 @@ package br.com.ifba.login.view;
 
 import br.com.ifba.login.controller.LoginController;
 import br.com.ifba.login.controller.LoginIController;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.comum.view.TelaUsuarioCadastrarUI;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
@@ -25,6 +26,9 @@ public class TelaLoginUI extends javax.swing.JFrame {
     
     @Autowired
     private ApplicationContext context; // para chamar a tela de cadastro
+    
+    @Autowired
+    private UsuarioSession usuarioSession;
 
     /**
      * Creates new form TelaLoginUI
@@ -195,6 +199,7 @@ public class TelaLoginUI extends javax.swing.JFrame {
         Usuario usuario = loginController.login(email, senha);
 
         if (usuario != null) {
+            usuarioSession.setUsuarioLogado(usuario); // Salva o Usuario logado
             this.dispose();
 
             String tipo = usuario.getTipo().getNome().toUpperCase();
