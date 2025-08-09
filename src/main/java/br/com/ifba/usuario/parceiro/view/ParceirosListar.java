@@ -69,7 +69,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         preencherTabelaParceiros();
     }
 
-      public Parceiro procurarParceirocnpj(String cnpj){
+    public Parceiro procurarParceirocnpj(String cnpj){
    
     Parceiro parceiro = parceiroController.findByCnpj(cnpj)
                            .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
@@ -108,19 +108,19 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         listaParceiros.add(parceiroCapsula);
 
-        for (Parceiro parceiro : listaParceiros) {
+        
             tableModel.addRow(new Object[]{
-                parceiro.getNome(),
-                parceiro.getCnpj(),
-                parceiro.getNomeEmpresa(),
-                parceiro.getEmail(),
-                parceiro.getTelefone()
+                parceiroCapsula.getNome(),
+                parceiroCapsula.getCnpj(),
+                parceiroCapsula.getNomeEmpresa(),
+                parceiroCapsula.getEmail(),
+                parceiroCapsula.getTelefone()
             });
 
             parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
-            usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
+           // usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
 
-        }
+        
     }
 
     public void editarParceiro(Parceiro parceiro) {
@@ -136,6 +136,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             System.out.println("Nenhum item selecionado");
             return;
         }
+        
         parceiroController.save(parceiro);//atualizar db
 
         listaParceiros.set(itemSelecionado, parceiro);
@@ -154,6 +155,17 @@ public class ParceirosListar extends javax.swing.JFrame {
 
     }
 
+   public void atualizarSolicitantes(){
+   
+   tableModelS.setRowCount(0);
+   carregardadosSolicitantes();
+   
+   }
+    
+   public void atualizarParceiros(){
+   
+   }
+   
    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -163,7 +175,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         tblSolicitantes = new javax.swing.JTable();
         btnAceitar = new javax.swing.JButton();
         btnNegar = new javax.swing.JButton();
-        btnRetornar = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
         txtpesquisarSolicitantes = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         EditarParceiro = new javax.swing.JFrame();
@@ -182,13 +194,14 @@ public class ParceirosListar extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         txtbarradePesquisa = new javax.swing.JTextField();
+        btnatualizarTabela = new javax.swing.JButton();
 
         tblSolicitantes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Parceiro", "CNPJ", "Segmento empresarial", "Telfone", "Email", "CNPJ", "Nome da empresa"
+                "Parceiro", "CNPJ", "Segmento empresarial", "CNPJ", "Nome da empresa"
             }
         ));
         tblSolicitantes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -212,7 +225,12 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
-        btnRetornar.setText("VOLTAR");
+        btnRefresh.setText("VOLTAR");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         txtpesquisarSolicitantes.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -230,7 +248,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnRetornar)
+                    .addComponent(btnRefresh)
                     .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
                         .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
@@ -256,7 +274,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                     .addComponent(btnNegar, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRetornar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -381,6 +399,13 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
+        btnatualizarTabela.setText("autalizar tabela");
+        btnatualizarTabela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnatualizarTabelaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -392,8 +417,13 @@ public class ParceirosListar extends javax.swing.JFrame {
                             .addComponent(btnverSolicitacoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(166, 166, 166)
-                        .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(166, 166, 166)
+                                .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addComponent(btnatualizarTabela)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
                 .addContainerGap())
@@ -401,14 +431,16 @@ public class ParceirosListar extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(btnverSolicitacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnverSolicitacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnatualizarTabela))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtbarradePesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -485,28 +517,26 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         Parceiro parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
 
-        if (txtnovoNome.getText().isEmpty()) {
+        if (!txtnovoNome.getText().isEmpty()) {
 
-            parceiroEditar.setNome(parceiroEditar.getNome());//caso o campo esteja vazio deixar o objeto como ele está
-
-        }
-
-        if (txtnovoSegmentoempresarial.getText().isEmpty()) {
-
-            parceiroEditar.setNomeEmpresa(parceiroEditar.getNomeEmpresa());//caso o campo esteja vazio deixar o objeto como ele está
+            parceiroEditar.setNome(txtnovoNome.getText());//caso o campo esteja vazio deixar o objeto como ele está
 
         }
 
-        if (txtnovoEmail.getText().isEmpty()) {
+        if (!txtnovoSegmentoempresarial.getText().isEmpty()) {
 
-            parceiroEditar.setEmail(parceiroEditar.getEmail());//caso o campo esteja vazio deixar o objeto como ele está
+            parceiroEditar.setNomeEmpresa(txtnovoSegmentoempresarial.getText());
 
         }
 
-        if (txtnovoTelefone.getText().isEmpty()) {
+        if (!txtnovoEmail.getText().isEmpty()) {
 
-            parceiroEditar.setTelefone(parceiroEditar.getTelefone());//caso o campo esteja vazio deixar o objeto como ele está
+            parceiroEditar.setEmail(txtnovoEmail.getText());
+        }
 
+        if (!txtnovoTelefone.getText().isEmpty()) {
+
+            parceiroEditar.setTelefone(txtnovoTelefone.getText());
         }
 
         editarParceiro(parceiroEditar);
@@ -595,7 +625,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     public void preenchertabelaSolicitantes() {
 
         for (Usuario solicitantes : listaSolicitantes) {
-            tableModel.addRow(new Object[]{
+            tableModelS.addRow(new Object[]{
                 solicitantes.getNome(),
                 solicitantes.getTelefone(),
                 solicitantes.getEmail(),
@@ -627,27 +657,23 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         }
 
-        String cnpj = novoParceiroCapsula.getSolicitacao().getCnpj();
-        String nomeEmpresa = novoParceiroCapsula.getSolicitacao().getNomeEmpresa(); // coloquei nesse formato para melhorar a leitura de código  
-        
-        adicionarParceiro(novoParceiroCapsula, cnpj, nomeEmpresa);
+       /* String cnpj = novoParceiroCapsula.getSolicitacao().getCnpj();
+        String nomeEmpresa = novoParceiroCapsula.getSolicitacao().getNomeEmpresa(); // coloquei nesse formato para melhorar a leitura de código */ 
+       
+        adicionarParceiro(novoParceiroCapsula, novoParceiroCapsula.getSolicitacao().getCnpj(), novoParceiroCapsula.getSolicitacao().getNomeEmpresa());
 
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
 
         JOptionPane.showMessageDialog(null, "O " + novoParceiroCapsula.getNome() + " foi adicionado como parceiro");
+        
+        atualizarSolicitantes();
     }//GEN-LAST:event_btnAceitarActionPerformed
 
     private void btnNegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNegarActionPerformed
-        if (listaSolicitantes.isEmpty()) {
 
-            JOptionPane.showMessageDialog(null, "Nenhuma solicitação requerida");
-            return;
+        Usuario parceiroNegado = listaSolicitantes.get(itemSelecionado);
 
-        }
-
-        Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
-
-        if (novoParceiroCapsula == null) {
+        if (parceiroNegado == null) {
 
             JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
             return;
@@ -655,8 +681,9 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         //solicitacao = false e vai sair da lista de solicitantes
-        novoParceiroCapsula.getSolicitacao().setSolicitouParceria(false); 
-        listaSolicitantes.remove(novoParceiroCapsula);
+        parceiroNegado.getSolicitacao().setSolicitouParceria(false); 
+        listaSolicitantes.remove(parceiroNegado);
+        tableModelS.removeRow(itemSelecionado);
     }//GEN-LAST:event_btnNegarActionPerformed
 
     private void txtpesquisarSolicitantesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarSolicitantesKeyReleased
@@ -724,6 +751,14 @@ public class ParceirosListar extends javax.swing.JFrame {
        itemSelecionado = tblSolicitantes.getSelectedRow();
     }//GEN-LAST:event_tblSolicitantesMouseClicked
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        atualizarSolicitantes();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void btnatualizarTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnatualizarTabelaActionPerformed
+        atualizarParceiros();
+    }//GEN-LAST:event_btnatualizarTabelaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -735,7 +770,8 @@ public class ParceirosListar extends javax.swing.JFrame {
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNegar;
-    private javax.swing.JButton btnRetornar;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnatualizarTabela;
     private javax.swing.JButton btnconfirmarMudancas;
     private javax.swing.JButton btnverSolicitacoes;
     private javax.swing.JButton jButton1;

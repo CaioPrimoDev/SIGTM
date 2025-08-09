@@ -4,8 +4,8 @@
  */
 package br.com.ifba.Solicitacao.view;
 
-import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
 import br.com.ifba.sessao.UsuarioSession;
+import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
 import br.com.ifba.util.RegraNegocioException;
@@ -23,7 +23,7 @@ public class SolicitarParceria extends javax.swing.JDialog {
     private UsuarioSession usuarioSession;
     
     @Autowired
-    private SolicitacaoIController controller;
+    private UsuarioIController controller;
     
     private Usuario user;
 
@@ -131,9 +131,12 @@ public class SolicitarParceria extends javax.swing.JDialog {
     private void btnSolicitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarActionPerformed
         String cnpj = txtCnpj.getText();
         String nomeEmpresa = txtNomeEmpresa.getText();
+        //tive que  mudar aqui caio 
+        usuarioSession.getUsuarioLogado().getSolicitacao().setCnpj(cnpj);//coloco dentro do usuario solicitante seu usuario e cpf
+        usuarioSession.getUsuarioLogado().getSolicitacao().setNomeEmpresa(nomeEmpresa);
         
         try {
-            controller.solicitarParceria(user, cnpj, nomeEmpresa);
+            controller.save(usuarioSession.getUsuarioLogado());//salvo no bd
             MostrarMensagem.info(this, "Solicitação feita com sucesso!", " ");
             this.dispose();
         } catch (RegraNegocioException ex) {

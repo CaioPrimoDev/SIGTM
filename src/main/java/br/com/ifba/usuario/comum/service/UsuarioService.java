@@ -253,13 +253,13 @@ public class UsuarioService implements UsuarioIService {
             throw new RegraNegocioException("O nome do Usuário deve ter entre 3 e 30 caracteres.");
         }
         
-        if(user.getSolicitacao() != null) {
+       /* if(user.getSolicitacao() != null) {
             
             if(!StringUtil.isCnpjValido(user.getSolicitacao().getCnpj())) {
                 log.warn("CNPJ inválido!");
                 throw new RegraNegocioException("O CNPJ do Usuário é invalido.");
             }
-        }
+        }*/
         
     }
     

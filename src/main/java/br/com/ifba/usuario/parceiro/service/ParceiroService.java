@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.service;
 
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.comum.entity.TipoUsuario;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
@@ -148,10 +149,10 @@ public class ParceiroService implements ParceiroIService {
             throw new RegraNegocioException("O Parceiro não pode ser nulo.");
         }
             
-            if(!StringUtil.isCnpjValido(user.getCnpj()) || StringUtil.isNullOrEmpty(user.getCnpj())) {
+            /*if(!StringUtil.isCnpjValido(user.getCnpj()) || StringUtil.isNullOrEmpty(user.getCnpj())) {
                 log.warn("CNPJ vazio ou inválido");
                 throw new RegraNegocioException("Um CNPJ válido é obrigatório");
-            }
+            }*/
             
             if(StringUtil.isNullOrEmpty(user.getNomeEmpresa())) {
                 log.warn("O nome da empresa vazio ou inválido");
@@ -167,6 +168,9 @@ public class ParceiroService implements ParceiroIService {
     TipoUsuario tipo = new TipoUsuario();
     tipo.setNome("PARCEIRO");
     tipo.setDescricao("");
+    
+    Solicitacao solicitacao = new Solicitacao();
+    parceiro.setSolicitacao(solicitacao);//garantindo que solicitacao não seja nula
     
     //como a herança é obrigtatória eu passo os dados de usuario para parceiro via cópia
     //DADOS DA PESSOA
