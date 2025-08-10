@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -39,9 +40,11 @@ public class Usuario extends Pessoa {
     @ManyToOne
     private TipoUsuario tipo;
 
-    // Verifica para aparecer na tabela de solicitações para parceria
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    // Mapeamento inverso: Usuario não tem a FK, mapeado por "usuario" em Solicitacao
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Solicitacao solicitacao;
+
     
     //GAMBIARRA PARA RODAR
     @Column(nullable = true, unique = true)

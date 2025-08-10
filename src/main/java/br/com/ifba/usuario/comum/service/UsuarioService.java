@@ -219,22 +219,6 @@ public class UsuarioService implements UsuarioIService {
         }
         return usuarios;
     }
-        
-        @Override
-        public void processarSolicitacaoParceria(Usuario usuario, String cnpj, String nomeEmpresa) {
-            Solicitacao solicitacao = usuario.getSolicitacao();
-
-            if (solicitacao == null) {
-                solicitacao = new Solicitacao();
-                usuario.setSolicitacao(solicitacao);
-            }
-
-            solicitacao.setCnpj(cnpj);
-            solicitacao.setNomeEmpresa(nomeEmpresa);
-            solicitacao.setSolicitouParceria(true);
-
-            UserRepo.save(usuario); // Salva usuário + solicitação
-        }
    
         @Override
         public void validarUsuario(Usuario user) {
@@ -251,16 +235,7 @@ public class UsuarioService implements UsuarioIService {
         if (!StringUtil.hasValidLength(user.getNome(), 3, 30)) {
             log.warn("Nome do Usuário fora do tamanho permitido: '{}'", user.getNome());
             throw new RegraNegocioException("O nome do Usuário deve ter entre 3 e 30 caracteres.");
-        }
-        
-       /* if(user.getSolicitacao() != null) {
-            
-            if(!StringUtil.isCnpjValido(user.getSolicitacao().getCnpj())) {
-                log.warn("CNPJ inválido!");
-                throw new RegraNegocioException("O CNPJ do Usuário é invalido.");
-            }
-        }*/
-        
+        }       
     }
     
 }

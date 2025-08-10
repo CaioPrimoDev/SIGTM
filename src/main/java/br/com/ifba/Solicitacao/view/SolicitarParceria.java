@@ -4,6 +4,8 @@
  */
 package br.com.ifba.Solicitacao.view;
 
+import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.Usuario;
@@ -23,9 +25,10 @@ public class SolicitarParceria extends javax.swing.JDialog {
     private UsuarioSession usuarioSession;
     
     @Autowired
-    private UsuarioIController controller;
+    private UsuarioIController UsuarioController;
     
-    private Usuario user;
+    @Autowired
+    private SolicitacaoIController solicitacaoController;
 
     /**
      * Creates new form SolicitarParceria
@@ -39,7 +42,6 @@ public class SolicitarParceria extends javax.swing.JDialog {
     @Override
     public void setVisible(boolean b) {
         // Sempre atualiza o usuário antes de mostrar a tela
-        this.user = usuarioSession.getUsuarioLogado();
         super.setVisible(b);
     }
 
@@ -131,17 +133,39 @@ public class SolicitarParceria extends javax.swing.JDialog {
     private void btnSolicitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarActionPerformed
         String cnpj = txtCnpj.getText();
         String nomeEmpresa = txtNomeEmpresa.getText();
-        //tive que  mudar aqui caio 
-        usuarioSession.getUsuarioLogado().getSolicitacao().setCnpj(cnpj);//coloco dentro do usuario solicitante seu usuario e cpf
-        usuarioSession.getUsuarioLogado().getSolicitacao().setNomeEmpresa(nomeEmpresa);
-        
+
+        Usuario usuario = usuarioSession.getUsuarioLogado();
+
+        if (usuario.getSolicitacao() != null && usuario.getSolicitacao().isSolicitouParceria()) {
+            MostrarMensagem.erro(this, "Você já tem uma solicitação em andamento.", "Aviso");
+            return;
+        }
+
+        Solicitacao solicitacao = usuario.getSolicitacao();
+        if (solicitacao == null) {
+            solicitacao = new Solicitacao();
+        }
+        solicitacao.setCnpj(cnpj);
+        solicitacao.setNomeEmpresa(nomeEmpresa);
+        solicitacao.setSolicitouParceria(true);
+        solicitacao.setUsuario(usuario);  // ASSOCIA O USUÁRIO
+
         try {
-            controller.save(usuarioSession.getUsuarioLogado());//salvo no bd
+            // SALVA A SOLICITAÇÃO PRIMEIRO PELO SERVICE
+            solicitacaoController.save(solicitacao);
+
+            // ASSOCIA A SOLICITAÇÃO AO USUÁRIO E SALVA USUÁRIO (se necessário)
+            usuario.setSolicitacao(solicitacao);
+            UsuarioController.save(usuario);
+
             MostrarMensagem.info(this, "Solicitação feita com sucesso!", " ");
+            txtCnpj.setText("");
+            txtNomeEmpresa.setText("");
             this.dispose();
-        } catch (RegraNegocioException ex) {
+        } catch (RegraNegocioException | IllegalStateException ex) {
             MostrarMensagem.erro(this, ex.getMessage(), "Erro");
         }     
+       
     }//GEN-LAST:event_btnSolicitarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -153,3 +177,5 @@ public class SolicitarParceria extends javax.swing.JDialog {
     private javax.swing.JTextField txtNomeEmpresa;
     // End of variables declaration//GEN-END:variables
 }
+
+

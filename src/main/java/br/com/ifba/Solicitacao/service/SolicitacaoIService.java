@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package br.com.ifba.Solicitacao.controller;
+package br.com.ifba.Solicitacao.service;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import java.util.List;
@@ -11,9 +11,10 @@ import java.util.List;
  *
  * @author User
  */
-public interface SolicitacaoIController {
+public interface SolicitacaoIService {
     Solicitacao save(Solicitacao solicitacao);
     void delete(Long id);
     List<Solicitacao> findAll();
     Solicitacao findById(Long id);
+    void validarSolicitacao(Solicitacao solicitacao);
 }

@@ -2,18 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package br.com.ifba.Solicitacao.controller;
+package br.com.ifba.Solicitacao.repository;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author User
  */
-public interface SolicitacaoIController {
-    Solicitacao save(Solicitacao solicitacao);
-    void delete(Long id);
-    List<Solicitacao> findAll();
-    Solicitacao findById(Long id);
+public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> {
 }

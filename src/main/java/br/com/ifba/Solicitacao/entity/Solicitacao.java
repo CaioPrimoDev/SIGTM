@@ -5,8 +5,12 @@
 package br.com.ifba.Solicitacao.entity;
 
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +34,15 @@ public class Solicitacao extends PersistenceEntity  {
     @Column(nullable = false)
     private boolean solicitouParceria = false; // por padrão nenhum usuário fez solicita;cão
 // essa classe precisa ser eager
+    
+    // FK para Usuario - dono da relação, coluna usuario_id na tabela solicitacao
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", nullable = false, unique = true)
+    private Usuario usuario;
+
+    public boolean isSolicitouParceria() {
+        return solicitouParceria;
+    }
+    
+    
 }
