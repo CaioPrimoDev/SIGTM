@@ -4,6 +4,7 @@
  */
 package br.com.ifba.pontoturistico.view;
 
+import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import javax.swing.JOptionPane;
@@ -23,6 +24,8 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
     private PontoTuristicoIController pontoTuristicoController;
     private PontoTuristico pontoTuristicoEditar;
     private PontoTuristicoList pontoTuristicoLista;
+    private Endereco enderecoEditar;
+    
     /**
      * Creates new form PontoTuristicoUpdate
      */
@@ -50,9 +53,20 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
         txtNome.setText(this.pontoTuristicoEditar.getNome());
         txtDescricao.setText(this.pontoTuristicoEditar.getDescricao());
         sliNivelAcess.setValue(this.pontoTuristicoEditar.getNivelAcessibilidade()); 
-        txtLocalizacao.setText(this.pontoTuristicoEditar.getLocalizacao());
         txtHorarioAber.setText(this.pontoTuristicoEditar.getHorarioAbertura());
         txtHorarioFecha.setText(this.pontoTuristicoEditar.getHorarioFechamento());
+        
+        // Pega o objeto Endereço de dentro do Ponto Turístico
+        Endereco endereco = this.pontoTuristicoEditar.getEndereco();
+
+        // Preenche os campos de endereço da tela, um por um
+        if (endereco != null) {
+            txtEstado.setText(endereco.getEstado());
+            txtCidade.setText(endereco.getCidade());
+            txtBairro.setText(endereco.getBairro());
+            txtRua.setText(endereco.getRua());
+            txtNumero.setText(endereco.getNumero());
+        }
     }
 
     /**
@@ -71,10 +85,10 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
         lblDescricao = new javax.swing.JLabel();
         lblNome = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        txtLocalizacao = new javax.swing.JTextField();
+        txtEstado = new javax.swing.JTextField();
         lblLocalizacao2 = new javax.swing.JLabel();
         txtHorarioAber = new javax.swing.JTextField();
-        lblLocalizacao = new javax.swing.JLabel();
+        lblEstado = new javax.swing.JLabel();
         sliNivelAcess = new javax.swing.JSlider();
         lblHorarioAber = new javax.swing.JLabel();
         txtHorarioFecha = new javax.swing.JTextField();
@@ -82,6 +96,14 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
         lblHorarioFecha = new javax.swing.JLabel();
         lblInfoHorario = new javax.swing.JLabel();
         btnCancelar1 = new javax.swing.JButton();
+        txtCidade = new javax.swing.JTextField();
+        lblCidade = new javax.swing.JLabel();
+        txtBairro = new javax.swing.JTextField();
+        lblBairro = new javax.swing.JLabel();
+        txtRua = new javax.swing.JTextField();
+        lblRua = new javax.swing.JLabel();
+        txtNumero = new javax.swing.JTextField();
+        lblNumero = new javax.swing.JLabel();
 
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCancelar.setText("CANCELAR");
@@ -108,15 +130,15 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        txtLocalizacao.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtEstado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         lblLocalizacao2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblLocalizacao2.setText("NIVEL DE ACESSIBILIDADE: (0 A 5)");
 
         txtHorarioAber.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        lblLocalizacao.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblLocalizacao.setText("LOCALIZAÇÃO: (RUA - BAIRRO) OU (PONTO DE REFERÊNCIA)");
+        lblEstado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblEstado.setText("ESTADO:");
 
         sliNivelAcess.setMaximum(5);
         sliNivelAcess.setValue(2);
@@ -146,6 +168,26 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
             }
         });
 
+        txtCidade.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblCidade.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblCidade.setText("CIDADE:");
+
+        txtBairro.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblBairro.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblBairro.setText("BAIRRO:");
+
+        txtRua.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblRua.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblRua.setText("RUA:");
+
+        txtNumero.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblNumero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblNumero.setText("Nº:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,39 +201,54 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblNome)
                                     .addComponent(lblDescricao)
-                                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnCancelar1))))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblLocalizacao)
-                                    .addComponent(lblLocalizacao2)
+                                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(layout.createSequentialGroup()
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(lblHorarioAber))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(lblHorarioFecha)
-                                                .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addComponent(lblInfoHorario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(sliNivelAcess, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtLocalizacao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                            .addGap(170, 170, 170))
+                                        .addComponent(lblInfoHorario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(btnAtualizar))))
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lblHorarioFecha)
+                                        .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblLocalizacao2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblEstado)
+                                    .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblCidade)
+                                    .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(sliNivelAcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblBairro)
+                            .addComponent(txtBairro)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblRua)
+                                    .addComponent(txtRua, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblNumero)
+                                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(239, 239, 239)
-                        .addComponent(lblInfo)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                        .addComponent(lblInfo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(253, 253, 253)
+                        .addComponent(btnCancelar1)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnAtualizar)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,41 +258,59 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblEstado)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblCidade)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblBairro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtBairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblRua)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblNumero)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                        .addComponent(lblLocalizacao2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sliNivelAcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNome)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblDescricao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancelar1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblLocalizacao)
+                                .addComponent(lblHorarioFecha)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtLocalizacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblLocalizacao2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sliNivelAcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblInfoHorario)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblHorarioAber)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblHorarioFecha)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAtualizar)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                                .addComponent(lblHorarioAber)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCancelar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAtualizar))
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -246,21 +321,33 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
         try {
             if (txtNome.getText().equals("") ||
                 txtDescricao.getText().equals("") ||
-                txtLocalizacao.getText().equals("") ||
+                txtEstado.getText().equals("") ||
                 txtHorarioAber.getText().equals("") ||
                 txtHorarioFecha.getText().equals("")) {
                 JOptionPane.showMessageDialog(
                     null, "Existem campos vazios ou invalido(s), preencha todos e tente novamente!",
                     "Alerta", JOptionPane.WARNING_MESSAGE);
             }
-            else{
+            else{                
+                // Atribui os dados de PontoTuristico ao objeto
                 pontoTuristicoEditar.setNome(txtNome.getText());
                 pontoTuristicoEditar.setDescricao(txtDescricao.getText());
-                pontoTuristicoEditar.setLocalizacao(txtLocalizacao.getText());
+                pontoTuristicoEditar.setEndereco(enderecoEditar);
                 pontoTuristicoEditar.setNivelAcessibilidade(sliNivelAcess.getValue());
                 pontoTuristicoEditar.setHorarioAbertura(txtHorarioAber.getText());
                 pontoTuristicoEditar.setHorarioFechamento(txtHorarioFecha.getText());
 
+                
+                // Atribui os dados de Endereco ao objeto para inserção no campo de localizacao do PontoTuristico
+                Endereco dadosAtualizadosEndereco = new Endereco();
+                dadosAtualizadosEndereco.setEstado(txtEstado.getText());
+                dadosAtualizadosEndereco.setCidade(txtCidade.getText());
+                dadosAtualizadosEndereco.setBairro(txtBairro.getText());
+                dadosAtualizadosEndereco.setRua(txtRua.getText());
+                dadosAtualizadosEndereco.setNumero(txtNumero.getText());
+
+                this.pontoTuristicoEditar.setEndereco(dadosAtualizadosEndereco);
+                
                 // atualiza o objeto no banco
                 pontoTuristicoController.update(pontoTuristicoEditar);
 
@@ -304,19 +391,27 @@ public class PontoTuristicoUpdate extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCancelar1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblBairro;
+    private javax.swing.JLabel lblCidade;
     private javax.swing.JLabel lblDescricao;
+    private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblHorarioAber;
     private javax.swing.JLabel lblHorarioFecha;
     private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblInfoHorario;
-    private javax.swing.JLabel lblLocalizacao;
     private javax.swing.JLabel lblLocalizacao2;
     private javax.swing.JLabel lblNome;
+    private javax.swing.JLabel lblNumero;
+    private javax.swing.JLabel lblRua;
     private javax.swing.JSlider sliNivelAcess;
+    private javax.swing.JTextField txtBairro;
+    private javax.swing.JTextField txtCidade;
     private javax.swing.JTextField txtDescricao;
+    private javax.swing.JTextField txtEstado;
     private javax.swing.JTextField txtHorarioAber;
     private javax.swing.JTextField txtHorarioFecha;
-    private javax.swing.JTextField txtLocalizacao;
     private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtNumero;
+    private javax.swing.JTextField txtRua;
     // End of variables declaration//GEN-END:variables
 }

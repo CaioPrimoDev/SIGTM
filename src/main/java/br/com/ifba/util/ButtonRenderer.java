@@ -20,6 +20,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
     private ImageIcon editIcon;
     private ImageIcon deleteIcon;
+    private ImageIcon infoIcon;
 
     public ButtonRenderer() {
         setOpaque(true);
@@ -38,6 +39,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
             // Carrega e redimensiona as imagens usando um método auxiliar
             editIcon = scaleImage("/imagens/update.png", iconSize);
             deleteIcon = scaleImage("/imagens/delete.png", iconSize);
+            infoIcon = scaleImage("/imagens/info.png", iconSize);
         } catch (Exception e) {
             System.err.println("Erro ao carregar ou redimensionar ícones: " + e.getMessage());
             e.printStackTrace();
@@ -61,14 +63,20 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
         if (isSelected) {
             setForeground(table.getSelectionForeground());
             setBackground(table.getSelectionBackground());
-        } else {
+        } 
+        else {
             setForeground(table.getForeground());
             setBackground(UIManager.getColor("Button.background"));
         }
 
-        if (column == 5) { // Coluna Editar
+        
+        if (column == 4) { // Coluna Info
+            setIcon(infoIcon);
+        }
+        else if (column == 5) { // Coluna Editar
             setIcon(editIcon);
-        } else if (column == 6) { // Coluna Remover
+        } 
+        else if (column == 6) { // Coluna Remover
             setIcon(deleteIcon);
         }
         

@@ -26,7 +26,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class ItemTuristico extends PersistenceEntity implements Serializable{
+public abstract class ItemTuristicoProvisorio extends PersistenceEntity implements Serializable{
     
     @Column(name = "nome", nullable = false)
     protected String nome;
@@ -35,10 +35,10 @@ public abstract class ItemTuristico extends PersistenceEntity implements Seriali
     @Column(name = "descricao", columnDefinition = "TEXT")
     protected String descricao;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco_id", nullable = false) // O endereço é obrigatório
-    protected Endereco endereco;
+    @Column(name = "localizacao")
+    protected String localizacao;
     
     @Column(name = "nivel_acessibilidade", nullable = false)
     protected int nivelAcessibilidade;
 }
+

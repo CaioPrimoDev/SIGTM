@@ -4,6 +4,7 @@
  */
 package br.com.ifba.pontoturistico.view;
 
+import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.util.StringUtil;
@@ -22,7 +23,11 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
 
     @Autowired
     private PontoTuristicoIController pontoTuristicoController;
+    
+    
     private PontoTuristicoList pontoTuristicoList;
+    private PontoTuristico novoPonto;
+    private Endereco enderecoPonto;
     
     /**
      * Creates new form PontoTuristicoSave
@@ -66,10 +71,18 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
         lblHorarioFecha = new javax.swing.JLabel();
         lblInfoHorario = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        txtLocalizacao = new javax.swing.JTextField();
-        lblLocalizacao = new javax.swing.JLabel();
+        txtEstado = new javax.swing.JTextField();
+        lblEstado = new javax.swing.JLabel();
         lblLocalizacao2 = new javax.swing.JLabel();
         sliNivelAcess = new javax.swing.JSlider();
+        lblBairro = new javax.swing.JLabel();
+        txtBairro = new javax.swing.JTextField();
+        lblRua = new javax.swing.JLabel();
+        txtRua = new javax.swing.JTextField();
+        lblNumero = new javax.swing.JLabel();
+        txtNumero = new javax.swing.JTextField();
+        txtCidade = new javax.swing.JTextField();
+        lblCidade = new javax.swing.JLabel();
 
         txtNome4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -116,14 +129,14 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
         lblHorarioFecha.setText("HORARIO DE FECHAMENTO");
 
         lblInfoHorario.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblInfoHorario.setText("HORÁRIO DE FUNCIONAMENTO: (hh:mm)");
+        lblInfoHorario.setText("HORÁRIO DE FUNCIONAMENTO: (HH:mm)");
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        txtLocalizacao.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtEstado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        lblLocalizacao.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblLocalizacao.setText("LOCALIZAÇÃO: (RUA - BAIRRO) OU (PONTO DE REFERÊNCIA)");
+        lblEstado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblEstado.setText("ESTADO:");
 
         lblLocalizacao2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblLocalizacao2.setText("NIVEL DE ACESSIBILIDADE: (0 A 5)");
@@ -131,89 +144,144 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
         sliNivelAcess.setMaximum(5);
         sliNivelAcess.setValue(2);
 
+        lblBairro.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblBairro.setText("BAIRRO:");
+
+        txtBairro.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblRua.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblRua.setText("RUA:");
+
+        txtRua.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblNumero.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblNumero.setText("Nº:");
+
+        txtNumero.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        txtCidade.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lblCidade.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblCidade.setText("CIDADE:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNome)
-                    .addComponent(lblDescricao)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtDescricao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnCancelar, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblLocalizacao)
-                    .addComponent(lblLocalizacao2)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(250, 250, 250)
+                        .addComponent(lblInfo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNome)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDescricao)
+                            .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblInfoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblHorarioAber)
+                                .addGap(46, 46, 46)
+                                .addComponent(lblHorarioFecha))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblHorarioAber))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblHorarioFecha)
+                                .addGap(25, 25, 25)
                                 .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(lblInfoHorario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sliNivelAcess, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtLocalizacao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)))
-                .addGap(68, 68, 68))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(17, 17, 17)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblEstado)
+                                .addGap(126, 126, 126)
+                                .addComponent(lblCidade))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(19, 19, 19)
+                                .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblBairro)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblRua)
+                                .addGap(242, 242, 242)
+                                .addComponent(lblNumero))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtRua, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)
+                                .addComponent(txtNumero))
+                            .addComponent(lblLocalizacao2)
+                            .addComponent(sliNivelAcess, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBairro)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(389, 389, 389)
-                        .addComponent(btnCadastrar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(234, 234, 234)
-                        .addComponent(lblInfo)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(247, 247, 247)
+                        .addComponent(btnCancelar)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnCadastrar)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(lblInfo)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNome)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(6, 6, 6)
                         .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(12, 12, 12)
                         .addComponent(lblDescricao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblLocalizacao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtLocalizacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblLocalizacao2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sliNivelAcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
                         .addComponent(lblInfoHorario)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblHorarioAber)
+                            .addComponent(lblHorarioFecha))
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblHorarioAber)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtHorarioAber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(4, 4, 4)
+                                .addComponent(lblEstado))
+                            .addComponent(lblCidade))
+                        .addGap(2, 2, 2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblHorarioFecha)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtHorarioFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jSeparator1))
-                .addGap(18, 18, 18)
+                                .addGap(2, 2, 2)
+                                .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addComponent(lblBairro)
+                        .addGap(4, 4, 4)
+                        .addComponent(txtBairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblRua)
+                            .addComponent(lblNumero))
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addComponent(lblLocalizacao2)
+                        .addGap(14, 14, 14)
+                        .addComponent(sliNivelAcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(2, 2, 2)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCadastrar)
-                    .addComponent(btnCancelar))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnCadastrar))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -224,7 +292,10 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
         try {
             if (txtNome.getText().equals("") || 
                         txtDescricao.getText().equals("") || 
-                        txtLocalizacao.getText().equals("") ||
+                        txtEstado.getText().equals("") ||
+                        txtCidade.getText().equals("") ||
+                        txtBairro.getText().equals("") ||
+                        txtRua.getText().equals("") ||
                         txtHorarioAber.getText().equals("") ||
                         txtHorarioFecha.getText().equals("")) {
                 JOptionPane.showMessageDialog(
@@ -245,11 +316,19 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                  return;
             }
             else{
-                // Cria o objeto Curso com os dados da tela
+                // Atribui os dados de Endereco ao objeto para inserção no campo de localizacao do PontoTuristico
+                Endereco enderecoPonto = new Endereco();
+                enderecoPonto.setEstado(txtEstado.getText());
+                enderecoPonto.setCidade(txtCidade.getText());
+                enderecoPonto.setBairro(txtBairro.getText());
+                enderecoPonto.setRua(txtRua.getText());
+                enderecoPonto.setNumero(txtEstado.getText());
+                
+                // Atribui os dados de PontoTuristico ao objeto
                 PontoTuristico novoPonto = new PontoTuristico();
                 novoPonto.setNome(txtNome.getText());
                 novoPonto.setDescricao(txtDescricao.getText());
-                novoPonto.setLocalizacao(txtLocalizacao.getText());
+                novoPonto.setEndereco(enderecoPonto);
                 novoPonto.setNivelAcessibilidade(sliNivelAcess.getValue());
                 novoPonto.setHorarioAbertura(txtHorarioAber.getText());
                 novoPonto.setHorarioFechamento(txtHorarioFecha.getText());
@@ -294,22 +373,30 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblBairro;
+    private javax.swing.JLabel lblCidade;
     private javax.swing.JLabel lblDescricao;
+    private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblHorarioAber;
     private javax.swing.JLabel lblHorarioFecha;
     private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblInfoHorario;
-    private javax.swing.JLabel lblLocalizacao;
     private javax.swing.JLabel lblLocalizacao1;
     private javax.swing.JLabel lblLocalizacao2;
     private javax.swing.JLabel lblNome;
+    private javax.swing.JLabel lblNumero;
+    private javax.swing.JLabel lblRua;
     private br.com.ifba.pontoturistico.entity.PontoTuristico pontoTuristico1;
     private javax.swing.JSlider sliNivelAcess;
+    private javax.swing.JTextField txtBairro;
+    private javax.swing.JTextField txtCidade;
     private javax.swing.JTextField txtDescricao;
+    private javax.swing.JTextField txtEstado;
     private javax.swing.JTextField txtHorarioAber;
     private javax.swing.JTextField txtHorarioFecha;
-    private javax.swing.JTextField txtLocalizacao;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtNome4;
+    private javax.swing.JTextField txtNumero;
+    private javax.swing.JTextField txtRua;
     // End of variables declaration//GEN-END:variables
 }

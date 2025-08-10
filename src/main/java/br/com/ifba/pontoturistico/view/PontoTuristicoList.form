@@ -92,9 +92,9 @@
               <Table columnCount="7" rowCount="20">
                 <Column editable="false" title="Nome" type="java.lang.String"/>
                 <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.String"/>
-                <Column editable="false" title="Localiza&#xe7;&#xe3;o" type="java.lang.String"/>
                 <Column editable="false" title="Horario de Funcionamento" type="java.lang.String"/>
                 <Column editable="false" title="Nivel de Acessibilidade" type="java.lang.Integer"/>
+                <Column editable="true" title="Localiza&#xe7;&#xe3;o" type="java.lang.String"/>
                 <Column editable="true" title="Editar" type="java.lang.String"/>
                 <Column editable="true" title="Remover" type="java.lang.String"/>
               </Table>

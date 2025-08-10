@@ -6,6 +6,7 @@
 package br.com.ifba.evento.entity;
 
 import br.com.ifba.itemturistico.entity.ItemTuristico;
+import br.com.ifba.itemturistico.entity.ItemTuristicoProvisorio;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Evento extends ItemTuristico {
+public class Evento extends ItemTuristicoProvisorio {
     @Column(nullable = false)
     LocalDateTime hora;
     

@@ -4,6 +4,8 @@
  */
 package br.com.ifba.pontoturistico.view;
 
+import br.com.ifba.endereco.entity.Endereco;
+import br.com.ifba.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.util.ButtonRenderer;
@@ -27,18 +29,24 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
     // Adiciona atributos para as classes de buscas
     private List<PontoTuristico> listaDePontos; // guarda a lista de pontos carregada
-    @Autowired
-    private PontoTuristicoIController pontoTuristicoController;
-    private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
-
+    private Gestor gestorBuscado;
     
+    @Autowired
+    private PontoTuristicoIController pontoTuristicoController;   
+    
+    // @Autowired
+    // private GestorIController gestorController;
+    
+    private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
+ 
     /**
      * Creates new form PontoTuristicoList
      */
     @Autowired
-    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController) {
+    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController/*, GestorIController gestorLogado*/) {
         // inicializa o controller como parametro recebido
         this.pontoTuristicoController = pontoTuristicoController;
+        //this.gestorController = gestorController;
         initComponents();
         
         carregarDados(); // carrega os dados na tabela
@@ -86,7 +94,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     }
     
     private void adicionarListenerDeCliqueNaTabela() {
-        // Adiciona um "ouvinte" de eventos de mouse à nossa tabela
+        // Adiciona um "ouvinte" de eventos de mouse à tabela
         this.tblPontosTuristicos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -96,9 +104,29 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
                 // Garante que o clique foi em uma linha válida (e não no cabeçalho, por exemplo)
                 if (linha >= 0) {
+                    
+                    // AÇÃO DE MOSTRAR A LOCALIZAÇÃO
+                    if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Endereco")  
+                        // Pega o objeto PontoTuristico da linha clicada
+                        PontoTuristico pontoSelecionado = listaDePontos.get(linha);
 
+                        // Extrai o objeto Endereco de dentro do Ponto Turistico
+                        Endereco enderecoParaExibir = pontoSelecionado.getEndereco();
+
+                        // Verifica se o endereço realmente existe
+                        if (enderecoParaExibir != null) {
+                            JOptionPane.showMessageDialog(PontoTuristicoList.this, 
+                                enderecoParaExibir, 
+                                "Detalhes do endereço", JOptionPane.INFORMATION_MESSAGE);
+                        } 
+                        else {
+                              JOptionPane.showMessageDialog(PontoTuristicoList.this, 
+                                "Não há detalhes de endereço para este item.", 
+                                "Endereço não encontrado", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
                     // AÇÃO DE EDITAR
-                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")
+                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")                 
                         PontoTuristico pontoParaEditar = listaDePontos.get(linha);
 
                         PontoTuristicoUpdate telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
@@ -127,7 +155,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
                             } 
                             catch (Exception e) {
-                                JOptionPane.showMessageDialog(PontoTuristicoList.this, "Erro ao remover curso: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(PontoTuristicoList.this, "Erro ao remover ponto turistico: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                                 e.printStackTrace();
                             }
                         }
@@ -159,9 +187,9 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 model.addRow(new Object[]{
                     pontoTuristico.getNome(),
                     pontoTuristico.getDescricao(),
-                    pontoTuristico.getLocalizacao(), 
                     horarioFuncionamento,
-                    pontoTuristico.getNivelAcessibilidade(),  
+                    pontoTuristico.getNivelAcessibilidade(),
+                    "Info Localização", 
                     "Editar",
                     "Remover"
                 });
@@ -183,12 +211,33 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     private void configurarTabela() {
         // Define a altura da linha para 40 pixels. Ajuste conforme necessário.
         tblPontosTuristicos.setRowHeight(32);
-        
+
+        // Pega a coluna na posição 4 (a quinta coluna)
+        tblPontosTuristicos.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());        
         // Pega a coluna na posição 5 (a sexta coluna)
         tblPontosTuristicos.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         // Pega a coluna na posição 6 (a setima coluna)
         tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
     }
+    
+    /* private void verificaGestor(){
+        try {
+            // Pega o texto do campo
+            String textoId = txtIDGestor.getText();
+
+            // Tenta converter o texto para long
+            long idBuscar = Long.parseLong(textoId);
+
+            this.gestorBuscado = gestorController.findById(idBuscar);
+
+        } catch (NumberFormatException e) {
+            // Se a conversão falhar, mostra um erro amigável para o usuário
+            JOptionPane.showMessageDialog(this, 
+                "Por favor, insira um ID válido (apenas números).", 
+                "Erro de Formato", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    } */
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -254,14 +303,14 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nome", "Descrição", "Localização", "Horario de Funcionamento", "Nivel de Acessibilidade", "Editar", "Remover"
+                "Nome", "Descrição", "Horario de Funcionamento", "Nivel de Acessibilidade", "Localização", "Editar", "Remover"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true, true
+                false, false, false, false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -365,9 +414,9 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                     model.addRow(new Object[]{
                         pontoTuristico.getNome(),
                         pontoTuristico.getDescricao(),
-                        pontoTuristico.getLocalizacao(),  
                         horarioFuncionamento,
                         pontoTuristico.getNivelAcessibilidade(),
+                        "Info Localização",  
                         "Editar",
                         "Remover"
                     });
@@ -384,7 +433,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     }//GEN-LAST:event_txtPesquisarKeyReleased
 
     private void btnAdicionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionaActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:       
         PontoTuristicoSave telaPontoTuristicoSave = applicationContext.getBean(PontoTuristicoSave.class);
         telaPontoTuristicoSave.setPontoTuristicoList(this); // Configura a referência para poder atualizar a tabela
         telaPontoTuristicoSave.setVisible(true);
