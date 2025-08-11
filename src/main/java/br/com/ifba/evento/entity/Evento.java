@@ -10,6 +10,9 @@ import br.com.ifba.itemturistico.entity.ItemTuristicoProvisorio;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -41,6 +44,7 @@ public class Evento extends ItemTuristicoProvisorio {
     @Column(nullable = false)
     String categoria;
  
-   // @OneToMany
-    Parceiro parceiro;  
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "parceiro_id", nullable = false)
+    private Parceiro parceiro;  // Atributo referenciado no mappedBy 
 }

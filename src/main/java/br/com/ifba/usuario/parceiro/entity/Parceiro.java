@@ -6,8 +6,10 @@ package br.com.ifba.usuario.parceiro.entity;
 
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.usuario.comum.entity.Usuario;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -33,6 +35,6 @@ public class Parceiro extends Usuario {
     @Column(nullable = false)
     private String nomeEmpresa;
     
-    @OneToMany
-    List<Evento> evento;
+    @OneToMany(mappedBy = "parceiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Evento> eventos;  
 }

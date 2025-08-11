@@ -94,12 +94,24 @@ public class Eventos extends javax.swing.JFrame {
         System.out.println("Parceiro ou Evento está nulo");
         return;
     }
-    evento.setParceiro(parceiro);
-
+    parceiro.getEventos().add(evento);//parceiro com evento
+    
+    evento.setParceiro(parceiro);//relacionando evento com parceiro
+    
     eventoController.save(evento);
-
+    parceiroController.save(parceiro);
+    
     listaEventos.add(evento);
-    preencherTabelaEventos();
+    tableModel.addRow(new Object[]{
+            evento.getParceiro().getNomeEmpresa(),
+            evento.getNome(),
+            evento.getHora().toLocalTime(),            
+            evento.getHora().plusHours(2).toLocalTime(),
+            evento.getData(),
+            evento.getPublicoAlvo(),
+            evento.getNivelAcessibilidade(),
+            evento.getLocalizacao()
+        });
 }
 
    
