@@ -11,7 +11,6 @@ import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.telainicial.view.TelaInicial;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -53,9 +52,9 @@ public class PromocaoUpdate extends javax.swing.JFrame {
     
     @PostConstruct
     public void carregarTiposPromocao() {
-        tiposDisponiveis = tiporomocaoController.getTodosTiposPromocao();
+        tiposDisponiveis = tiporomocaoController.findAll();
         for (TipoPromocao tipo : tiposDisponiveis) {
-            cbbTipo.addItem(tipo.getNome());
+            cbbTipo.addItem(tipo.getTitulo());
         }
     }
 
@@ -69,7 +68,7 @@ public class PromocaoUpdate extends javax.swing.JFrame {
         txtDataTermino.setText(promocao.getDataTermino().toString());
         TipoPromocao tipo = promocao.getTipo();
         if (tipo != null) {
-            cbbTipo.setSelectedItem(tipo.getNome());
+            cbbTipo.setSelectedItem(tipo.getTitulo());
         }
 
     }

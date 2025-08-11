@@ -1,74 +1,75 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.ifba.promocao.service;
 
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.TipoPromocaoRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author Joice
- */
 @Service
 public class TipoPromocaoService implements TipoPromocaoIService {
 
+    // Injeção do repositório que faz a comunicação com o banco
     @Autowired
     private TipoPromocaoRepository tipoPromocaoRepository;
     
+    // Método para salvar com validações
     @Override
     public TipoPromocao save(TipoPromocao tipoPromocao) {
+        // Valida se o título não está vazio
+        if(tipoPromocao.getTitulo() == null || tipoPromocao.getTitulo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Título do tipo não pode ser vazio");
+        }
+
+        // Valida se a descrição não está vazia
+        if(tipoPromocao.getDescricao() == null || tipoPromocao.getDescricao().trim().isEmpty()) {
+            throw new IllegalArgumentException("Descrição do tipo não pode ser vazia");
+        }
+
+        // Verifica se já existe um tipo com mesmo título
+        if(tipoPromocaoRepository.existsByTitulo(tipoPromocao.getTitulo())) {
+            throw new IllegalArgumentException("Já existe um tipo com este título");
+        }
+
+        // Se passou nas validações, salva no banco
         return tipoPromocaoRepository.save(tipoPromocao);
     }
-    
+    // Método para atualizar
     @Override
     public TipoPromocao update(TipoPromocao tipoPromocao) {
+        // Verifica se o ID existe antes de atualizar
         if (!tipoPromocaoRepository.existsById(tipoPromocao.getId())) {
             throw new EntityNotFoundException("Tipo de promoção não encontrado");
         }
         return tipoPromocaoRepository.save(tipoPromocao);
     }
 
+    // Método para deletar
     @Override
     public void delete(TipoPromocao tipoPromocao) {
-           tipoPromocaoRepository.delete(tipoPromocao);
+        if(tipoPromocaoRepository.existsById(tipoPromocao.getId())) {
+            tipoPromocaoRepository.delete(tipoPromocao);
+        } else {
+            throw new EntityNotFoundException("Tipo de promoção não encontrado");
+        }
     }
 
-
+    // Retorna todos os registros
     @Override
     public List<TipoPromocao> findAll() {
         return tipoPromocaoRepository.findAll();
     }
 
+    // Busca por ID - se não encontrar, lança exceção
     @Override
     public TipoPromocao findById(Long id) {
-        return (TipoPromocao) tipoPromocaoRepository.findAll();
+        return tipoPromocaoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo não encontrado"));
     }
 
-    // Lista fixa temporario para os tipos de promoção 
-    private static final List<String> TIPOS_PADRAO = Arrays.asList(
-        "PROMOÇÃO", 
-        "CUPOM", 
-        "PACOTE"
-    );
-
-    // Método executado após a inicialização do Spring
-    @PostConstruct
-    public void initTiposPromocao() {
-        for (String nomeTipo : TIPOS_PADRAO) {
-            if (!tipoPromocaoRepository.existsByNome(nomeTipo)) {
-                TipoPromocao tipo = new TipoPromocao();
-                tipo.setNome(nomeTipo);
-                tipoPromocaoRepository.save(tipo);
-            }
-        }
+    // Verifica se existe um tipo com determinado nome
+    public boolean existsByNome(String nome) {
+        return tipoPromocaoRepository.existsByTitulo(nome);
     }
-
 }

@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface TipoPromocaoIController {
     
+    
     TipoPromocao save(TipoPromocao tipoPromocao);
     TipoPromocao update(TipoPromocao tipoPromocao);
     void delete(TipoPromocao tipoPromocao);
-    List<TipoPromocao> getTodosTiposPromocao();
     TipoPromocao getTipoPromocaoById(Long id);
+    public List<TipoPromocao> findAll();
 }

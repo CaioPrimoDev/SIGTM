@@ -1,105 +1,88 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.ifba.promocao.service;
 
 import br.com.ifba.promocao.entity.Promocao;
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.PromocaoRepository;
 import br.com.ifba.promocao.repository.TipoPromocaoRepository;
+import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import br.com.ifba.util.StringUtil;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author Joice
- */
 @Service
 public class PromocaoService implements PromocaoIService {
     
-    // Permite acesso ao banco de dados sem instanciação manual
     @Autowired
     private PromocaoRepository promocaoRepository;
-    
     
     @Autowired
     private TipoPromocaoRepository tipoPromocaoRepository;
      
-    // Cria um logger para registrar atividades da classe
-    private static final Logger log = LoggerFactory.
-                            getLogger(PromocaoService.class);
+    private static final Logger log = LoggerFactory.getLogger(PromocaoService.class);
        
-    // Salva uma nova promoção/cupom/pacote
     @Override
     public Promocao save(Promocao promocao) {
         log.info("Salvando {}", promocao.getTitulo());
-        validatePromocao(promocao); //Valida os dados
-        return promocaoRepository.save(promocao); //Repassa para o repositório salvar no banco
+        validatePromocao(promocao);
+        return promocaoRepository.save(promocao);
     }
 
-    // Atualiza uma promoção/cupom/pacote existente
     @Override
     public Promocao update(Promocao promocao) {
         log.info("Atualizando ID {}: {}", promocao.getId(), promocao.getTitulo());
-        validatePromocao(promocao); //Valida os dados
-        return promocaoRepository.save(promocao); //Repassa para o repositório salvar no banco
+        validatePromocao(promocao);
+        return promocaoRepository.save(promocao);
     }
 
-    // Exclui uma promoção/cupom/pacote
     @Override
     public void delete(Promocao promocao) {
         log.info("Removendo promoção ID {}: {}", promocao.getId(), promocao.getTitulo());
-
-        String mensagem = String.format("Deseja realmente apagar %s - %s?", 
-                                      promocao.getTipo(), 
-                                      promocao.getTitulo());
-        //Mostra diálogo de confirmação
-        int confirmacao = JOptionPane.showConfirmDialog(
-            null, 
-            mensagem, 
-            "Confirmar Exclusão", 
-            JOptionPane.YES_NO_OPTION); 
-
-        //Se confirmado, remove do banco e mostra mensagem
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            promocaoRepository.delete(promocao);
-            JOptionPane.showMessageDialog(null, "Promoção excluída com sucesso!");
-        }
+        promocaoRepository.delete(promocao);
     }
 
-    // Retorna todas as promoções//cupons/pacotes cadastradas
     @Override
     public List<Promocao> findAll() {
         log.info("Listando todas as promoções");
         return promocaoRepository.findAll();
     }
     
-    // Busca itens por ID
     @Override
     public Promocao findById(Long id) {
         log.info("Buscando promoção por ID: {}", id); 
-        return promocaoRepository.findById(id).orElse(null); // Retorna null se não encontrar (orElse(null))
+        return promocaoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Promoção não encontrada"));
     }
-    
-    // Filtra promoções por tipo e termo de busca
-    public List<Promocao> filtrarPromocoes(String termo, String tipo) {
-        // Primeiro obtém as promoções por tipo
-        List<Promocao> promocoesPorTipo = (List<Promocao>) tipoPromocaoRepository.findByNome(tipo);
 
-        // Filtra pelo termo de busca
-        String termoFiltrado = termo == null ? "" : termo;
-        return promocaoRepository.filtrar((TipoPromocao) promocoesPorTipo, termoFiltrado);
+    public List<Promocao> filtrarPromocoes(String termo, String tipo) {
+        if(tipo.equals("TODOS")) {
+            if(termo == null || termo.isEmpty()) {
+                return promocaoRepository.findAll();
+            }
+            return promocaoRepository.findByTituloContainingIgnoreCase(termo);
+        } else {
+            // Primeiro verifica se existe algum tipo com esse nome
+            List<TipoPromocao> tipos = (List<TipoPromocao>) tipoPromocaoRepository.findByTitulo(tipo);
+
+            if(tipos == null || tipos.isEmpty()) {
+                throw new EntityNotFoundException("Tipo não encontrado");
+            }
+
+            // Pega o primeiro tipo encontrado (assumindo que nomes são únicos)
+            TipoPromocao tipoPromocao = tipos.get(0);
+
+            if(termo == null || termo.isEmpty()) {
+                return promocaoRepository.findByTipo(tipoPromocao);
+            }
+            return promocaoRepository.findByTipoAndTituloContainingIgnoreCase(tipoPromocao, termo);
+        }
     }
-    // Validação geral da promoção
     
-    // Verifica se não é nula e chama validadores específicos
     public void validatePromocao(Promocao promocao) {
         if (promocao == null) {
             throw new IllegalArgumentException("Preencha todos os campos");
@@ -111,7 +94,6 @@ public class PromocaoService implements PromocaoIService {
         validateRegras(promocao.getRegras());
     }
     
-    // Validações específicas do título
     private void validateTitulo(String titulo) {
         if (StringUtil.isNullOrEmpty(titulo)) {
             throw new IllegalArgumentException("Título não pode ser vazio");
@@ -121,7 +103,6 @@ public class PromocaoService implements PromocaoIService {
         }
     }
     
-    // Validações da descrição
     private void validateDescricao(String descricao) {
         if (StringUtil.isNullOrEmpty(descricao)) {
             throw new IllegalArgumentException("Descrição não pode ser vazia");
@@ -131,7 +112,6 @@ public class PromocaoService implements PromocaoIService {
         }
     }
     
-    // Validações das datas
     private void validateDatas(Date dataInicio, Date dataTermino) {
         if (dataInicio == null || dataTermino == null) {
             throw new IllegalArgumentException("Datas de início e término são obrigatórias");
@@ -141,7 +121,7 @@ public class PromocaoService implements PromocaoIService {
             throw new IllegalArgumentException("Data de término deve ser após a data de início");
         }
     }
-    // Validações das regras
+    
     private void validateRegras(String regras) {
         if (!StringUtil.isNullOrEmpty(regras) && !StringUtil.hasValidLength(regras, 0, 100)) {
             throw new IllegalArgumentException("Regras não podem exceder 100 caracteres");

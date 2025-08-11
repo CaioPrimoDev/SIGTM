@@ -20,28 +20,32 @@ public class TipoPromocaoController implements TipoPromocaoIController{
     @Autowired
     private TipoPromocaoIService tipoPromocaoService;
 
+    // Método para salvar um tipo de promoção
     @Override
     public TipoPromocao save (TipoPromocao tipoPromocao) {
         return tipoPromocaoService.save(tipoPromocao);
     }
 
+    // Método para atualizar um tipo de promoção existente
     @Override
     public TipoPromocao update(TipoPromocao tipoPromocao) {
         return tipoPromocaoService.update(tipoPromocao);
     }
-
+    
+    // Método para deletar um tipo de promoção
     @Override
     public void delete(TipoPromocao tipoPromocao) {
         tipoPromocaoService.delete(tipoPromocao);
     }
 
-    @Override
-    public List<TipoPromocao> getTodosTiposPromocao() {
-        return tipoPromocaoService.findAll();
-    }
-
+    // Busca um tipo de promoção pelo ID
     @Override
     public TipoPromocao getTipoPromocaoById(Long id) {
         return tipoPromocaoService.findById(id);
     }
+
+    // Retorna todos os tipos de promoção cadastrados
+    @Override
+    public List<TipoPromocao> findAll() {
+        return tipoPromocaoService.findAll();}
 }

@@ -42,14 +42,33 @@ public class PromocaoList extends javax.swing.JFrame {
         initComponents();
     }
     
-       @PostConstruct
+    @PostConstruct
     private void init() {
-        tblPromocoes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
-            new String [] {
-                "TITULO", "REGRAS", "DESCRIÇÃO", "INICIO", "TERMINO", "TIPO", "EDITAR", "REMOVER"
-            }
-        ));
+    tblPromocoes.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {},
+        new String [] {
+            "TITULO", "REGRAS", "DESCRIÇÃO", "INICIO", "TERMINO", "TIPO", "EDITAR", "REMOVER"
+        }
+    ) {
+        Class[] types = new Class [] {
+            java.lang.String.class, java.lang.String.class, java.lang.String.class, 
+            java.lang.String.class, java.lang.String.class, java.lang.String.class,
+            java.lang.String.class, java.lang.String.class
+        };
+        boolean[] canEdit = new boolean [] {
+            false, false, false, false, false, false, true, true
+        };
+
+        @Override
+        public Class getColumnClass(int columnIndex) {
+            return types [columnIndex];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return canEdit [columnIndex];
+        }
+    });
         
         // Configura a tabela
         configurarTabela();
@@ -217,15 +236,12 @@ public class PromocaoList extends javax.swing.JFrame {
                 int linha = tblPromocoes.rowAtPoint(evt.getPoint());
                 int coluna = tblPromocoes.columnAtPoint(evt.getPoint());
 
-                if (linha >= 0) {
+                if (linha >= 0 && linha < listaDePromocoes.size()) {
                     Promocao promocaoSelecionada = listaDePromocoes.get(linha);
 
-                    // AÇÃO DE EDITAR
-                    if (coluna == 6) { // Coluna "Editar"
+                    if (coluna == 6) { // Coluna Editar (índice 6)
                         abrirTelaEdicao(promocaoSelecionada);
-                    } 
-                    // AÇÃO DE REMOVER
-                    else if (coluna == 7) { // Coluna "Remover"
+                    } else if (coluna == 7) { // Coluna Remover (índice 7)
                         confirmarRemocao(promocaoSelecionada);
                     }
                 }
@@ -271,14 +287,19 @@ public class PromocaoList extends javax.swing.JFrame {
     
     private void configurarTabela() {
         // Define a altura das linhas
-        tblPromocoes.setRowHeight(32);
-        
-        // Configura os renderers para as colunas de Editar e Remover
-        if (tblPromocoes.getColumnCount() >= 8) { // Verifica se as colunas existem
-            tblPromocoes.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
-            tblPromocoes.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
-        }
+        tblPromocoes.setRowHeight(40);
+
+        // Configura os renderers para as colunas de ação com os índices corretos
+        tblPromocoes.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer()); // Coluna EDITAR (índice 6)
+        tblPromocoes.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer()); // Coluna REMOVER (índice 7)
     }
+    private ImageIcon scaleImage(String path, int size) {
+        ImageIcon icon = new ImageIcon(getClass().getResource(path));
+        Image img = icon.getImage();
+        Image scaledImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImg);
+    }
+    
     public void carregarDados() {
         try {
             this.listaDePromocoes = controller.findAll();
@@ -292,21 +313,19 @@ public class PromocaoList extends javax.swing.JFrame {
                     promocao.getDescricao(),
                     promocao.getDataInicio(),
                     promocao.getDataTermino(),
-                    promocao.getTipo().getNome(),  // Alterado para pegar apenas o nome
-                    "Editar",
-                    "Remover"
+                    promocao.getTipo().getTitulo(),  
+                    "", // Texto vazio para coluna EDITAR
+                    ""  // Texto vazio para coluna REMOVER
                 });
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
-                "Erro ao conectar ao banco de dados para listar as promoções.\n" +
-                "Verifique sua conexão e as configurações de firewall.\n\n" +
-                "Detalhes do erro: " + e.getMessage(),
-                "Erro de Conexão", 
+                "Erro ao carregar promoções: " + e.getMessage(),
+                "Erro", 
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-    }    
+    }
     private void setupPesquisaDinamica() {
         txtPesquisa.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { filtrarTabela(); }
@@ -325,23 +344,23 @@ public class PromocaoList extends javax.swing.JFrame {
         atualizarTabela(resultados);
     }
     
-    private void atualizarTabela(List<Promocao> promocoes) {
-        DefaultTableModel model = (DefaultTableModel) tblPromocoes.getModel();
-        model.setRowCount(0);
-        
-        for (Promocao p : promocoes) {
-            model.addRow(new Object[]{
-                p.getTitulo(),
-                p.getRegras(),
-                p.getDescricao(),
-                p.getDataInicio(),
-                p.getDataTermino(),
-                p.getTipo(),
-                "Editar",
-                "Remover"
-            });
-        }
+private void atualizarTabela(List<Promocao> promocoes) {
+    DefaultTableModel model = (DefaultTableModel) tblPromocoes.getModel();
+    model.setRowCount(0);
+
+    for (Promocao p : promocoes) {
+        model.addRow(new Object[]{
+            p.getTitulo(),
+            p.getRegras(),
+            p.getDescricao(),
+            p.getDataInicio(),
+            p.getDataTermino(),
+            p.getTipo(),
+            "", // Texto vazio para coluna EDITAR
+            ""  // Texto vazio para coluna REMOVER
+        });
     }
+}
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         PromocaoSave telaCadastrar = context.getBean(PromocaoSave.class);
         telaCadastrar.setVisible(true);

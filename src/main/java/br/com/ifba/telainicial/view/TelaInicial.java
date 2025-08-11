@@ -9,6 +9,7 @@ import br.com.ifba.central.view.TelaCentralInformacoesUI;
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoList;
+import br.com.ifba.promocao.view.TipoPromocaoList;
 import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.parceiro.view.ParceirosListar;
 import br.com.ifba.util.MostrarMensagem;
@@ -57,6 +58,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btncrudParceiros = new javax.swing.JButton();
         btnCentral = new javax.swing.JButton();
         btnSolicitar = new javax.swing.JButton();
+        btnTipoPromocao = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,29 +104,38 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btnTipoPromocao.setText("Gestão de Tipos de Promoções");
+        btnTipoPromocao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTipoPromocaoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnPromocoes)
-                            .addComponent(btncrudParceiros)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnCRUDPontoTuristico)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
-                                .addComponent(btnCentral))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(243, 243, 243)
-                        .addComponent(btnLogar)))
-                .addGap(48, 48, 48))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(219, 219, 219)
                 .addComponent(btnSolicitar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnPromocoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btncrudParceiros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnTipoPromocao, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(btnLogar)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnCentral)
+                            .addComponent(btnCRUDPontoTuristico, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,16 +143,19 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCRUDPontoTuristico)
+                    .addComponent(btnPromocoes))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnTipoPromocao)
+                        .addGap(18, 18, 18)
+                        .addComponent(btncrudParceiros)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnLogar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSolicitar))
                     .addComponent(btnCentral))
-                .addGap(18, 18, 18)
-                .addComponent(btnPromocoes)
-                .addGap(18, 18, 18)
-                .addComponent(btncrudParceiros)
-                .addGap(42, 42, 42)
-                .addComponent(btnLogar)
-                .addGap(18, 18, 18)
-                .addComponent(btnSolicitar)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         pack();
@@ -186,12 +200,19 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         }  
     }//GEN-LAST:event_btnSolicitarActionPerformed
 
+    private void btnTipoPromocaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTipoPromocaoActionPerformed
+        // TODO add your handling code here:
+        TipoPromocaoList tipo = applicationContext.getBean(TipoPromocaoList.class);
+        tipo.setVisible(true);
+    }//GEN-LAST:event_btnTipoPromocaoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnCentral;
     private javax.swing.JButton btnLogar;
     private javax.swing.JButton btnPromocoes;
     private javax.swing.JButton btnSolicitar;
+    private javax.swing.JButton btnTipoPromocao;
     private javax.swing.JButton btncrudParceiros;
     // End of variables declaration//GEN-END:variables
 

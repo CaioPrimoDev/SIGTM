@@ -5,8 +5,11 @@
 package br.com.ifba.promocao.entity;
 
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,14 +22,27 @@ import lombok.ToString;
  * @author Joice
  */
 @Entity
-@Table(name = "tipos_promocao")
+@Table(name = "tipo_promocao")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class TipoPromocao extends PersistenceEntity{
+public class TipoPromocao extends PersistenceEntity {
     
-    @Column(name = "nome", nullable = false, unique = true)
-    private String nome; // Ex: "PROMOÇÃO", "CUPOM", "PACOTE"
+    // Campo obrigatório para título
+    @Column(name = "titulo", nullable = false)
+    private String titulo;
+    
+    // Campo obrigatório com limite de 500 caracteres
+    @Column(name = "regra", nullable = false, length = 500)
+    private String regra;
+    
+    // Campo obrigatório com limite de 1000 caracteres
+    @Column(name = "descricao", nullable = false, length = 1000)
+    private String descricao;
+    
+    @ManyToOne // Relacionamento Muitos-para-Um com Usuário
+    @JoinColumn(name = "id_usuario_cadastro")
+    private Usuario responsavel; 
 }

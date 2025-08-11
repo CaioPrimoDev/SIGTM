@@ -4,19 +4,10 @@
  */
 package br.com.ifba.promocao.view;
 
-import br.com.ifba.promocao.repository.TipoPromocaoRepository;
-import br.com.ifba.promocao.controller.PromocaoIController;
-import br.com.ifba.promocao.entity.Promocao;
+import br.com.ifba.promocao.controller.TipoPromocaoIController;
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.telainicial.view.TelaInicial;
-import jakarta.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
 import javax.swing.JOptionPane;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -25,36 +16,31 @@ import org.springframework.stereotype.Component;
  *
  * @author Joice
  */
-@NoArgsConstructor
 @Component
-public class PromocaoSave extends javax.swing.JFrame {
-    
+public class TipoPromocaoSave extends javax.swing.JFrame {
+
+    // Injeção de dependência do controller que gerencia as operações de TipoPromocao
     @Autowired
-    private PromocaoIController promocaoController;
+    private TipoPromocaoIController controller;
     
+    // Contexto do Spring para acessar outros beans gerenciados
     @Autowired
     private ApplicationContext context;
-    
-    private List<TipoPromocao> tiposDisponiveis;
-    
-    @Autowired
-    private TipoPromocaoRepository tipoPromocaoRepository;
-
 
     /**
-     * Creates new form PromocoesCadastrar
+     * Creates new form TipoPromocaoSave
      */
-    //public PromocaoSave(PromocaoIController controller) {
-    //this.promocaoController = controller;
-    //initComponents();
-//}
-    @PostConstruct
-    private void init() {
-        this.promocaoController = promocaoController;
+    public TipoPromocaoSave() {
         initComponents();
-        carregarTiposPromocao();
-        
     }
+    // Método para limpar os campos do formulário
+    private void limparCampos() {
+        txtTitulo.setText("");       // Limpa o campo de título
+        txtDescricao.setText("");    // Limpa o campo de descrição
+        txtRegras.setText("");       // Limpa o campo de regras
+    }
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -69,16 +55,10 @@ public class PromocaoSave extends javax.swing.JFrame {
         lblTitulo = new javax.swing.JLabel();
         lblRegras = new javax.swing.JLabel();
         lblDescricao = new javax.swing.JLabel();
-        lblDataInicio = new javax.swing.JLabel();
-        lblDataTermino = new javax.swing.JLabel();
-        lblTipo = new javax.swing.JLabel();
         btnListar = new javax.swing.JButton();
-        cbbTipo = new javax.swing.JComboBox<>();
         txtTitulo = new javax.swing.JTextField();
         txtRegras = new javax.swing.JTextField();
         txtDescricao = new javax.swing.JTextField();
-        txtDataInicio = new javax.swing.JTextField();
-        txtDataTermino = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
         btnHome = new javax.swing.JButton();
 
@@ -88,7 +68,7 @@ public class PromocaoSave extends javax.swing.JFrame {
 
         lblTituloTela.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblTituloTela.setForeground(new java.awt.Color(0, 0, 51));
-        lblTituloTela.setText("CADASTRO DE PROMOÇÕES, CUPONS E PACOTES");
+        lblTituloTela.setText("CADASTRAR TIPOS DE PROMOÇÕES");
 
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitulo.setForeground(new java.awt.Color(0, 0, 51));
@@ -101,18 +81,6 @@ public class PromocaoSave extends javax.swing.JFrame {
         lblDescricao.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblDescricao.setForeground(new java.awt.Color(0, 0, 51));
         lblDescricao.setText("DESCRIÇÃO");
-
-        lblDataInicio.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblDataInicio.setForeground(new java.awt.Color(0, 0, 51));
-        lblDataInicio.setText("DATA DE INICIO");
-
-        lblDataTermino.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblDataTermino.setForeground(new java.awt.Color(0, 0, 51));
-        lblDataTermino.setText("DATA DE TERMINO");
-
-        lblTipo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblTipo.setForeground(new java.awt.Color(0, 0, 51));
-        lblTipo.setText("TIPO");
 
         btnListar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnListar.setForeground(new java.awt.Color(0, 0, 51));
@@ -148,7 +116,6 @@ public class PromocaoSave extends javax.swing.JFrame {
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTituloTela, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTitulo)
                     .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblRegras)
@@ -156,31 +123,23 @@ public class PromocaoSave extends javax.swing.JFrame {
                     .addComponent(lblDescricao)
                     .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                        .addComponent(lblDataInicio)
-                        .addGap(60, 60, 60)
-                        .addComponent(lblDataTermino)
-                        .addGap(33, 33, 33)
-                        .addComponent(lblTipo))
-                    .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                        .addComponent(txtDataInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(txtDataTermino, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(cbbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlPrincipalLayout.createSequentialGroup()
                         .addComponent(btnSalvar)
                         .addGap(288, 288, 288)
                         .addComponent(btnHome)
                         .addGap(5, 5, 5)
                         .addComponent(btnListar)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPrincipalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTituloTela)
+                .addGap(100, 100, 100))
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(30, 30, 30)
                 .addComponent(lblTituloTela)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addComponent(lblTitulo)
                 .addGap(5, 5, 5)
                 .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -192,17 +151,7 @@ public class PromocaoSave extends javax.swing.JFrame {
                 .addComponent(lblDescricao)
                 .addGap(5, 5, 5)
                 .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDataInicio)
-                    .addComponent(lblDataTermino)
-                    .addComponent(lblTipo))
-                .addGap(5, 5, 5)
-                .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDataInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDataTermino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addGap(90, 90, 90)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSalvar)
                     .addComponent(btnHome)
@@ -229,99 +178,60 @@ public class PromocaoSave extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void carregarTiposPromocao() {
-        tiposDisponiveis = tipoPromocaoRepository.findAll();
-        cbbTipo.removeAllItems();
-        for (TipoPromocao tipo : tiposDisponiveis) {
-            cbbTipo.addItem(tipo.getTitulo());
-        }
-    }
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+    private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
+        // Obtém a instância da tela de listagem do contexto Spring
+        TipoPromocaoList telaListar = context.getBean(TipoPromocaoList.class);
+        telaListar.setVisible(true);  // Torna a tela visível
+        telaListar.carregarDados();   // Carrega os dados atualizados
+        this.dispose();               // Fecha a tela atual
+    }//GEN-LAST:event_btnListarActionPerformed
 
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // Obtém e limpa os valores dos campos
         String titulo = txtTitulo.getText().trim();
         String regras = txtRegras.getText().trim();
         String descricao = txtDescricao.getText().trim();
-        String dataInicioStr = txtDataInicio.getText().trim();
-        String dataTerminoStr = txtDataTermino.getText().trim();
-        int indexSelecionado = cbbTipo.getSelectedIndex();
-        TipoPromocao tipoSelecionado = tiposDisponiveis.get(indexSelecionado);
-
-
-
-        LocalDate dataInicio;
-        LocalDate dataTermino;
-
+        
+        // VALIDAÇÕES:
+        // Verifica se título foi preenchido
+        if(titulo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Título é obrigatório", "Erro", JOptionPane.ERROR_MESSAGE);
+            return; // Interrompe a execução se validação falhar
+        }
+        
+        // Verifica se descrição foi preenchida
+        if(descricao.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Descrição é obrigatória", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         try {
-           // Define o formato esperado da data (dia/mês/ano)
-           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-           // Converte a string de data início para LocalDate
-           dataInicio = LocalDate.parse(dataInicioStr, formatter);
-
-           // Converte a string de data término para LocalDate
-           dataTermino = LocalDate.parse(dataTerminoStr, formatter);
-       } catch (java.time.format.DateTimeParseException e) {
-           // Exibe mensagem de erro se o formato da data for inválido
-           JOptionPane.showMessageDialog(this, 
-               "Formato de data inválido. Use dd/MM/yyyy.", 
-               "Erro de Formato", 
-               JOptionPane.ERROR_MESSAGE);
-           return; // Sai do método se ocorrer erro
-       }
-
-       // Converte LocalDate (data início) para Date
-       Date dataInicioDate = Date.from(dataInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-       // Converte LocalDate (data término) para Date
-       Date dataTerminoDate = Date.from(dataTermino.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-       // Cria nova instância de Promocao
-       Promocao promocao = new Promocao();
-
-       // Preenche os dados da promoção
-       promocao.setTitulo(titulo);
-       promocao.setRegras(regras);
-       promocao.setDescricao(descricao);
-       promocao.setDataInicio(dataInicioDate);
-       promocao.setDataTermino(dataTerminoDate);
-       promocao.setTipo(tipoSelecionado);
-
-       try {
-           // Chama o controller para salvar a promoção
-           promocaoController.save(promocao);
-
-           // Exibe mensagem de sucesso
-           JOptionPane.showMessageDialog(this, 
-               "Promoção salva com sucesso!", 
-               "Sucesso", 
-               JOptionPane.INFORMATION_MESSAGE);
-
-           // Limpa os campos após salvar
-           txtTitulo.setText("");
-           txtRegras.setText("");
-           txtDescricao.setText("");
-           txtDataInicio.setText("");
-           txtDataTermino.setText("");
-           
-        // Após salvar com sucesso:
-        PromocaoList telaListagem = context.getBean(PromocaoList.class);
-        telaListagem.setVisible(true);
-        telaListagem.carregarDados(); // Força a atualização
-        this.dispose();
-
-       } catch (IllegalArgumentException e) {
-           // Trata erros de validação
-           JOptionPane.showMessageDialog(this, 
-               e.getMessage(), 
-               "Erro de Validação", 
-               JOptionPane.ERROR_MESSAGE);
-       } catch (Exception e) {
-           // Trata outros erros inesperados
-           JOptionPane.showMessageDialog(this, 
-               "Ocorreu um erro inesperado ao salvar: " + e.getMessage(), 
-               "Erro", 
-               JOptionPane.ERROR_MESSAGE);
-       }
+            // Cria novo objeto TipoPromocao com os dados do formulário
+            TipoPromocao tipo = new TipoPromocao();
+            tipo.setTitulo(titulo);
+            tipo.setDescricao(descricao);
+            tipo.setRegra(regras); // Regras é opcional
+            
+            // Chama o controller para salvar no banco de dados
+            controller.save(tipo);
+            
+            // Feedback de sucesso para o usuário
+            JOptionPane.showMessageDialog(this, "Tipo salvo com sucesso!");
+            limparCampos(); // Limpa os campos após salvar
+            
+            // Abre a tela de listagem com os dados atualizados
+            TipoPromocaoList listagem = context.getBean(TipoPromocaoList.class);
+            listagem.setVisible(true);
+            listagem.carregarDados();
+            this.dispose(); // Fecha a tela atual
+            
+        } catch (Exception e) {
+            // Tratamento de erro genérico
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao salvar tipo: " + e.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
@@ -331,30 +241,50 @@ public class PromocaoSave extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnHomeActionPerformed
 
-    private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
-        // TODO add your handling code here:
-        PromocaoList telaListar = new PromocaoList();
-        telaListar.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnListarActionPerformed
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
 
-
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new TipoPromocaoSave().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnListar;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JComboBox<String> cbbTipo;
-    private javax.swing.JLabel lblDataInicio;
-    private javax.swing.JLabel lblDataTermino;
     private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblRegras;
-    private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTituloTela;
     private javax.swing.JPanel pnlPrincipal;
-    private javax.swing.JTextField txtDataInicio;
-    private javax.swing.JTextField txtDataTermino;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtRegras;
     private javax.swing.JTextField txtTitulo;

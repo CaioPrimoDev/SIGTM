@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TipoPromocaoRepository extends JpaRepository<TipoPromocao, Long> {
-    TipoPromocao findByNome(String nome);
+    TipoPromocao findByTitulo(String titulo);
 
-    public boolean existsByNome(String nomeTipo);
+    public boolean existsByTitulo(String nome);
 }
