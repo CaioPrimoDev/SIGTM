@@ -146,6 +146,10 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
         try {
             // Busca o TipoUsuario padrão
             TipoUsuario tipoComum = tipoUsuarioController.findByNome("USUARIO_COMUM");
+            if(tipoComum == null) {
+               MostrarMensagem.erro(this, "TipoUsuario: 'USUARIO_COMUM' não consta no Banco", "ERRO");
+               return;
+            }
 
             // Cria o usuário com o tipo e a senha
             Usuario user = new Usuario();

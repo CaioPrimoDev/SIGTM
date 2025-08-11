@@ -212,20 +212,16 @@ public class TelaLoginUI extends javax.swing.JFrame {
         Usuario usuario = loginController.login(email, senha);
 
         if (usuario != null) {
-            usuarioSession.setUsuarioLogado(usuario); // Salva o Usuario logado
-            this.dispose();
-
-            String tipo = usuario.getTipo().getNome().toUpperCase();
-
-            switch (tipo) {
-                case "GESTOR" -> MostrarMensagem.info(this, "Gestor logado com sucesso!", "Sucesso");
-                case "PARCEIRO" -> MostrarMensagem.info(this, "Parceiro logado com sucesso!", "Sucesso");
-                case "USUARIO_COMUM" -> MostrarMensagem.info(this, "Usuario comum logado com sucesso!", "Sucesso");
-                default -> MostrarMensagem.erro(this, "Tipo de usuário desconhecido.", "Erro");
+            if (!usuario.isAtivo()) {
+                MostrarMensagem.erro(this, "Usuário inativo.", "Erro");
+            } else {
+                usuarioSession.setUsuarioLogado(usuario);
+                String tipo = usuario.getTipo().getNome().toUpperCase();
+                MostrarMensagem.info(this, tipo.toLowerCase() + " logado com sucesso!", "Sucesso");
+                this.dispose();
             }
-
         } else {
-            MostrarMensagem.erro(this, "E-mail ou senha inválidos ou usuário inativo.", "Erro");
+            MostrarMensagem.erro(this, "E-mail ou senha inválidos", "Erro");
         }
     }//GEN-LAST:event_btnLogarActionPerformed
 
