@@ -4,7 +4,7 @@
  */
 package br.com.ifba.pontoturistico.service;
 
-import br.com.ifba.gestor.entity.Gestor;
+import br.com.ifba.usuario.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import java.util.List;
 

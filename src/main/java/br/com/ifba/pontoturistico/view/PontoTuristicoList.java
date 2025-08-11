@@ -5,7 +5,7 @@
 package br.com.ifba.pontoturistico.view;
 
 import br.com.ifba.endereco.entity.Endereco;
-import br.com.ifba.gestor.entity.Gestor;
+import br.com.ifba.usuario.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.util.ButtonRenderer;

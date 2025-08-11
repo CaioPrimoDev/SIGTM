@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.gestor.service;
+package br.com.ifba.usuario.gestor.service;
 
-import br.com.ifba.gestor.entity.Gestor;
-import br.com.ifba.gestor.repository.GestorRepository;
+import br.com.ifba.usuario.gestor.entity.Gestor;
+import br.com.ifba.usuario.gestor.repository.GestorRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
