@@ -34,7 +34,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
 
-        //TELA DE SOLICITAÇÕES
+        //TELA DE SOLICITAÇÕE//////S
         tableModelS = (DefaultTableModel) tblSolicitantes.getModel();
 
         carregarDadosParceiros();
