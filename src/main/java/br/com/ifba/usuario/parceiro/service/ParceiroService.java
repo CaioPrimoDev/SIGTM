@@ -170,6 +170,7 @@ public class ParceiroService implements ParceiroIService {
     tipo.setDescricao("");
     
     Solicitacao solicitacao = new Solicitacao();
+    solicitacao.setUsuario(usuario);
     parceiro.setSolicitacao(solicitacao);//garantindo que solicitacao não seja nula
     
     //como a herança é obrigtatória eu passo os dados de usuario para parceiro via cópia

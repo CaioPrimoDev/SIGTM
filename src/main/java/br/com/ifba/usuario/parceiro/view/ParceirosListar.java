@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.view;
 
+import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
 import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.controller.ParceiroIController;
@@ -26,10 +27,11 @@ import org.springframework.stereotype.Component;
 public class ParceirosListar extends javax.swing.JFrame {
 
     @Autowired
-    public ParceirosListar(ParceiroIController parceiroController, UsuarioIController usuarioController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
+    public ParceirosListar(ParceiroIController parceiroController, UsuarioIController usuarioController, SolicitacaoIController solicitacaoController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
         this.parceiroController = parceiroController;
         this.usuarioController = usuarioController;
-
+        this.solicitacaoController = solicitacaoController;
+        
         initComponents();
 
         tableModel = (DefaultTableModel) tblParceiros.getModel();//setando padrão para o default table model
@@ -52,6 +54,9 @@ public class ParceirosListar extends javax.swing.JFrame {
     @Autowired
     ParceiroIController parceiroController;
 
+    @Autowired
+    SolicitacaoIController solicitacaoController;
+    
     // MÉTODOS ESPECÍFICOS
     public void carregarDadosParceiros() {
 
@@ -117,10 +122,10 @@ public class ParceirosListar extends javax.swing.JFrame {
                 parceiroCapsula.getTelefone()
             });
 
+           usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
+            
             parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
-           // usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
-
-        
+      
     }
 
     public void editarParceiro(Parceiro parceiro) {
@@ -163,7 +168,8 @@ public class ParceirosListar extends javax.swing.JFrame {
    }
     
    public void atualizarParceiros(){
-   
+    tableModel.setRowCount(0);
+   carregarDadosParceiros();
    }
    
    @SuppressWarnings("unchecked")
@@ -682,6 +688,10 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         //solicitacao = false e vai sair da lista de solicitantes
         parceiroNegado.getSolicitacao().setSolicitouParceria(false); 
+        
+        solicitacaoController.save(parceiroNegado.getSolicitacao());
+        usuarioController.save(parceiroNegado);
+        
         listaSolicitantes.remove(parceiroNegado);
         tableModelS.removeRow(itemSelecionado);
     }//GEN-LAST:event_btnNegarActionPerformed

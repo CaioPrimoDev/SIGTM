@@ -99,10 +99,10 @@ public class SolicitacaoService implements SolicitacaoIService {
             log.warn("CNPJ da Solicitação é nulo ou vazio.");
             throw new RegraNegocioException("O CNPJ é obrigatório.");
         }
-        if (!StringUtil.isCnpjValido(solicitacao.getCnpj())) {
+       /* if (!StringUtil.isCnpjValido(solicitacao.getCnpj())) {
             log.warn("CNPJ inválido: {}", solicitacao.getCnpj());
             throw new RegraNegocioException("O CNPJ informado é inválido.");
-        }
+        }*/
 
         // Validação do nomeEmpresa
         if (StringUtil.isNullOrEmpty(solicitacao.getNomeEmpresa())) {

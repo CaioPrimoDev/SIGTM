@@ -56,6 +56,7 @@ public class UsuarioService implements UsuarioIService {
 
         try {
             UserRepo.deleteById(id);
+            UserRepo.flush();
         } catch (EmptyResultDataAccessException e) {
             // ID não encontrado no banco
             log.error("Tentativa de exclusão de Usuário inexistente (ID: {}).", id, e);
