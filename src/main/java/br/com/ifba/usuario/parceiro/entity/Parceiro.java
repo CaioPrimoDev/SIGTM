@@ -37,4 +37,5 @@ public class Parceiro extends Usuario {
     
     @OneToMany(mappedBy = "parceiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Evento> eventos;  
-}
+
+ }

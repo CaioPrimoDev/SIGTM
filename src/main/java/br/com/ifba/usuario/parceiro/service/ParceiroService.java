@@ -11,6 +11,8 @@ import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.usuario.parceiro.repository.ParceiroRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
@@ -32,6 +35,8 @@ public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository repo;
     
+     @PersistenceContext  // Anotação para injetar o EntityManager
+    private EntityManager entityManager;
     
     @Override
     public boolean save(Parceiro user) {
@@ -160,39 +165,49 @@ public class ParceiroService implements ParceiroIService {
             }
     }
     
-    @Override
-    public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa){
+@Override
+@Transactional
+public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
     
+    Usuario usuarioGerenciado = entityManager.find(Usuario.class, usuario.getId());
+    if (usuarioGerenciado == null) {
+        throw new IllegalArgumentException("Usuário não encontrado com ID: " + usuario.getId());
+    }
+
+    if (usuarioGerenciado.getSolicitacao() != null) {
+        entityManager.remove(usuarioGerenciado.getSolicitacao());
+        usuarioGerenciado.setSolicitacao(null);
+    }
+
     Parceiro parceiro = new Parceiro();
-    
+   
     TipoUsuario tipo = new TipoUsuario();
     tipo.setNome("PARCEIRO");
     tipo.setDescricao("");
     
-    Solicitacao solicitacao = new Solicitacao();
-    solicitacao.setUsuario(usuario);
-    parceiro.setSolicitacao(solicitacao);//garantindo que solicitacao não seja nula
-    
-    //como a herança é obrigtatória eu passo os dados de usuario para parceiro via cópia
-    //DADOS DA PESSOA
-       parceiro.setNome(usuario.getNome());
-       parceiro.setEmail(usuario.getEmail());
-       parceiro.setTelefone(usuario.getTelefone());
-       
-      // DADOS DO USUÁRIO
-      parceiro.setSenha(usuario.getSenha());
-      parceiro.setAtivo(usuario.isAtivo());
-      parceiro.setTipo(tipo);
-      parceiro.getSolicitacao().setCnpj(cnpj);// como ele esta sendo aprovado  para ser parceiro não há necessidade de manter a solicitação
-      parceiro.getSolicitacao().setNomeEmpresa(nomeEmpresa);
-      parceiro.getSolicitacao().setSolicitouParceria(false);
-      
-      //DADOS DO PARCEIRO
-      parceiro.setCnpj(cnpj);
-      parceiro.setNomeEmpresa(nomeEmpresa);
+    parceiro.setNome(usuarioGerenciado.getNome());
+    parceiro.setEmail(usuarioGerenciado.getEmail());
+    parceiro.setTelefone(usuarioGerenciado.getTelefone());
+    parceiro.setSenha(usuarioGerenciado.getSenha());
+    parceiro.setAtivo(usuarioGerenciado.isAtivo());
+    parceiro.setTipo(tipo);
+   
+    parceiro.setCnpj(cnpj);
+    parceiro.setNomeEmpresa(nomeEmpresa);
+
+    Solicitacao novaSolicitacao = new Solicitacao();
+    novaSolicitacao.setCnpj(cnpj);
+    novaSolicitacao.setNomeEmpresa(nomeEmpresa);
+    novaSolicitacao.setSolicitouParceria(false);
+    parceiro.setSolicitacao(novaSolicitacao);
+
+    entityManager.remove(usuarioGerenciado);
+    entityManager.flush(); 
+
+    entityManager.persist(parceiro);
     
     return parceiro;
-    }
+}
     @Override
     public Usuario removerParceiria(Parceiro parceiro) {
 

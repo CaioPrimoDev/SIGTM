@@ -122,9 +122,7 @@ public class ParceirosListar extends javax.swing.JFrame {
                 parceiroCapsula.getTelefone()
             });
 
-           usuarioController.delete(usuario.getId());// removo o usuário da tabela de usuários pois ele foi elevado a parceiro
-            
-            parceiroController.save(parceiroCapsula);//salvar o novo parceiro na tabela de parceiros
+           
       
     }
 
@@ -552,57 +550,61 @@ public class ParceirosListar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
-        String termo = txtbarradePesquisa.getText().trim();
+String termo = txtbarradePesquisa.getText().trim();
 
-        //limpar tabela de forma segura na EDT
+// Limpar tabela de forma segura na EDT
+SwingUtilities.invokeLater(() -> {
+    tableModel.setRowCount(0); // Usar APENAS um modelo (tableModel)
+});
+
+if (termo.isEmpty()) {
+    preencherTabelaParceiros();
+    return;
+}
+
+//Uso de regex para verificação se é númerico
+if (termo.matches("\\d+")) {
+    try {
+        Parceiro parceiro = procurarParceirocnpj(termo);
         SwingUtilities.invokeLater(() -> {
-            tableModel.setRowCount(0);
+            if (parceiro != null) {
+                tableModel.addRow(new Object[]{
+                    parceiro.getNome(),
+                    parceiro.getCnpj(),
+                    parceiro.getNomeEmpresa()
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse CNPJ.");
+                preencherTabelaParceiros();
+            }
         });
-
-        if (termo.isEmpty()) {
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Erro ao buscar CNPJ: " + e.getMessage());
+    }
+} 
+// Busca por Nome (não numérico)
+else {
+    SwingUtilities.invokeLater(() -> {
+        List<Parceiro> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
+        
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
+            txtbarradePesquisa.setText("");
             preencherTabelaParceiros();
-            return;
+        } else {
+            for (Parceiro p : resultados) {
+                tableModel.addRow(new Object[]{
+                    p.getNome(),
+                    p.getCnpj(),
+                    p.getNomeEmpresa()
+                });
+            }
+            
+           
+            
         }
-
-        try {
-            //usar invokeLater para garantir execução na thread correta
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    Parceiro parceiro = procurarParceirocnpj(termo);
-                    //primeiro ver se é numérico
-                    if (parceiro != null) {
-                        tableModelS.addRow(new Object[]{
-                            parceiro.getNome(),
-                            parceiro.getCnpj(),
-                            parceiro.getNomeEmpresa(),});
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse ID.");
-                        preencherTabelaParceiros();
-                    }
-                } catch (HeadlessException e) {
-                    JOptionPane.showMessageDialog(null, "Erro ao buscar parceiro: " + e.getMessage());
-                }
-            });
-
-        } catch (NumberFormatException e) {
-            //se não for numérico procurar por nome
-            SwingUtilities.invokeLater(() -> {
-                List<Parceiro> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);//procura por usuários do tipo PARCEIRO e com o nome termo
-
-                if (resultados.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
-                    preencherTabelaParceiros();
-                } else {
-                    for (Parceiro solicitante : resultados) {
-                        tableModel.addRow(new Object[]{
-                            solicitante.getNome(),
-                            solicitante.getCnpj(),
-                            solicitante.getNomeEmpresa()
-                        });
-                    }
-                }
-            });
-        }
+    });
+}
 
     }//GEN-LAST:event_txtbarradePesquisaKeyReleased
 
@@ -699,58 +701,65 @@ public class ParceirosListar extends javax.swing.JFrame {
     private void txtpesquisarSolicitantesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarSolicitantesKeyReleased
         String termo = txtpesquisarSolicitantes.getText().trim();
 
-        //limpar tabela de forma segura na EDT
-        SwingUtilities.invokeLater(() -> {
-            tableModelS.setRowCount(0);
-        });
+// Limpar tabela de forma segura na EDT
+SwingUtilities.invokeLater(() -> tableModelS.setRowCount(0));
 
-        if (termo.isEmpty()) {
-            preencherTabelaParceiros();
-            return;
-        }//
+if (termo.isEmpty()) {
+    preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes() se for diferente
+    return;
+}
 
+boolean isNumerico = true;
+for (char c : termo.toCharArray()) {
+    if (!Character.isDigit(c)) {
+        isNumerico = false;
+        break;
+    }
+}
+
+if (isNumerico) {
+    // Busca por ID
+    SwingUtilities.invokeLater(() -> {
         try {
             Long id = Long.valueOf(termo);
-
-            //usar invokeLater para garantir execução na thread correta
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    Usuario solicitante = usuarioController.findById(id);
-                    //primeiro ver se é numérico
-                    if (solicitante != null) {
-                        tableModelS.addRow(new Object[]{
-                            solicitante.getNome(),
-                            solicitante.getTelefone(),
-                            solicitante.getEmail(),});
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
-                        preencherTabelaParceiros();
-                    }
-                } catch (HeadlessException e) {
-                    JOptionPane.showMessageDialog(null, "Erro ao buscar solicitante: " + e.getMessage());
-                }
-            });
-
-        } catch (NumberFormatException e) {
-            //se não for numérico procurar por nome
-            SwingUtilities.invokeLater(() -> {
-                List<Usuario> resultados = usuarioController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
-
-                if (resultados.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
-                    preencherTabelaParceiros();
-                } else {
-                    for (Usuario solicitante : resultados) {
-                        tableModelS.addRow(new Object[]{
-                            solicitante.getNome(),
-                            solicitante.getTelefone(),
-                            solicitante.getEmail()
-                        });
-                    }
-                }
-            });
+            Usuario solicitante = usuarioController.findById(id);
+            
+            if (solicitante != null) {
+                tableModelS.addRow(new Object[]{
+                    solicitante.getNome(),
+                    solicitante.getTelefone(),
+                    solicitante.getEmail()
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
+                preencherTabelaParceiros(); 
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar ID: " + e.getMessage());
+            preencherTabelaParceiros(); 
         }
-
+    });
+} else {
+    // Busca por nome
+    SwingUtilities.invokeLater(() -> {
+        List<Usuario> resultados = usuarioController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
+        
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
+            txtpesquisarSolicitantes.setText("");
+            preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes()
+        } else {
+            for (Usuario solicitante : resultados) {
+                tableModelS.addRow(new Object[]{
+                    solicitante.getNome(),
+                    solicitante.getTelefone(),
+                    solicitante.getEmail()
+                });
+            }
+           
+        }
+    });
+}
     }//GEN-LAST:event_txtpesquisarSolicitantesKeyReleased
 
     private void tblParceirosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblParceirosMouseClicked
