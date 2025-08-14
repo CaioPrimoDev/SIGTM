@@ -8,6 +8,7 @@ import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.endereco.service.EnderecoIService;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.pontoturistico.repository.PontoTuristicoRepository;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.util.StringUtil;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +30,7 @@ public class PontoTuristicoService implements PontoTuristicoIService {
     // Constantes de erro necessárias
     private static final String PONTO_TURISTICO_NULL = "Dados do Ponto Turístico não fornecidos.";
     private static final String PONTO_TURISTICO_NOT_FOUND = "Ponto Turístico com o ID informado não foi encontrado.";
+    private static final String PERMISSAO_INSUFICIENTE = "Permissão insuficiente. Esta funcionalidade é exclusiva para o perfil de gestor.";
     private static final String ENDERECO_JA_UTILIZADO = "Este endereço já está em uso por outro Ponto Turístico.";
 
     private static final Logger log = LoggerFactory.
@@ -36,12 +38,14 @@ public class PontoTuristicoService implements PontoTuristicoIService {
 
     private final PontoTuristicoRepository pontoTuristicoRepository;
     private final EnderecoIService enderecoService;
+    private final UsuarioSession usuarioLogado;
 
     /**
      * Valida os campos essenciais de um Ponto Turístico usando StringUtil.
      * @param pontoTuristico O objeto a ser validado.
      */
     private void validarPontoTuristico(PontoTuristico pontoTuristico) {
+        // Verifica se o ponto turistico nao é nulo
         if (pontoTuristico == null) {
             throw new IllegalArgumentException(PONTO_TURISTICO_NULL);
         }
@@ -70,6 +74,20 @@ public class PontoTuristicoService implements PontoTuristicoIService {
             throw new IllegalArgumentException("O formato do horário de fechamento é inválido. Use HH:mm.");
         }
     }
+
+    @Override
+    public void verificaGestor(UsuarioSession userLogado){
+        // Verifica se o usuário está logado
+        if (this.usuarioLogado == null || !this.usuarioLogado.isLogado()) {
+            throw new IllegalStateException("Acesso negado. Nenhum usuário autenticado na sessão.");
+        }
+
+        // Verifica se o tipo do usuário é GESTOR 
+        String tipoUsuario = this.usuarioLogado.getUsuarioLogado().getTipo().getNome();
+        if (!"GESTOR".equals(tipoUsuario)) {
+            throw new IllegalStateException(PERMISSAO_INSUFICIENTE); 
+        }
+    }
     
     /**
      * Garante que um endereço seja usado por no máximo um Ponto Turístico.
@@ -86,6 +104,8 @@ public class PontoTuristicoService implements PontoTuristicoIService {
     public void save(PontoTuristico pontoTuristico) {       
         log.info("Iniciando processo de salvamento do Ponto Turístico: {}", pontoTuristico.getNome());
         
+        // realiza verificacoes antes de prosseguir
+        verificaGestor(usuarioLogado);
         validarPontoTuristico(pontoTuristico);
         
         Endereco enderecoGerenciado = enderecoService.encontrarOuCriarEndereco(pontoTuristico.getEndereco());
@@ -116,6 +136,10 @@ public class PontoTuristicoService implements PontoTuristicoIService {
         if (pontoTuristico == null || pontoTuristico.getId() == null) {
             throw new IllegalArgumentException(PONTO_TURISTICO_NULL);
         }
+        
+        // realiza a verificacao do tipo de usuario logado antes de prosseguir
+        verificaGestor(usuarioLogado);
+        
         // Garante que o objeto existe antes de deletar
         PontoTuristico existente = this.findById(pontoTuristico.getId());
         pontoTuristicoRepository.delete(existente);
@@ -125,8 +149,8 @@ public class PontoTuristicoService implements PontoTuristicoIService {
     @Override
     @Transactional
     public List<PontoTuristico> findAll() {
-        log.info("Buscando todos os Pontos Turísticos.");
-        return pontoTuristicoRepository.findAll();
+        log.info("Buscando todos os Pontos Turísticos.");       
+        return pontoTuristicoRepository.findAll();        
     }
 
     @Override

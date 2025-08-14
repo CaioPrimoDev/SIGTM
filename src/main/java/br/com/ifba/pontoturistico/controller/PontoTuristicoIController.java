@@ -4,8 +4,8 @@
  */
 package br.com.ifba.pontoturistico.controller;
 
-import br.com.ifba.usuario.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.sessao.UsuarioSession;
 import java.util.List;
 
 /**
@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface PontoTuristicoIController {
     // metodos abstratos para ser implementado na classe
+    public void verificaGestor(UsuarioSession userLogado);
     public void save(PontoTuristico pontoTuristico);
     public void update(PontoTuristico pontoTuristico);
     public void delete(PontoTuristico pontoTuristico);

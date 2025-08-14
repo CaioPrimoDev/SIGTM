@@ -4,9 +4,9 @@
  */
 package br.com.ifba.pontoturistico.controller;
 
-import br.com.ifba.usuario.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.pontoturistico.service.PontoTuristicoIService;
+import br.com.ifba.sessao.UsuarioSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,6 +20,11 @@ import org.springframework.stereotype.Controller;
 public class PontoTuristicoController implements PontoTuristicoIController {
     
     private final PontoTuristicoIService pontoTuristicoService;
+    
+    @Override
+    public void verificaGestor(UsuarioSession userLogado){
+        pontoTuristicoService.verificaGestor(userLogado);
+    }
 
     @Override
     public void save(PontoTuristico pontoTuristico) {

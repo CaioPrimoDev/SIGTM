@@ -7,7 +7,8 @@ package br.com.ifba.pontoturistico.view;
 import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
-import br.com.ifba.util.StringUtil;
+import br.com.ifba.sessao.UsuarioSession;
+import br.com.ifba.usuario.gestor.entity.Gestor;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,17 +23,21 @@ import org.springframework.stereotype.Component;
 public class PontoTuristicoSave extends javax.swing.JFrame {
 
     @Autowired
-    private PontoTuristicoIController pontoTuristicoController;
+    private final PontoTuristicoIController pontoTuristicoController;
+    
+    private UsuarioSession userLogado;
     
     
     private PontoTuristicoList pontoTuristicoList;
-    private PontoTuristico novoPonto;
-    private Endereco enderecoPonto;
     
     /**
      * Creates new form PontoTuristicoSave
      */
-    public PontoTuristicoSave() {
+    public PontoTuristicoSave(PontoTuristicoIController pontoTuristicoController, UsuarioSession userLogado) {
+        // inicializa o controller como parametro recebido
+        this.pontoTuristicoController = pontoTuristicoController;
+        this.userLogado = userLogado;
+        
         initComponents();
         
         setLocationRelativeTo(null); // inicializa o jframe no meio da tela
@@ -302,19 +307,6 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                     null, "Existem campos vazios ou invalido(s), preencha todos e tente novamente!",
                     "Alerta", JOptionPane.WARNING_MESSAGE);
             }
-            // Valida o formato do horário de abertura
-            if (!StringUtil.isValidHorario(txtHorarioAber.getText())) {
-                 JOptionPane.showMessageDialog(this, "Formato do horário de abertura inválido. Use HH:mm (ex: 08:00).", 
-                                               "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-                 return; // Para a execução
-            }
-            
-            // Valida o formato do horário de fechamento
-            if (!StringUtil.isValidHorario(txtHorarioFecha.getText())) {
-                 JOptionPane.showMessageDialog(this, "Formato do horário de fechamento inválido. Use HH:mm (ex: 18:00).", 
-                                               "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-                 return;
-            }
             else{
                 // Atribui os dados de Endereco ao objeto para inserção no campo de localizacao do PontoTuristico
                 Endereco enderecoPonto = new Endereco();
@@ -322,7 +314,10 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                 enderecoPonto.setCidade(txtCidade.getText());
                 enderecoPonto.setBairro(txtBairro.getText());
                 enderecoPonto.setRua(txtRua.getText());
-                enderecoPonto.setNumero(txtEstado.getText());
+                enderecoPonto.setNumero(txtNumero.getText());
+                
+                // Obtém o gestor da sessão
+                Gestor gestorResponsavel = (Gestor) userLogado.getUsuarioLogado();
                 
                 // Atribui os dados de PontoTuristico ao objeto
                 PontoTuristico novoPonto = new PontoTuristico();
@@ -332,6 +327,9 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                 novoPonto.setNivelAcessibilidade(sliNivelAcess.getValue());
                 novoPonto.setHorarioAbertura(txtHorarioAber.getText());
                 novoPonto.setHorarioFechamento(txtHorarioFecha.getText());
+                novoPonto.setGestor(gestorResponsavel);
+                
+                
 
                 // salva o objeto no banco
                 pontoTuristicoController.save(novoPonto);

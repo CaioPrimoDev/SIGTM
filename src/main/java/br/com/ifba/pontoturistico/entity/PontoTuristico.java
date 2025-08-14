@@ -33,17 +33,19 @@ public class PontoTuristico extends ItemTuristico {
     @Column(name = "horario_fechamento")
     private String horarioFechamento;
     
-    //@ManyToOne
-    //@JoinColumn(name = "gestor_id", nullable = false) // Cria a coluna 'gestor_id'
-    //private Gestor gestor; // A referência para o gestor que o cadastrou
+    @ManyToOne
+    @JoinColumn(name = "gestor_id", nullable = false) // Cria a coluna 'gestor_id'
+    private Gestor gestor; // A referência para o gestor que o cadastrou
 
     // Construtor manual garante a inicialização completa e correta do objeto
     public PontoTuristico(String nome, String descricao, Endereco endereco,
-                          int nivelAcessibilidade, String horarioAbertura, String horarioFechamento) {
+                          int nivelAcessibilidade, String horarioAbertura, String horarioFechamento, Gestor gestor) {
         super(nome, descricao, endereco, nivelAcessibilidade); 
         
         // responsaveis por dizer qual o horario de funcionamento
         this.horarioFechamento = horarioFechamento;
         this.horarioAbertura = horarioAbertura;
+        
+        this.gestor = gestor;
     }
 }

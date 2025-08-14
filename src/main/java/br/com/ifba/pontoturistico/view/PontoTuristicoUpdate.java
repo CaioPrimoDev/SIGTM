@@ -7,6 +7,7 @@ package br.com.ifba.pontoturistico.view;
 import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.sessao.UsuarioSession;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,15 +22,19 @@ import org.springframework.stereotype.Component;
 public class PontoTuristicoUpdate extends javax.swing.JFrame {
 
     @Autowired
-    private PontoTuristicoIController pontoTuristicoController;
+    private final PontoTuristicoIController pontoTuristicoController;
     private PontoTuristico pontoTuristicoEditar;
     private PontoTuristicoList pontoTuristicoLista;
     private Endereco enderecoEditar;
+    private UsuarioSession userLogado;
     
     /**
      * Creates new form PontoTuristicoUpdate
      */
-    public PontoTuristicoUpdate() {
+    public PontoTuristicoUpdate(PontoTuristicoIController pontoTuristicoController, UsuarioSession userLogado) {
+        // inicializa o controller como parametro recebido
+        this.pontoTuristicoController = pontoTuristicoController;
+        this.userLogado = userLogado;
         initComponents();
         
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 

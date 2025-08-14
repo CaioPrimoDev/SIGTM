@@ -5,9 +5,10 @@
 package br.com.ifba.pontoturistico.view;
 
 import br.com.ifba.endereco.entity.Endereco;
-import br.com.ifba.usuario.gestor.entity.Gestor;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.sessao.UsuarioSession;
+import br.com.ifba.telainicial.view.TelaInicial;
 import br.com.ifba.util.ButtonRenderer;
 import java.awt.Image;
 import java.util.List;
@@ -29,13 +30,10 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
     // Adiciona atributos para as classes de buscas
     private List<PontoTuristico> listaDePontos; // guarda a lista de pontos carregada
-    private Gestor gestorBuscado;
+    private UsuarioSession userLogado;
     
     @Autowired
-    private PontoTuristicoIController pontoTuristicoController;   
-    
-    // @Autowired
-    // private GestorIController gestorController;
+    private PontoTuristicoIController pontoTuristicoController;   ;
     
     private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
  
@@ -43,10 +41,10 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
      * Creates new form PontoTuristicoList
      */
     @Autowired
-    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController/*, GestorIController gestorLogado*/) {
+    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController, UsuarioSession userLogado) {
         // inicializa o controller como parametro recebido
         this.pontoTuristicoController = pontoTuristicoController;
-        //this.gestorController = gestorController;
+        this.userLogado = userLogado;
         initComponents();
         
         carregarDados(); // carrega os dados na tabela
@@ -126,27 +124,42 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                         }
                     }
                     // AÇÃO DE EDITAR
-                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")                 
-                        PontoTuristico pontoParaEditar = listaDePontos.get(linha);
+                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")  
+                        if(userLogado.isLogado()){
+                            try{
+                                // verifica se o usuario logado é do tipo gestor
+                                pontoTuristicoController.verificaGestor(userLogado);
 
-                        PontoTuristicoUpdate telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
-                        telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
-                        telaAtualizacao.setVisible(true);
+                                PontoTuristico pontoParaEditar = listaDePontos.get(linha);
+
+                                PontoTuristicoUpdate telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
+                                telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
+                                telaAtualizacao.setVisible(true);
+                            }
+                            catch (Exception e){
+                                acessoNegado(e);
+                            }
+                        }
+                        else{
+                            avisoLogin();
+                        }
                     } 
                     // AÇÃO DE REMOVER
-                    else if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Remover")
+                    else if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Remover")                       
                         PontoTuristico pontoParaRemover = listaDePontos.get(linha);
                         // Pede confirmação ao usuário antes de remover
                         int resposta = JOptionPane.showConfirmDialog(PontoTuristicoList.this, // Parent component
                                 "Deseja realmente remover este ponto turistico: \"" + pontoParaRemover.getNome() + "\"?", 
                                 "Confirmar Remoção", 
                                 JOptionPane.YES_NO_OPTION);
-
                         if (resposta == JOptionPane.YES_NO_OPTION) {
                             try {
+                                // verifica se o usuario logado é do tipo gestor
+                                pontoTuristicoController.verificaGestor(userLogado);
+                                
                                 // Usa o ID do objeto identificado corretamente
                                 pontoTuristicoController.delete(pontoParaRemover);
-
+                                
                                 // Mostra a mensagem de sucesso
                                 JOptionPane.showMessageDialog(PontoTuristicoList.this, "Ponto Turistico removido com sucesso!");
 
@@ -156,7 +169,6 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                             } 
                             catch (Exception e) {
                                 JOptionPane.showMessageDialog(PontoTuristicoList.this, "Erro ao remover ponto turistico: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -219,25 +231,6 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         // Pega a coluna na posição 6 (a setima coluna)
         tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
     }
-    
-    /* private void verificaGestor(){
-        try {
-            // Pega o texto do campo
-            String textoId = txtIDGestor.getText();
-
-            // Tenta converter o texto para long
-            long idBuscar = Long.parseLong(textoId);
-
-            this.gestorBuscado = gestorController.findById(idBuscar);
-
-        } catch (NumberFormatException e) {
-            // Se a conversão falhar, mostra um erro amigável para o usuário
-            JOptionPane.showMessageDialog(this, 
-                "Por favor, insira um ID válido (apenas números).", 
-                "Erro de Formato", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    } */
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -253,6 +246,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPontosTuristicos = new javax.swing.JTable();
         btnRefresh = new javax.swing.JButton();
+        btnTelaInicial = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -331,6 +325,16 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
             }
         });
 
+        btnTelaInicial.setText("Tela Inicial");
+        btnTelaInicial.setMaximumSize(new java.awt.Dimension(76, 27));
+        btnTelaInicial.setMinimumSize(new java.awt.Dimension(76, 27));
+        btnTelaInicial.setPreferredSize(new java.awt.Dimension(76, 27));
+        btnTelaInicial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTelaInicialActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -342,6 +346,8 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                         .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRefresh)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnTelaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAdiciona))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE))
@@ -350,15 +356,19 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdiciona)
-                        .addGap(0, 5, Short.MAX_VALUE)))
-                .addGap(13, 13, 13)
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
+                            .addComponent(btnAdiciona))
+                        .addGap(13, 13, 13))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnTelaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefresh))
+                        .addGap(18, 18, 18)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -432,11 +442,39 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         }
     }//GEN-LAST:event_txtPesquisarKeyReleased
 
+    private void avisoLogin(){
+        JOptionPane.showMessageDialog(PontoTuristicoList.this, 
+                                "Acesso negado. Nenhum usuário autenticado na sessão.", 
+                                "Login pendente", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void acessoNegado(Exception e){
+        JOptionPane.showMessageDialog(this, 
+                  e.getMessage(), 
+                  "Acesso Negado", 
+                  JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
     private void btnAdicionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionaActionPerformed
         // TODO add your handling code here:       
-        PontoTuristicoSave telaPontoTuristicoSave = applicationContext.getBean(PontoTuristicoSave.class);
-        telaPontoTuristicoSave.setPontoTuristicoList(this); // Configura a referência para poder atualizar a tabela
-        telaPontoTuristicoSave.setVisible(true);
+        // verifica se o usuario esta logado
+        if(userLogado.isLogado()){
+            try{
+                // verifica se o usuario logado é do tipo gestor
+                pontoTuristicoController.verificaGestor(userLogado);
+
+                PontoTuristicoSave telaPontoTuristicoSave = applicationContext.getBean(PontoTuristicoSave.class);
+                telaPontoTuristicoSave.setPontoTuristicoList(this); // Configura a referência para poder atualizar a tabela
+                telaPontoTuristicoSave.setVisible(true);
+            }
+            catch (Exception e){
+                acessoNegado(e);
+            }
+        }
+        else {
+            avisoLogin();
+        }
     }//GEN-LAST:event_btnAdicionaActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
@@ -444,9 +482,17 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         carregarDados();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
+    private void btnTelaInicialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialActionPerformed
+        // TODO add your handling code here:
+        TelaInicial telaInicial = applicationContext.getBean(TelaInicial.class);
+        telaInicial.setVisible(true);
+        this.dispose(); // <--- É esta linha que fecha a janela!
+    }//GEN-LAST:event_btnTelaInicialActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdiciona;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnTelaInicial;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblPontosTuristicos;
     private javax.swing.JTextField txtPesquisar;
