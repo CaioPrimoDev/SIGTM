@@ -131,7 +131,6 @@ public void adicionarEvento(Parceiro parceiro, Evento evento, Endereco endereco)
         return;
     }
 
-    parceiro.getEventos().add(evento);
     evento.setParceiro(parceiro);
     evento.setEndereco(endereco);
 
@@ -577,8 +576,8 @@ public void editarEvento(Evento eventoEditado) {
        endereco.setEstado(txtEstado.getText());
        endereco.setNumero(txtnumeroRua.getText());
        endereco.setRua(txtRua.getText());
+       endereco.setCidade(txtCidade.getText());
        eventoCapsula.setNivelAcessibilidade(nivelAcessibilidade(cbxAcessibilidade));
-       
        eventoCapsula.setHora(formatarHora(txthoraInicio.getText()));
        eventoCapsula.setData(formatarData(txtData.getText()));
        eventoCapsula.setPublicoAlvo(txtpublicoAlvo.getText());
