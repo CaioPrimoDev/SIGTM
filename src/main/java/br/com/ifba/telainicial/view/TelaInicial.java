@@ -6,6 +6,7 @@ package br.com.ifba.telainicial.view;
 
 import br.com.ifba.Solicitacao.view.SolicitarParceria;
 import br.com.ifba.central.view.TelaCentralInformacoesUI;
+import br.com.ifba.evento.view.EventoListar;
 import br.com.ifba.login.view.TelaLoginUI;
 import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoList;
@@ -59,6 +60,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btnCentral = new javax.swing.JButton();
         btnSolicitar = new javax.swing.JButton();
         btnTipoPromocao = new javax.swing.JButton();
+        btncrudEventos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,6 +113,13 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btncrudEventos.setText("Gestão de eventos");
+        btncrudEventos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncrudEventosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -132,9 +141,10 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnCentral)
-                            .addComponent(btnCRUDPontoTuristico, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnCentral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCRUDPontoTuristico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btncrudEventos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(35, 35, 35))))
         );
         layout.setVerticalGroup(
@@ -154,7 +164,10 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                         .addComponent(btnLogar)
                         .addGap(18, 18, 18)
                         .addComponent(btnSolicitar))
-                    .addComponent(btnCentral))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnCentral)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btncrudEventos)))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
 
@@ -206,6 +219,11 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         tipo.setVisible(true);
     }//GEN-LAST:event_btnTipoPromocaoActionPerformed
 
+    private void btncrudEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncrudEventosActionPerformed
+      EventoListar crudEventos = applicationContext.getBean(EventoListar.class);
+        crudEventos.setVisible(true);
+    }//GEN-LAST:event_btncrudEventosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnCentral;
@@ -213,6 +231,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
     private javax.swing.JButton btnPromocoes;
     private javax.swing.JButton btnSolicitar;
     private javax.swing.JButton btnTipoPromocao;
+    private javax.swing.JButton btncrudEventos;
     private javax.swing.JButton btncrudParceiros;
     // End of variables declaration//GEN-END:variables
 

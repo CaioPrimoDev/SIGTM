@@ -28,7 +28,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Evento extends ItemTuristicoProvisorio {
+public class Evento extends ItemTuristico {
     @Column(nullable = false)
     LocalDateTime hora;
     
@@ -44,7 +44,7 @@ public class Evento extends ItemTuristicoProvisorio {
     @Column(nullable = false)
     String categoria;
  
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "parceiro_id", nullable = false)
     private Parceiro parceiro;  // Atributo referenciado no mappedBy 
 }

@@ -184,9 +184,30 @@ public class EventoService {
             throw new RegraNegocioException("O nome não pode ser nulo ou vazio");
         }
 
-        if (strUtil.isNullOrEmpty(evento.getLocalizacao())) {
-            log.info("Localização é obrigatória");
-            throw new RegraNegocioException("A localização não pode ser nula ou vazia");
+        if (strUtil.isNullOrEmpty(evento.getEndereco().getBairro())) {
+            log.info("Bairro é obrigatório");
+            throw new RegraNegocioException("O bairro não pode ser nulo ou vazio");
+
+        }
+        if (strUtil.isNullOrEmpty(evento.getEndereco().getCidade())) {
+            log.info("Cidade é obrigatória");
+            throw new RegraNegocioException("A Cidade não pode ser nula ou vazia");
+
+        }
+        if (strUtil.isNullOrEmpty(evento.getEndereco().getEstado())) {
+            log.info("Estado é obrigatório");
+            throw new RegraNegocioException("Estado não pode ser nulo ou vazio");
+
+        }
+        if (strUtil.isNullOrEmpty(evento.getEndereco().getNumero())) {
+            log.info("Número da rua é obrigatório");
+            throw new RegraNegocioException("Número da rua não pode ser nulo ou vazio");
+
+        }
+        
+        if (strUtil.isNullOrEmpty(evento.getEndereco().getRua())) {
+            log.info("Rua é obrigatória");
+            throw new RegraNegocioException("A rua não pode ser nula ou vazia");
 
         }
 
