@@ -5,6 +5,7 @@
 package br.com.ifba.usuario.parceiro.service;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
+import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.TipoUsuario;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
@@ -35,9 +36,8 @@ public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository repo;
     
-     @PersistenceContext  // Anotação para injetar o EntityManager
-    private EntityManager entityManager;
-    
+     private final UsuarioIController usuarioController;
+     
     @Override
     public boolean save(Parceiro user) {
         validarParceiro(user);
@@ -168,28 +168,18 @@ public class ParceiroService implements ParceiroIService {
 @Override
 @Transactional
 public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
-    
-    Usuario usuarioGerenciado = entityManager.find(Usuario.class, usuario.getId());
-    if (usuarioGerenciado == null) {
-        throw new IllegalArgumentException("Usuário não encontrado com ID: " + usuario.getId());
-    }
-
-    if (usuarioGerenciado.getSolicitacao() != null) {
-        entityManager.remove(usuarioGerenciado.getSolicitacao());
-        usuarioGerenciado.setSolicitacao(null);
-    }
-
+ 
     Parceiro parceiro = new Parceiro();
    
     TipoUsuario tipo = new TipoUsuario();
     tipo.setNome("PARCEIRO");
     tipo.setDescricao("");
     
-    parceiro.setNome(usuarioGerenciado.getNome());
-    parceiro.setEmail(usuarioGerenciado.getEmail());
-    parceiro.setTelefone(usuarioGerenciado.getTelefone());
-    parceiro.setSenha(usuarioGerenciado.getSenha());
-    parceiro.setAtivo(usuarioGerenciado.isAtivo());
+    parceiro.setNome(usuario.getNome());
+    parceiro.setEmail(usuario.getEmail());
+    parceiro.setTelefone(usuario.getTelefone());
+    parceiro.setSenha(usuario.getSenha());
+    parceiro.setAtivo(usuario.isAtivo());
     parceiro.setTipo(tipo);
    
     parceiro.setCnpj(cnpj);
@@ -201,10 +191,7 @@ public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa)
     novaSolicitacao.setSolicitouParceria(false);
     parceiro.setSolicitacao(novaSolicitacao);
 
-    entityManager.remove(usuarioGerenciado);
-    entityManager.flush(); 
-
-    entityManager.persist(parceiro);
+    usuarioController.delete(usuario.getId());
     
     return parceiro;
 }

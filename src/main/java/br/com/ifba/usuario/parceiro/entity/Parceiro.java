@@ -35,7 +35,7 @@ public class Parceiro extends Usuario {
     @Column(nullable = false)
     private String nomeEmpresa;
     
-    @OneToMany(mappedBy = "parceiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parceiro", fetch = FetchType.LAZY)
     private List<Evento> eventos;  
 
  }

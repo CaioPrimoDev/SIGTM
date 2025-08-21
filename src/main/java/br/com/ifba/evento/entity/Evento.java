@@ -45,7 +45,7 @@ public class Evento extends ItemTuristico {
     @Column(nullable = false)
     String categoria;
  
-   @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "parceiro_id", nullable = false)
     private Parceiro parceiro;  // Atributo referenciado no mappedBy 
 }

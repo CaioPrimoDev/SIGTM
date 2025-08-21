@@ -39,6 +39,7 @@ public class EventoListar extends javax.swing.JFrame {
         
         initComponents();
         tableModel = (DefaultTableModel) tblEventos.getModel();
+        carregarDadosEventos();
         
     }
 
@@ -132,11 +133,16 @@ public void adicionarEvento(Parceiro parceiro, Evento evento, Endereco endereco)
     }
 
     evento.setParceiro(parceiro);
+    
+    
     evento.setEndereco(endereco);
 
+    enderecoController.save(endereco);
+    
     eventoController.save(evento);
     
-    
+    parceiroController.save(parceiro);
+
     listaEventos.add(evento);
     tableModel.addRow(new Object[]{
             evento.getParceiro().getNomeEmpresa(),
