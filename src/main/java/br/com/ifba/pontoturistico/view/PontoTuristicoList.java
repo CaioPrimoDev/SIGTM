@@ -103,8 +103,24 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 // Garante que o clique foi em uma linha válida (e não no cabeçalho, por exemplo)
                 if (linha >= 0) {
                     
-                    // AÇÃO DE MOSTRAR A LOCALIZAÇÃO
+                    // AÇÃO DE COMENTÁRIOS
                     if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Endereco")  
+                        // Pega o objeto PontoTuristico da linha clicada
+                        PontoTuristico pontoSelecionado = listaDePontos.get(linha);
+
+                        // Código só para teste, apagar dps
+                        if (pontoSelecionado != null) {
+                            JOptionPane.showMessageDialog(PontoTuristicoList.this, 
+                                "nome do ponto: " + pontoSelecionado.getNome(), 
+                                "Teste", JOptionPane.INFORMATION_MESSAGE);
+                        } 
+                        /* 
+                        ADICIONAR CÓDIGO NECESSÁRIO NESTE PONTO DO CODIGO
+                        */
+                    }
+                    
+                    // AÇÃO DE MOSTRAR A LOCALIZAÇÃO
+                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Endereco")  
                         // Pega o objeto PontoTuristico da linha clicada
                         PontoTuristico pontoSelecionado = listaDePontos.get(linha);
 
@@ -123,8 +139,9 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                                 "Endereço não encontrado", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
+                    
                     // AÇÃO DE EDITAR
-                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Editar")  
+                    if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Editar")  
                         if(userLogado.isLogado()){
                             try{
                                 // verifica se o usuario logado é do tipo gestor
@@ -145,7 +162,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                         }
                     } 
                     // AÇÃO DE REMOVER
-                    else if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Remover")                       
+                    else if (coluna == 7) { // Verifica se o clique foi na 8ª coluna ("Remover")                       
                         PontoTuristico pontoParaRemover = listaDePontos.get(linha);
                         // Pede confirmação ao usuário antes de remover
                         int resposta = JOptionPane.showConfirmDialog(PontoTuristicoList.this, // Parent component
@@ -201,6 +218,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                     pontoTuristico.getDescricao(),
                     horarioFuncionamento,
                     pontoTuristico.getNivelAcessibilidade(),
+                    "Avaliações", 
                     "Info Localização", 
                     "Editar",
                     "Remover"
@@ -224,12 +242,15 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         // Define a altura da linha para 40 pixels. Ajuste conforme necessário.
         tblPontosTuristicos.setRowHeight(32);
 
+        
         // Pega a coluna na posição 4 (a quinta coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());        
+        tblPontosTuristicos.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());
         // Pega a coluna na posição 5 (a sexta coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
+        tblPontosTuristicos.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());        
         // Pega a coluna na posição 6 (a setima coluna)
         tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
+        // Pega a coluna na posição 7 (a oitava coluna)
+        tblPontosTuristicos.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
     }
 
     /**
@@ -275,36 +296,36 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
         tblPontosTuristicos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nome", "Descrição", "Horario de Funcionamento", "Nivel de Acessibilidade", "Localização", "Editar", "Remover"
+                "Nome", "Descrição", "Horario de Funcionamento", "Nivel de Acessibilidade", "Avaliações", "Localização", "Editar", "Remover"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true
+                false, false, false, false, true, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -426,6 +447,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                         pontoTuristico.getDescricao(),
                         horarioFuncionamento,
                         pontoTuristico.getNivelAcessibilidade(),
+                        "Avaliações",
                         "Info Localização",  
                         "Editar",
                         "Remover"
