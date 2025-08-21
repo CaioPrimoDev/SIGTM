@@ -117,6 +117,7 @@ public class EventoListar extends javax.swing.JFrame {
             evento.getHora().plusHours(2).toLocalTime(),
             evento.getData(),
             evento.getPublicoAlvo(),
+            evento.getProgramacao(),
             evento.getNivelAcessibilidade(),
             evento.getEndereco().getBairro(),
             evento.getEndereco().getCidade(),
@@ -151,6 +152,7 @@ public void adicionarEvento(Parceiro parceiro, Evento evento, Endereco endereco)
             evento.getHora().plusHours(2).toLocalTime(),
             evento.getData(),
             evento.getPublicoAlvo(),
+            evento.getProgramacao(),
             evento.getNivelAcessibilidade(),
             evento.getEndereco().getBairro(),
             evento.getEndereco().getCidade(),
@@ -240,6 +242,30 @@ public void editarEvento(Evento eventoEditado) {
         btncriarEvento = new javax.swing.JButton();
         txtProgramacao = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jEditar = new javax.swing.JFrame();
+        txtnovoNome = new javax.swing.JTextField();
+        txtnovaCidade = new javax.swing.JTextField();
+        txtnovoEstado = new javax.swing.JTextField();
+        txtnovoHorario = new javax.swing.JTextField();
+        txtnovaData = new javax.swing.JTextField();
+        txtnovonumeroRua = new javax.swing.JTextField();
+        txtnovopublicoAlvo = new javax.swing.JTextField();
+        txtnovaRua = new javax.swing.JTextField();
+        txtnovoBairro = new javax.swing.JTextField();
+        cbxnovaAcessibilidade = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        lblnovaRua = new javax.swing.JLabel();
+        btnconfirmarAlteracoes = new javax.swing.JButton();
+        txtnovaProgramacao = new javax.swing.JTextField();
+        lblnovaRua1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEventos = new javax.swing.JTable();
         btnAdicionar = new javax.swing.JButton();
@@ -428,6 +454,136 @@ public void editarEvento(Evento eventoEditado) {
                 .addGap(46, 46, 46))
         );
 
+        jTextField2.setText("jTextField2");
+
+        cbxnovaAcessibilidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+
+        jLabel7.setText("Novo nome");
+
+        jLabel16.setText("Novo horário (HH:MM)");
+
+        jLabel17.setText("Nova data (DD/MM/AAAA)");
+
+        jLabel18.setText("Novo público alvo");
+
+        jLabel19.setText("Novo bairro");
+
+        jLabel20.setText("Nova cidade");
+
+        jLabel21.setText("Novo estado");
+
+        jLabel22.setText("Novo número da rua");
+
+        lblnovaRua.setText("Nova programação");
+
+        btnconfirmarAlteracoes.setText("Confirmar alterações");
+        btnconfirmarAlteracoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnconfirmarAlteracoesActionPerformed(evt);
+            }
+        });
+
+        txtnovaProgramacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtnovaProgramacaoActionPerformed(evt);
+            }
+        });
+
+        lblnovaRua1.setText("Nova rua");
+
+        javax.swing.GroupLayout jEditarLayout = new javax.swing.GroupLayout(jEditar.getContentPane());
+        jEditar.getContentPane().setLayout(jEditarLayout);
+        jEditarLayout.setHorizontalGroup(
+            jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jEditarLayout.createSequentialGroup()
+                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jEditarLayout.createSequentialGroup()
+                        .addGap(354, 354, 354)
+                        .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbxnovaAcessibilidade, 0, 80, Short.MAX_VALUE)
+                            .addComponent(btnconfirmarAlteracoes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addGroup(jEditarLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtnovaProgramacao, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblnovaRua)
+                            .addComponent(txtnovopublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18)
+                            .addComponent(txtnovoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16)
+                            .addComponent(txtnovaData, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17)
+                            .addComponent(txtnovoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel19)
+                            .addComponent(txtnovoBairro, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtnovaRua, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel20)
+                            .addComponent(txtnovaCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21)
+                            .addComponent(txtnovoEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel22)
+                            .addComponent(txtnovonumeroRua, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblnovaRua1))))
+                .addGap(83, 83, 83))
+        );
+        jEditarLayout.setVerticalGroup(
+            jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jEditarLayout.createSequentialGroup()
+                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jEditarLayout.createSequentialGroup()
+                        .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jEditarLayout.createSequentialGroup()
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnovoBairro, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(170, 170, 170)
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnovoEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jEditarLayout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnovoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(56, 56, 56)
+                                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel20))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtnovoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtnovaCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnovaData, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(56, 56, 56)
+                                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel18)
+                                    .addComponent(jLabel22))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtnovopublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtnovonumeroRua, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(40, 40, 40)
+                        .addComponent(lblnovaRua1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtnovaRua, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jEditarLayout.createSequentialGroup()
+                        .addComponent(lblnovaRua)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtnovaProgramacao, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(60, 60, 60)
+                .addComponent(cbxnovaAcessibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnconfirmarAlteracoes, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(86, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         tblEventos.setModel(new javax.swing.table.DefaultTableModel(
@@ -494,7 +650,9 @@ public void editarEvento(Evento eventoEditado) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        jEditar.setVisible(true);
+        jEditar.setSize(771,858);
+        jEditar.setLocationRelativeTo(null);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void txtParceiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtParceiroActionPerformed
@@ -600,6 +758,70 @@ public void editarEvento(Evento eventoEditado) {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtProgramacaoActionPerformed
 
+    private void btnconfirmarAlteracoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnconfirmarAlteracoesActionPerformed
+ if (listaEventos.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Nenhum evento cadastrado");
+        return;
+    }
+
+    if (itemSelecionado == -1) {
+        JOptionPane.showMessageDialog(null, "Nenhum evento foi selecionado");
+        return;
+    }
+
+    Evento eventoEditar = listaEventos.get(itemSelecionado);
+
+    // Atualiza cada campo apenas se o texto não estiver vazio
+    if (!txtnovoNome.getText().isEmpty()) {
+        eventoEditar.setNome(txtnovoNome.getText());
+    }
+    
+    if (!txtnovaCidade.getText().isEmpty()) {
+        eventoEditar.getEndereco().setCidade(txtnovaCidade.getText());
+    }
+    
+    if (!txtnovoEstado.getText().isEmpty()) {
+        eventoEditar.getEndereco().setEstado(txtnovoEstado.getText());
+    }
+    
+    if (!txtnovoHorario.getText().isEmpty()) {
+        eventoEditar.setHora(formatarHora(txtnovoHorario.getText()));
+    }
+    
+    if (!txtnovaData.getText().isEmpty()) {
+        eventoEditar.setData(formatarData(txtnovaData.getText()));
+    }
+    
+    if (!txtnovonumeroRua.getText().isEmpty()) {
+        eventoEditar.getEndereco().setNumero(txtnovonumeroRua.getText());
+    }
+    
+    if (!txtnovopublicoAlvo.getText().isEmpty()) {
+        eventoEditar.setPublicoAlvo(txtnovopublicoAlvo.getText());
+    }
+    
+    if (!txtnovaRua.getText().isEmpty()) {
+        eventoEditar.getEndereco().setRua(txtnovaRua.getText());
+    }
+    
+    if (!txtnovoBairro.getText().isEmpty()) {
+       eventoEditar.getEndereco().setBairro(txtnovoBairro.getText());
+    }
+    
+    if (!txtnovaProgramacao.getText().isEmpty()) {
+        eventoEditar.setProgramacao(txtnovaProgramacao.getText());
+    }
+    
+    eventoEditar.setNivelAcessibilidade(nivelAcessibilidade(cbxnovaAcessibilidade)); 
+
+    editarEvento(eventoEditar); // Método para persistir as alterações
+       
+    }//GEN-LAST:event_btnconfirmarAlteracoesActionPerformed
+
+    private void txtnovaProgramacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnovaProgramacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnovaProgramacaoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -607,10 +829,13 @@ public void editarEvento(Evento eventoEditado) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionar;
+    private javax.swing.JButton btnconfirmarAlteracoes;
     private javax.swing.JButton btncriarEvento;
     private javax.swing.JComboBox<String> cbxAcessibilidade;
+    private javax.swing.JComboBox<String> cbxnovaAcessibilidade;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JFrame jEditar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -618,15 +843,26 @@ public void editarEvento(Evento eventoEditado) {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JFrame jadicionar;
+    private javax.swing.JLabel lblnovaRua;
+    private javax.swing.JLabel lblnovaRua1;
     private javax.swing.JTable tblEventos;
     private javax.swing.JTextField txtBairro;
     private javax.swing.JTextField txtCategoria;
@@ -639,6 +875,16 @@ public void editarEvento(Evento eventoEditado) {
     private javax.swing.JTextField txtProgramacao;
     private javax.swing.JTextField txtRua;
     private javax.swing.JTextField txthoraInicio;
+    private javax.swing.JTextField txtnovaCidade;
+    private javax.swing.JTextField txtnovaData;
+    private javax.swing.JTextField txtnovaProgramacao;
+    private javax.swing.JTextField txtnovaRua;
+    private javax.swing.JTextField txtnovoBairro;
+    private javax.swing.JTextField txtnovoEstado;
+    private javax.swing.JTextField txtnovoHorario;
+    private javax.swing.JTextField txtnovoNome;
+    private javax.swing.JTextField txtnovonumeroRua;
+    private javax.swing.JTextField txtnovopublicoAlvo;
     private javax.swing.JTextField txtnumeroRua;
     private javax.swing.JTextField txtpublicoAlvo;
     // End of variables declaration//GEN-END:variables
