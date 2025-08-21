@@ -4,6 +4,7 @@
  */
 package br.com.ifba.pontoturistico.view;
 
+import br.com.ifba.avaliacoes.view.TelaAvaliacoes;
 import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
@@ -114,9 +115,11 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                                 "nome do ponto: " + pontoSelecionado.getNome(), 
                                 "Teste", JOptionPane.INFORMATION_MESSAGE);
                         } 
-                        /* 
-                        ADICIONAR CÓDIGO NECESSÁRIO NESTE PONTO DO CODIGO
-                        */
+                        // Aqui você abre a tela de avaliações passando o ponto turístico selecionado
+                        TelaAvaliacoes telaAvaliacoes = applicationContext.getBean(TelaAvaliacoes.class);
+                        telaAvaliacoes.setPontoTuristico(pontoSelecionado);
+                        telaAvaliacoes.setVisible(true);
+
                     }
                     
                     // AÇÃO DE MOSTRAR A LOCALIZAÇÃO

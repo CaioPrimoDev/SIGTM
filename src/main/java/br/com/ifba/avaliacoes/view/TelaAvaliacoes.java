@@ -4,18 +4,39 @@
  */
 package br.com.ifba.avaliacoes.view;
 
+import br.com.ifba.avaliacoes.entity.Avaliacao;
+import br.com.ifba.avaliacoes.service.AvaliacaoIService;
+import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.util.RegraNegocioException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author User
  */
+
+@Component
 public class TelaAvaliacoes extends javax.swing.JFrame {
+    
+    private PontoTuristico pontoSelecionado;
+    
+    private List<Avaliacao> listaAvaliacoes;
+    
+    @Autowired
+    private AvaliacaoIService avaliacaoService;
 
     /**
      * Creates new form TelaAvaliacoes
      */
     public TelaAvaliacoes() {
-        initComponents();
+        initComponents();   
     }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,14 +71,34 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEM FILTRO", "PIORES", "MELHORES" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Filtros");
 
         btnAdicionar.setText("Adicionar");
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnRemover.setText("Remover");
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -102,40 +143,156 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaAvaliacoes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaAvaliacoes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaAvaliacoes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaAvaliacoes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+            int linha = jTable1.getSelectedRow();
+        if (linha < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma avaliação para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaAvaliacoes().setVisible(true);
+        Avaliacao avaliacaoSelecionada = listaAvaliacoes.get(linha);
+
+        String novoNome = JOptionPane.showInputDialog(this, "Nome do autor:", avaliacaoSelecionada.getNomeAutor());
+        if (novoNome == null || novoNome.trim().isEmpty()) {
+            return;
+        }
+
+        String estrelasStr = JOptionPane.showInputDialog(this, "Número de estrelas (1 a 5):", avaliacaoSelecionada.getEstrelas());
+        if (estrelasStr == null || estrelasStr.trim().isEmpty()) {
+            return;
+        }
+
+        int estrelas;
+        try {
+            estrelas = Integer.parseInt(estrelasStr);
+            if (estrelas < 1 || estrelas > 5) {
+                JOptionPane.showMessageDialog(this, "Estrelas devem ser entre 1 e 5.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        });
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Número de estrelas inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String novaDescricao = JOptionPane.showInputDialog(this, "Descrição da avaliação:", avaliacaoSelecionada.getDescricao());
+        if (novaDescricao == null) {
+            novaDescricao = "";
+        }
+
+        avaliacaoSelecionada.setNomeAutor(novoNome);
+        avaliacaoSelecionada.setEstrelas(estrelas);
+        avaliacaoSelecionada.setDescricao(novaDescricao);
+
+        try {
+            avaliacaoService.update(avaliacaoSelecionada.getId(), avaliacaoSelecionada);
+            JOptionPane.showMessageDialog(this, "Avaliação atualizada com sucesso!");
+            carregarAvaliacoes();
+        } catch (RegraNegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+            if (pontoSelecionado == null) {
+            JOptionPane.showMessageDialog(this, "Nenhum ponto turístico selecionado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Criar nova avaliação via input
+        String nomeAutor = JOptionPane.showInputDialog(this, "Nome do autor:");
+        if (nomeAutor == null || nomeAutor.trim().isEmpty()) {
+            return; // cancelado ou vazio
+        }
+
+        String estrelasStr = JOptionPane.showInputDialog(this, "Número de estrelas (1 a 5):");
+        if (estrelasStr == null || estrelasStr.trim().isEmpty()) {
+            return;
+        }
+
+        int estrelas;
+        try {
+            estrelas = Integer.parseInt(estrelasStr);
+            if (estrelas < 1 || estrelas > 5) {
+                JOptionPane.showMessageDialog(this, "Estrelas devem ser entre 1 e 5.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Número de estrelas inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String descricao = JOptionPane.showInputDialog(this, "Descrição da avaliação:");
+        if (descricao == null) {
+            descricao = ""; // vazio permitido
+        }
+
+        // Cria objeto Avaliacao
+        Avaliacao nova = new Avaliacao();
+        nova.setNomeAutor(nomeAutor);
+        nova.setEstrelas(estrelas);
+        nova.setDescricao(descricao);
+
+        // Salva via service
+        try {
+            avaliacaoService.saveForPonto(pontoSelecionado.getId(), nova);
+            JOptionPane.showMessageDialog(this, "Avaliação adicionada com sucesso!");
+            carregarAvaliacoes(); // método que atualiza JTable
+        } catch (RegraNegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        int linha = jTable1.getSelectedRow();
+    if (linha < 0) {
+        JOptionPane.showMessageDialog(this, "Selecione uma avaliação para remover.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        return;
     }
+
+    Avaliacao avaliacaoSelecionada = listaAvaliacoes.get(linha);
+    int resposta = JOptionPane.showConfirmDialog(this, "Deseja realmente remover esta avaliação?", "Confirmar remoção", JOptionPane.YES_NO_OPTION);
+    if (resposta == JOptionPane.YES_OPTION) {
+        try {
+            avaliacaoService.delete(avaliacaoSelecionada.getId());
+            JOptionPane.showMessageDialog(this, "Avaliação removida com sucesso!");
+            carregarAvaliacoes();
+        } catch (RegraNegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_btnRemoverActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        carregarAvaliacoes();
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void carregarAvaliacoes() {
+        if (pontoSelecionado == null) {
+            return;
+        }
+
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        modelo.setRowCount(0); // limpa a tabela
+
+        String filtro = (String) jComboBox2.getSelectedItem();
+
+        // Preenche a lista de acordo com o filtro
+        if ("MELHORES".equals(filtro)) {
+            listaAvaliacoes = avaliacaoService.getMelhoresByPonto(pontoSelecionado.getId());
+        } else if ("PIORES".equals(filtro)) {
+            listaAvaliacoes = avaliacaoService.getPioresByPonto(pontoSelecionado.getId());
+        } else {
+            listaAvaliacoes = avaliacaoService.findAllByPonto(pontoSelecionado.getId());
+        }
+
+        // Atualiza o JTable
+        if (listaAvaliacoes != null) {
+            for (Avaliacao a : listaAvaliacoes) {
+                modelo.addRow(new Object[]{a.getNomeAutor(), a.getEstrelas(), a.getDescricao()});
+            }
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionar;
@@ -146,4 +303,10 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    public void setPontoTuristico(PontoTuristico pontoSelecionado) {
+        this.pontoSelecionado = pontoSelecionado;
+        carregarAvaliacoes();
+    }
+
 }
