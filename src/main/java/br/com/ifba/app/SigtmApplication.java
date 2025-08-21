@@ -1,6 +1,6 @@
 package br.com.ifba.app;
 
-import br.com.ifba.telainicial.view.TelaInicial;
+import br.com.ifba.login.view.TelaLoginUI;
  import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -21,9 +21,10 @@ public class SigtmApplication {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        // Obtém TelaInicial como bean Spring
-        TelaInicial telaInicial = context.getBean(TelaInicial.class);
-        telaInicial.setVisible(true);
+        // Obtém TelaLoginUI como bean Spring
+        TelaLoginUI telaLogin = context.getBean(TelaLoginUI.class);
+        telaLogin.setLocationRelativeTo(null);
+        telaLogin.setVisible(true);
 
     } 
 }

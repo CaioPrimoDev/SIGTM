@@ -49,7 +49,7 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cbFiltros = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         btnAdicionar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
@@ -70,10 +70,10 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEM FILTRO", "PIORES", "MELHORES" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        cbFiltros.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEM FILTRO", "PIORES", "MELHORES" }));
+        cbFiltros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                cbFiltrosActionPerformed(evt);
             }
         });
 
@@ -112,7 +112,7 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(205, 205, 205))
             .addGroup(layout.createSequentialGroup()
                 .addGap(83, 83, 83)
@@ -128,7 +128,7 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,9 +262,9 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btnRemoverActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void cbFiltrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbFiltrosActionPerformed
         carregarAvaliacoes();
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_cbFiltrosActionPerformed
 
     private void carregarAvaliacoes() {
         if (pontoSelecionado == null) {
@@ -274,7 +274,7 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         modelo.setRowCount(0); // limpa a tabela
 
-        String filtro = (String) jComboBox2.getSelectedItem();
+        String filtro = (String) cbFiltros.getSelectedItem();
 
         // Preenche a lista de acordo com o filtro
         if ("MELHORES".equals(filtro)) {
@@ -298,7 +298,7 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
     private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnRemover;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> cbFiltros;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

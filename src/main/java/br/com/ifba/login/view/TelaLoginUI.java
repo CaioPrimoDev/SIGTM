@@ -7,6 +7,7 @@ package br.com.ifba.login.view;
 import br.com.ifba.login.controller.LoginController;
 import br.com.ifba.login.controller.LoginIController;
 import br.com.ifba.sessao.UsuarioSession;
+import br.com.ifba.telainicial.view.TelaInicial;
 import br.com.ifba.usuario.comum.view.TelaUsuarioCadastrarUI;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
@@ -219,6 +220,10 @@ public class TelaLoginUI extends javax.swing.JFrame {
                 String tipo = usuario.getTipo().getNome().toUpperCase();
                 MostrarMensagem.info(this, tipo.toLowerCase() + " logado com sucesso!", "Sucesso");
                 this.dispose();
+                
+                // Obtém TelaInicial como bean Spring
+                TelaInicial telaInicial = context.getBean(TelaInicial.class);
+                telaInicial.setVisible(true);
             }
         } else {
             MostrarMensagem.erro(this, "E-mail ou senha inválidos", "Erro");
