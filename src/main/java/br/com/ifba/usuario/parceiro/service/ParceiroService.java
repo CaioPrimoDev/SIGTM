@@ -12,8 +12,6 @@ import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.usuario.parceiro.repository.ParceiroRepository;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
