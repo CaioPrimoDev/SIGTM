@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -152,6 +153,7 @@ public void adicionarEvento(Parceiro parceiro, Evento evento, Endereco endereco)
             evento.getHora().plusHours(2).toLocalTime(),
             evento.getData(),
             evento.getPublicoAlvo(),
+            evento.getCategoria(),
             evento.getProgramacao(),
             evento.getNivelAcessibilidade(),
             evento.getEndereco().getBairro(),
@@ -200,6 +202,8 @@ public void editarEvento(Evento eventoEditado) {
     tableModel.setValueAt(eventoEditado.getEndereco().getEstado(), itemSelecionado, 9);
     tableModel.setValueAt(eventoEditado.getEndereco().getNumero(), itemSelecionado, 10);
     tableModel.setValueAt(eventoEditado.getEndereco().getRua(), itemSelecionado, 11);
+    
+     jEditar.setVisible(false);
     
 }
 
@@ -271,6 +275,7 @@ public void editarEvento(Evento eventoEditado) {
         btnAdicionar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        txtPesquisar = new javax.swing.JTextField();
 
         jLabel1.setText("nome");
 
@@ -588,15 +593,20 @@ public void editarEvento(Evento eventoEditado) {
 
         tblEventos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9", "Title 10", "Title 11"
+                "Parceiro", "Evento", "inicio", "Termino", "Data", "Público alvo", "Categoria", "Programação", "Acessibilidade", "Bairro", "Cidade", "Estado", "Número da rua", "Rua"
             }
         ));
+        tblEventos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblEventosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblEventos);
 
         btnAdicionar.setText("Adicionar");
@@ -607,6 +617,11 @@ public void editarEvento(Evento eventoEditado) {
         });
 
         jButton2.setText("Remover");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Editar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -615,35 +630,48 @@ public void editarEvento(Evento eventoEditado) {
             }
         });
 
+        txtPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisarKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAdicionar)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1302, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAdicionar)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButton3)
-                                .addComponent(jButton2)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton3)
+                            .addComponent(jButton2))
+                        .addGap(290, 290, 290)
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 501, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(447, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(btnAdicionar)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
@@ -745,13 +773,15 @@ public void editarEvento(Evento eventoEditado) {
        eventoCapsula.setHora(formatarHora(txthoraInicio.getText()));
        eventoCapsula.setData(formatarData(txtData.getText()));
        eventoCapsula.setPublicoAlvo(txtpublicoAlvo.getText());
-       eventoCapsula.setProgramacao(txtParceiro.getText());
+       eventoCapsula.setProgramacao(txtProgramacao.getText());
        eventoCapsula.setCategoria(txtCategoria.getText()); 
        eventoCapsula.setParceiro(parceiro);
        
        
        
         adicionarEvento(parceiro, eventoCapsula,endereco );
+        
+        jadicionar.setVisible(false);
     }//GEN-LAST:event_btncriarEventoActionPerformed
 
     private void txtProgramacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProgramacaoActionPerformed
@@ -822,6 +852,87 @@ public void editarEvento(Evento eventoEditado) {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtnovaProgramacaoActionPerformed
 
+    private void tblEventosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEventosMouseClicked
+        itemSelecionado = tblEventos.getSelectedRow();
+    }//GEN-LAST:event_tblEventosMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+if (listaEventos.isEmpty()) {//verificar existencia de itens na lista
+
+            JOptionPane.showMessageDialog(null, "Nenhum evento cadastrado");
+
+            return;
+        }
+
+        if (itemSelecionado == -1) {//ver se o user selecionou algo
+
+            JOptionPane.showMessageDialog(null, "Nenhum evento Selecionado");
+
+            return;
+        }
+
+        Evento eventoExcluir = listaEventos.get(itemSelecionado);
+
+        int resposta = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja realmente excluir o evento:\n" + eventoExcluir.getNome() + "?",
+                "Confirmação de exclusão",
+                JOptionPane.YES_NO_OPTION
+        );
+        //0 = sim | 1 = não | -1 = nada
+        if (resposta == JOptionPane.YES_OPTION) {
+            eventoController.delete(eventoExcluir.getId());
+  
+            listaEventos.remove(itemSelecionado);
+            tableModel.removeRow(itemSelecionado);
+            
+
+        }
+
+       
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisarKeyReleased
+        String termo = txtPesquisar.getText().trim();
+
+// Limpar tabela de forma segura na EDT
+SwingUtilities.invokeLater(() -> {
+    tableModel.setRowCount(0); // Usar APENAS um modelo (tableModel)
+});
+
+
+// Busca por Nome do Evento
+SwingUtilities.invokeLater(() -> {
+    try {
+        List<Evento> resultados = eventoController.findByNomeContainingIgnoreCase(termo);
+        
+        
+            for (Evento evento : resultados) {
+                tableModel.addRow(new Object[]{
+                    evento.getParceiro().getNomeEmpresa(),
+                    evento.getNome(),
+                    evento.getHora().toLocalTime(),            
+                    evento.getHora().plusHours(2).toLocalTime(),
+                    evento.getData(),
+                    evento.getPublicoAlvo(),
+                    evento.getCategoria(),
+                    evento.getProgramacao(),
+                    evento.getNivelAcessibilidade(),
+                    evento.getEndereco().getBairro(),
+                    evento.getEndereco().getCidade(),
+                    evento.getEndereco().getEstado(),
+                    evento.getEndereco().getNumero(),
+                    evento.getEndereco().getRua()
+                });
+            }
+        }
+     catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Erro ao buscar eventos: " + e.getMessage());
+        preencherTabelaEventos();
+    }
+});
+    }//GEN-LAST:event_txtPesquisarKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -872,6 +983,7 @@ public void editarEvento(Evento eventoEditado) {
     private javax.swing.JTextField txtEstado;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtParceiro;
+    private javax.swing.JTextField txtPesquisar;
     private javax.swing.JTextField txtProgramacao;
     private javax.swing.JTextField txtRua;
     private javax.swing.JTextField txthoraInicio;
