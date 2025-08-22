@@ -4,8 +4,12 @@
  */
 package br.com.ifba.evento.service;
 
+import br.com.ifba.endereco.controller.EnderecoIController;
+import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.evento.repository.EventoRepository;
+import br.com.ifba.usuario.parceiro.controller.ParceiroIController;
+import br.com.ifba.usuario.parceiro.entity.Parceiro;
 import br.com.ifba.util.RegraNegocioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +26,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EventoService {
+public class EventoService implements EventoIService {
 
     private final EventoRepository eventoRepository;
 
+    private final ParceiroIController parceiroController;
+
+    private final EnderecoIController enderecoController;
+
+    @Override
     public boolean save(Evento evento) {
         validarEvento(evento);
         try {
@@ -41,6 +50,7 @@ public class EventoService {
         }
     }
 
+    @Override
     public void delete(Long id) {
         if (id == null || id <= 0) {
             log.warn("Tentativa de excluir Evento com ID inválido: {}", id);
@@ -62,6 +72,7 @@ public class EventoService {
         }
     }
 
+    @Override
     public List<Evento> findAll() {
         try {
             List<Evento> eventos = eventoRepository.findAll();
@@ -73,6 +84,7 @@ public class EventoService {
         }
     }
 
+    @Override
     public Evento findById(Long id) {
         if (id == null || id <= 0) {
             log.warn("ID inválido fornecido para busca de Evento: {}", id);
@@ -90,93 +102,110 @@ public class EventoService {
             throw new RegraNegocioException("Erro ao buscar evento.");
         }
     }
-    
+
 // METODOS JPA REPOSITORY ESPECIFICOS   
-  
-  public List<Evento> findByCategoriaContainingIgnoreCase(String categoria) {
-    try {
-        // Validação do parâmetro de entrada
-        if (!StringUtil.isNullOrEmpty(categoria)) {
-            log.warn("Tentativa de busca de eventos com categoria vazia ou nula");
-            throw new RegraNegocioException("Categoria não pode ser vazia.");
+    @Override
+    public List<Evento> findByCategoriaContainingIgnoreCase(String categoria) {
+        try {
+            // Validação do parâmetro de entrada
+            if (!StringUtil.isNullOrEmpty(categoria)) {
+                log.warn("Tentativa de busca de eventos com categoria vazia ou nula");
+                throw new RegraNegocioException("Categoria não pode ser vazia.");
+            }
+
+            // Limitar o tamanho da categoria para evitar buscas maliciosas
+            if (categoria.length() > 100) {
+                log.warn("Tentativa de busca com categoria muito longa: {}", categoria);
+                throw new RegraNegocioException("Categoria muito longa para pesquisa.");
+            }
+
+            log.info("Buscando eventos pela categoria: {}", categoria);
+            List<Evento> eventos = eventoRepository.findByCategoriaContainingIgnoreCase(categoria);
+
+            // Verificar se encontrou resultados
+            if (eventos.isEmpty()) {
+                log.info("Nenhum evento encontrado para a categoria: {}", categoria);
+            } else {
+                log.info("Encontrados {} eventos para a categoria: {}", eventos.size(), categoria);
+            }
+
+            return eventos;
+
+        } catch (RegraNegocioException e) {
+            // Exceções de negócio já tratadas e logadas
+            throw e;
+
+        } catch (RuntimeException e) {
+            log.error("Erro inesperado ao buscar eventos pela categoria: {}. Erro: {}", categoria, e.getMessage(), e);
+            throw new RegraNegocioException("Erro ao buscar eventos por categoria.");
         }
-        
-        // Limitar o tamanho da categoria para evitar buscas maliciosas
-        if (categoria.length() > 100) {
-            log.warn("Tentativa de busca com categoria muito longa: {}", categoria);
-            throw new RegraNegocioException("Categoria muito longa para pesquisa.");
-        }
-        
-        log.info("Buscando eventos pela categoria: {}", categoria);
-        List<Evento> eventos = eventoRepository.findByCategoriaContainingIgnoreCase(categoria);
-        
-        // Verificar se encontrou resultados
-        if (eventos.isEmpty()) {
-            log.info("Nenhum evento encontrado para a categoria: {}", categoria);
-        } else {
-            log.info("Encontrados {} eventos para a categoria: {}", eventos.size(), categoria);
-        }
-        
-        return eventos;
-        
-    } catch (RegraNegocioException e) {
-        // Exceções de negócio já tratadas e logadas
-        throw e;
-        
-    } catch (RuntimeException e) {
-        log.error("Erro inesperado ao buscar eventos pela categoria: {}. Erro: {}", categoria, e.getMessage(), e);
-        throw new RegraNegocioException("Erro ao buscar eventos por categoria.");
     }
-  }
-  
-  public List<Evento> findByNomeContainingIgnoreCase(String eventoNome) {
-    try {
-        // Validação básica do parâmetro
-        if (StringUtil.isNullOrEmpty(eventoNome)) {
-            log.warn("Tentativa de busca de eventos com nome vazio ou nulo");
-            throw new RegraNegocioException("Nome do evento não pode ser vazio.");
+
+    @Override
+    public List<Evento> findByNomeContainingIgnoreCase(String eventoNome) {
+        try {
+            // Validação básica do parâmetro
+            if (StringUtil.isNullOrEmpty(eventoNome)) {
+                log.warn("Tentativa de busca de eventos com nome vazio ou nulo");
+                throw new RegraNegocioException("Nome do evento não pode ser vazio.");
+            }
+
+            // Sanitização da entrada
+            String nomeSanitizado = eventoNome.trim();
+
+            // Validação de segurança contra buscas maliciosas
+            if (nomeSanitizado.length() < 3) {
+                log.warn("Tentativa de busca com termo muito curto: '{}'", nomeSanitizado);
+                throw new RegraNegocioException("Termo de busca deve ter pelo menos 3 caracteres.");
+            }
+
+            if (nomeSanitizado.length() > 100) {
+                log.warn("Tentativa de busca com termo muito longo: {} caracteres", nomeSanitizado.length());
+                throw new RegraNegocioException("Termo de busca muito extenso.");
+            }
+
+            log.info("Buscando eventos por nome: '{}'", nomeSanitizado);
+            List<Evento> eventos = eventoRepository.findByNomeContainingIgnoreCase(nomeSanitizado);
+
+            // Verificação de resultados
+            if (eventos.isEmpty()) {
+                log.info("Nenhum evento encontrado para: '{}'", nomeSanitizado);
+            } else {
+                log.info("Encontrados {} eventos para: '{}'", eventos.size(), nomeSanitizado);
+            }
+
+            return eventos;
+
+        } catch (RegraNegocioException e) {
+            // Exceções de negócio já tratadas
+            throw e;
+
+        } catch (RuntimeException e) {
+            log.error("Erro ao buscar eventos por nome: '{}'. Erro: {}", eventoNome, e.getMessage(), e);
+            throw new RegraNegocioException("Erro na busca de eventos.");
         }
-        
-        // Sanitização da entrada
-        String nomeSanitizado = eventoNome.trim();
-        
-        // Validação de segurança contra buscas maliciosas
-        if (nomeSanitizado.length() < 3) {
-            log.warn("Tentativa de busca com termo muito curto: '{}'", nomeSanitizado);
-            throw new RegraNegocioException("Termo de busca deve ter pelo menos 3 caracteres.");
-        }
-        
-        if (nomeSanitizado.length() > 100) {
-            log.warn("Tentativa de busca com termo muito longo: {} caracteres", nomeSanitizado.length());
-            throw new RegraNegocioException("Termo de busca muito extenso.");
-        }
-        
-        log.info("Buscando eventos por nome: '{}'", nomeSanitizado);
-        List<Evento> eventos = eventoRepository.findByNomeContainingIgnoreCase(nomeSanitizado);
-        
-        // Verificação de resultados
-        if (eventos.isEmpty()) {
-            log.info("Nenhum evento encontrado para: '{}'", nomeSanitizado);
-        } else {
-            log.info("Encontrados {} eventos para: '{}'", eventos.size(), nomeSanitizado);
-        }
-        
-        return eventos;
-        
-    } catch (RegraNegocioException e) {
-        // Exceções de negócio já tratadas
-        throw e;
-        
-    } catch (RuntimeException e) {
-        log.error("Erro ao buscar eventos por nome: '{}'. Erro: {}", eventoNome, e.getMessage(), e);
-        throw new RegraNegocioException("Erro na busca de eventos.");
     }
-}
+
+    @Override
+    public Evento adicionarEvento(Evento evento, Parceiro parceiro, Endereco endereco) {
+
+        evento.setParceiro(parceiro);
+
+        evento.setEndereco(endereco);
+
+        enderecoController.save(endereco);
+
+        eventoRepository.save(evento);
+
+        parceiroController.save(parceiro);
+
+        return evento;
+    }
 
     StringUtil strUtil;
 
     // VALIDAÇAO DE EVENTO
-    
+    @Override
     public void validarEvento(Evento evento) {
 
         if (strUtil.isNullOrEmpty(evento.getNome())) {
@@ -204,7 +233,7 @@ public class EventoService {
             throw new RegraNegocioException("Número da rua não pode ser nulo ou vazio");
 
         }
-        
+
         if (strUtil.isNullOrEmpty(evento.getEndereco().getRua())) {
             log.info("Rua é obrigatória");
             throw new RegraNegocioException("A rua não pode ser nula ou vazia");
@@ -240,4 +269,5 @@ public class EventoService {
 
     }
 
+  
 }

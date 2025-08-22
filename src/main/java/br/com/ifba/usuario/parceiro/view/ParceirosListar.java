@@ -5,11 +5,11 @@
 package br.com.ifba.usuario.parceiro.view;
 
 import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.Usuario;
 import br.com.ifba.usuario.parceiro.controller.ParceiroIController;
 import br.com.ifba.usuario.parceiro.entity.Parceiro;
-import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -110,10 +110,9 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         Parceiro parceiroCapsula = parceiroController.tornarParceiro(usuario, cnpj, nomeEmpresa);
-
+        
         listaParceiros.add(parceiroCapsula);
 
-        
             tableModel.addRow(new Object[]{
                 parceiroCapsula.getNome(),
                 parceiroCapsula.getCnpj(),
@@ -122,8 +121,8 @@ public class ParceirosListar extends javax.swing.JFrame {
                 parceiroCapsula.getTelefone()
             });
 
-           
-      
+           JOptionPane.showMessageDialog(null, "Seu novo login é: "+parceiroCapsula.getEmail());
+         
     }
 
     public void editarParceiro(Parceiro parceiro) {
@@ -181,7 +180,6 @@ public class ParceirosListar extends javax.swing.JFrame {
         btnNegar = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         txtpesquisarSolicitantes = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         EditarParceiro = new javax.swing.JFrame();
         txtnovoNome = new javax.swing.JTextField();
         lblMudarnome = new javax.swing.JLabel();
@@ -229,7 +227,7 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
-        btnRefresh.setText("VOLTAR");
+        btnRefresh.setText("Atualizar");
         btnRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefreshActionPerformed(evt);
@@ -242,8 +240,6 @@ public class ParceirosListar extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Ver Eventos");
-
         javax.swing.GroupLayout SolicitacoesParceriaLayout = new javax.swing.GroupLayout(SolicitacoesParceria.getContentPane());
         SolicitacoesParceria.getContentPane().setLayout(SolicitacoesParceriaLayout);
         SolicitacoesParceriaLayout.setHorizontalGroup(
@@ -255,24 +251,17 @@ public class ParceirosListar extends javax.swing.JFrame {
                     .addComponent(btnRefresh)
                     .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
                         .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                            .addComponent(btnAceitar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(btnNegar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
-                                .addGap(94, 94, 94)
-                                .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(SolicitacoesParceriaLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton1)))))
+                        .addGap(94, 94, 94)
+                        .addComponent(txtpesquisarSolicitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(135, Short.MAX_VALUE))
         );
         SolicitacoesParceriaLayout.setVerticalGroup(
             SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SolicitacoesParceriaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAceitar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnAceitar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(SolicitacoesParceriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNegar, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -793,7 +782,6 @@ if (isNumerico) {
     private javax.swing.JButton btnatualizarTabela;
     private javax.swing.JButton btnconfirmarMudancas;
     private javax.swing.JButton btnverSolicitacoes;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblMudarnome;

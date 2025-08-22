@@ -39,12 +39,10 @@ public class Usuario extends Pessoa {
     @ManyToOne
     private TipoUsuario tipo;
 
-
     // Mapeamento inverso: Usuario não tem a FK, mapeado por "usuario" em Solicitacao
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "usuario",fetch = FetchType.EAGER)
     private Solicitacao solicitacao;
 
-    
     //GAMBIARRA PARA RODAR
     @Column(nullable = true, unique = true)
     private String matricula;

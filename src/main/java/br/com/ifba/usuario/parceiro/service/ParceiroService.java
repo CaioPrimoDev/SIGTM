@@ -4,6 +4,7 @@
  */
 package br.com.ifba.usuario.parceiro.service;
 
+import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.comum.controller.UsuarioIController;
 import br.com.ifba.usuario.comum.entity.TipoUsuario;
@@ -35,6 +36,8 @@ public class ParceiroService implements ParceiroIService {
     private final ParceiroRepository repo;
     
      private final UsuarioIController usuarioController;
+     
+     private final SolicitacaoIController solicitacaoController;
      
     @Override
     public boolean save(Parceiro user) {
@@ -164,7 +167,6 @@ public class ParceiroService implements ParceiroIService {
     }
     
 @Override
-@Transactional
 public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
  
     Parceiro parceiro = new Parceiro();
@@ -189,7 +191,14 @@ public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa)
     novaSolicitacao.setSolicitouParceria(false);
     parceiro.setSolicitacao(novaSolicitacao);
 
-    usuarioController.delete(usuario.getId());
+     
+        usuario.setAtivo(false);
+        
+        solicitacaoController.delete(usuario.getSolicitacao().getId());
+        
+         usuarioController.delete(usuario.getId());
+        
+        repo.save(parceiro);
     
     return parceiro;
 }

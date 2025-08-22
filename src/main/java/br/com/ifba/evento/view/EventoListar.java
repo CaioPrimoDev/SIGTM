@@ -152,33 +152,24 @@ public void adicionarEvento(Parceiro parceiro, Evento evento, Endereco endereco)
         return;
     }
 
-    evento.setParceiro(parceiro);
-    
-    
-    evento.setEndereco(endereco);
+    Evento novoEvento = eventoController.adicionarEvento(evento, parceiro, endereco);
 
-    enderecoController.save(endereco);
-    
-    eventoController.save(evento);
-    
-    parceiroController.save(parceiro);
-
-    listaEventos.add(evento);
+    listaEventos.add(novoEvento);
     tableModel.addRow(new Object[]{
-            evento.getParceiro().getNomeEmpresa(),
-            evento.getNome(),
-            evento.getHora().toLocalTime(),            
-            evento.getHora().plusHours(2).toLocalTime(),
-            evento.getData(),
-            evento.getPublicoAlvo(),
-            evento.getCategoria(),
-            evento.getProgramacao(),
-            evento.getNivelAcessibilidade(),
-            evento.getEndereco().getBairro(),
-            evento.getEndereco().getCidade(),
-            evento.getEndereco().getEstado(),
-            evento.getEndereco().getNumero(),
-            evento.getEndereco().getRua()
+            novoEvento.getParceiro().getNomeEmpresa(),
+            novoEvento.getNome(),
+            novoEvento.getHora().toLocalTime(),            
+            novoEvento.getHora().plusHours(2).toLocalTime(),
+            novoEvento.getData(),
+            novoEvento.getPublicoAlvo(),
+            novoEvento.getCategoria(),
+            novoEvento.getProgramacao(),
+            novoEvento.getNivelAcessibilidade(),
+            novoEvento.getEndereco().getBairro(),
+            novoEvento.getEndereco().getCidade(),
+            novoEvento.getEndereco().getEstado(),
+            novoEvento.getEndereco().getNumero(),
+            novoEvento.getEndereco().getRua()
         });
 }
     
@@ -214,12 +205,14 @@ public void editarEvento(Evento eventoEditado) {
     );
     tableModel.setValueAt(eventoEditado.getData(), itemSelecionado, 4);
     tableModel.setValueAt(eventoEditado.getPublicoAlvo(), itemSelecionado, 5);
-    tableModel.setValueAt(eventoEditado.getNivelAcessibilidade(), itemSelecionado, 6);
-    tableModel.setValueAt(eventoEditado.getEndereco().getBairro(), itemSelecionado, 7);
-    tableModel.setValueAt(eventoEditado.getEndereco().getCidade(), itemSelecionado, 8);
-    tableModel.setValueAt(eventoEditado.getEndereco().getEstado(), itemSelecionado, 9);
-    tableModel.setValueAt(eventoEditado.getEndereco().getNumero(), itemSelecionado, 10);
-    tableModel.setValueAt(eventoEditado.getEndereco().getRua(), itemSelecionado, 11);
+     tableModel.setValueAt(eventoEditado.getCategoria(), itemSelecionado, 6);
+      tableModel.setValueAt(eventoEditado.getProgramacao(), itemSelecionado, 7);
+    tableModel.setValueAt(eventoEditado.getNivelAcessibilidade(), itemSelecionado, 8);
+    tableModel.setValueAt(eventoEditado.getEndereco().getBairro(), itemSelecionado, 9);
+    tableModel.setValueAt(eventoEditado.getEndereco().getCidade(), itemSelecionado, 10);
+    tableModel.setValueAt(eventoEditado.getEndereco().getEstado(), itemSelecionado, 11);
+    tableModel.setValueAt(eventoEditado.getEndereco().getNumero(), itemSelecionado, 12);
+    tableModel.setValueAt(eventoEditado.getEndereco().getRua(), itemSelecionado, 13);
     
      jEditar.setVisible(false);
     
