@@ -10,6 +10,7 @@ import br.com.ifba.promocao.entity.Promocao;
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.telainicial.view.TelaInicial;
 import jakarta.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -64,14 +65,18 @@ public class PromocaoUpdate extends javax.swing.JFrame {
         txtTitulo.setText(promocao.getTitulo());
         txtRegras.setText(promocao.getRegras());
         txtDescricao.setText(promocao.getDescricao());
-        txtDataInicio.setText(promocao.getDataInicio().toString());
-        txtDataTermino.setText(promocao.getDataTermino().toString());
+        // Formata as datas no padrão dd/MM/yyyy
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        // Formata a data de início (Date → String formatada)
+        txtDataInicio.setText(sdf.format(promocao.getDataInicio()));
+        // Formata a data de término (Date → String formatada)
+        txtDataTermino.setText(sdf.format(promocao.getDataTermino()));
+
         TipoPromocao tipo = promocao.getTipo();
         if (tipo != null) {
             cbbTipo.setSelectedItem(tipo.getTitulo());
         }
-
-    }
+    }   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

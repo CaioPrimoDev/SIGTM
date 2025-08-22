@@ -10,6 +10,7 @@ import br.com.ifba.telainicial.view.TelaInicial;
 import br.com.ifba.util.ButtonRenderer;
 import jakarta.annotation.PostConstruct;
 import java.awt.Image;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -306,16 +307,24 @@ public class PromocaoList extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) tblPromocoes.getModel();
             model.setRowCount(0);
 
+            // Formato desejado para as datas
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    
             for (Promocao promocao : listaDePromocoes) {
+                // Formata as datas antes de adicionar à tabela
+                String dataInicioFormatada = sdf.format(promocao.getDataInicio());
+                String dataTerminoFormatada = sdf.format(promocao.getDataTermino());
+                
                 model.addRow(new Object[]{
                     promocao.getTitulo(),
                     promocao.getRegras(),
                     promocao.getDescricao(),
-                    promocao.getDataInicio(),
-                    promocao.getDataTermino(),
+                    dataInicioFormatada,
+                    dataTerminoFormatada,
+                    
                     promocao.getTipo().getTitulo(),  
-                    "", // Texto vazio para coluna EDITAR
-                    ""  // Texto vazio para coluna REMOVER
+                    "EDITAR", // Texto vazio para coluna EDITAR
+                    "REMOVER"  // Texto vazio para coluna REMOVER
                 });
             }
         } catch (Exception e) {

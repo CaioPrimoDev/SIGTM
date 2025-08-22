@@ -4,8 +4,8 @@ import br.com.ifba.promocao.entity.Promocao;
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.PromocaoRepository;
 import br.com.ifba.promocao.repository.TipoPromocaoRepository;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.comum.entity.Usuario;
-import br.com.ifba.usuario.comum.repository.UsuarioRepository;
 import br.com.ifba.util.StringUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
@@ -23,23 +23,43 @@ public class PromocaoService implements PromocaoIService {
     
     @Autowired
     private TipoPromocaoRepository tipoPromocaoRepository;
+    
+    @Autowired
+    private UsuarioSession usuarioSession;
      
     private static final Logger log = LoggerFactory.getLogger(PromocaoService.class);
        
     @Override
     public Promocao save(Promocao promocao) {
         log.info("Salvando {}", promocao.getTitulo());
+
+        // obtem o usuário logado
+        Usuario usuarioLogado = usuarioSession.getUsuarioLogado();
+        if (usuarioLogado == null) {
+            throw new RuntimeException("Usuário não autenticado. Não é possível salvar a promoção.");
+        }
+
+        //associa promoção a usuário
+        promocao.setUsuarioCriador(usuarioLogado);
+
+        //valida e salve a entidade
         validatePromocao(promocao);
         return promocaoRepository.save(promocao);
     }
-
     @Override
     public Promocao update(Promocao promocao) {
         log.info("Atualizando ID {}: {}", promocao.getId(), promocao.getTitulo());
+
+        //Obtem a promoção existente do banco de dados
+        Promocao promocaoExistente = findById(promocao.getId());
+
+        //Define o usuário criador da nova promoção para o usuário criador da promoção existente
+        promocao.setUsuarioCriador(promocaoExistente.getUsuarioCriador());
+
+        // valida e salve
         validatePromocao(promocao);
         return promocaoRepository.save(promocao);
     }
-
     @Override
     public void delete(Promocao promocao) {
         log.info("Removendo promoção ID {}: {}", promocao.getId(), promocao.getTitulo());

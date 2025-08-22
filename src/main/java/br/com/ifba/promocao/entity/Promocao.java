@@ -5,6 +5,7 @@
 package br.com.ifba.promocao.entity;
 
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
+import br.com.ifba.usuario.comum.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -44,6 +45,10 @@ public class Promocao extends PersistenceEntity {
     
     @Column(name = "dataTermino") // Mapeia o campo 'dataTermino' para coluna 'dataTermino'
     private Date dataTermino;
+    
+    @ManyToOne
+    @JoinColumn(name = "usuario_criador_id", nullable = false)
+    private Usuario usuarioCriador;
     
     @ManyToOne
     @JoinColumn(name = "tipo_id", nullable = false) // Mapeia o campo 'tipo' para coluna 'tipo'
