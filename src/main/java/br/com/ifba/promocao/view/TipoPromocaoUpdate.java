@@ -5,8 +5,14 @@
 package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.TipoPromocaoIController;
+import br.com.ifba.promocao.entity.PublicoPromocao;
 import br.com.ifba.promocao.entity.TipoPromocao;
+import br.com.ifba.promocao.service.PublicoPromocaoService;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.telainicial.view.TelaInicial;
+import jakarta.annotation.PostConstruct;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +29,12 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
     @Autowired
     private TipoPromocaoIController controller;
     
+    @Autowired
+    private UsuarioSession userLogado;
+    
+    @Autowired
+    private PublicoPromocaoService publicoService;
+    
     // Contexto do Spring para acessar outros beans gerenciados
     @Autowired
     private ApplicationContext context;
@@ -31,19 +43,40 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
     private TipoPromocao tipoAtual;
 
 
-    /**
-     * Creates new form TipoPromocaoUpdate
-     */
-    public TipoPromocaoUpdate() {
+    @Autowired
+    public TipoPromocaoUpdate(TipoPromocaoIController controller, UsuarioSession userLogado, PublicoPromocaoService publicoService) {
+        this.controller = controller;
+        this.userLogado = userLogado;
         initComponents();
     }
+    
+    @PostConstruct
+    public void init() {
+        carregarPublicos(); // agora o publicoService já foi injetado
+    }
 
+    private void carregarPublicos() {
+        // Carrega todos os públicos e preenche o combo box
+        List<PublicoPromocao> publicos = publicoService.findAll();
+        DefaultComboBoxModel<PublicoPromocao> model = new DefaultComboBoxModel<>();
+        for (PublicoPromocao p : publicos) {
+            model.addElement(p);
+        }
+        cbbPublicoAlvo.setModel(model);
+
+        // Seleciona o público atual do tipo (se existir)
+        if (tipoAtual != null && tipoAtual.getPublicoAlvo() != null) {
+            cbbPublicoAlvo.setSelectedItem(tipoAtual.getPublicoAlvo());
+        }
+    }
     // Método para carregar os dados do tipo de promoção que será editado
     public void carregarTipo(TipoPromocao tipo) {
         this.tipoAtual = tipo; // Armazena o tipo recebido
         txtTitulo.setText(tipo.getTitulo()); // Preenche o campo título com o valor atual
         txtRegras.setText(tipo.getRegra());
         txtDescricao.setText(tipo.getDescricao());
+        // Atualiza o combo box com o público atual
+        carregarPublicos();
     }
 
     /**
@@ -66,6 +99,8 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
         txtDescricao = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
         btnHome = new javax.swing.JButton();
+        lblPublicoalvo = new javax.swing.JLabel();
+        cbbPublicoAlvo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,13 +149,25 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
             }
         });
 
+        lblPublicoalvo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblPublicoalvo.setForeground(new java.awt.Color(0, 0, 51));
+        lblPublicoalvo.setText("PUBLICO ALVO");
+
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
         pnlPrincipalLayout.setHorizontalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPrincipalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTituloTela)
+                .addGap(134, 134, 134))
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPrincipalLayout.createSequentialGroup()
+                        .addComponent(lblPublicoalvo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbbPublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTitulo)
                     .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblRegras)
@@ -134,10 +181,6 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
                         .addGap(5, 5, 5)
                         .addComponent(btnListar)))
                 .addContainerGap(27, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTituloTela)
-                .addGap(134, 134, 134))
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,7 +199,11 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
                 .addComponent(lblDescricao)
                 .addGap(5, 5, 5)
                 .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90)
+                .addGap(18, 18, 18)
+                .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbbPublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPublicoalvo))
+                .addGap(46, 46, 46)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSalvar)
                     .addComponent(btnHome)
@@ -191,77 +238,43 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
     }//GEN-LAST:event_btnListarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Obtém e limpa os valores dos campos
+        
         String titulo = txtTitulo.getText().trim();
         String descricao = txtDescricao.getText().trim();
         String regras = txtRegras.getText().trim();
+        PublicoPromocao publicoSelecionado = (PublicoPromocao) cbbPublicoAlvo.getSelectedItem();
 
-        // Validações dos campos obrigatórios
-        if(titulo.isEmpty() || descricao.isEmpty()) {
+        if (titulo.isEmpty() || descricao.isEmpty()) {
             String mensagemErro = "";
-            if(titulo.isEmpty()) {
-                mensagemErro += "• Título é obrigatório\n";
-                txtTitulo.requestFocus(); // Coloca foco no campo inválido
-            }
-            if(descricao.isEmpty()) {
-                mensagemErro += "• Descrição é obrigatória\n";
-                if(titulo.isEmpty()) {
-                    txtDescricao.requestFocus(); // Só muda foco se título estiver preenchido
-                }
-            }
-
-            JOptionPane.showMessageDialog(this, 
-                "Por favor, corrija os seguintes campos:\n" + mensagemErro, 
-                "Campos obrigatórios", 
-                JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Validação de tamanho máximo (exemplo)
-        if(titulo.length() > 100) {
-            JOptionPane.showMessageDialog(this, 
-                "O título não pode exceder 100 caracteres", 
-                "Valor inválido", 
-                JOptionPane.WARNING_MESSAGE);
-            txtTitulo.requestFocus();
+            if (titulo.isEmpty()) mensagemErro += "• Título é obrigatório\n";
+            if (descricao.isEmpty()) mensagemErro += "• Descrição é obrigatória\n";
+            JOptionPane.showMessageDialog(this, mensagemErro, "Campos obrigatórios", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            // Atualiza o objeto com todos os campos
             tipoAtual.setTitulo(titulo);
             tipoAtual.setDescricao(descricao);
-            tipoAtual.setRegra(regras.isEmpty() ? null : regras); // Se regras for vazio, salva como null
+            tipoAtual.setRegra(regras.isEmpty() ? null : regras);
+            tipoAtual.setPublicoAlvo(publicoSelecionado);
 
-            // Chama o controller para atualizar no banco de dados
             TipoPromocao tipoAtualizado = controller.update(tipoAtual);
 
-            // Feedback de sucesso para o usuário
-            JOptionPane.showMessageDialog(this, 
-                "Tipo '"+tipoAtualizado.getTitulo()+"' atualizado com sucesso!", 
-                "Sucesso", 
-                JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Tipo '" + tipoAtualizado.getTitulo() + "' atualizado com sucesso!",
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE);
 
-            // Atualiza a tela de listagem
             TipoPromocaoList listagem = context.getBean(TipoPromocaoList.class);
             listagem.setVisible(true);
             listagem.carregarDados();
-            this.dispose(); // Fecha a tela atual
-
-        } catch (IllegalArgumentException e) {
-            // Erros de validação de negócio
-            JOptionPane.showMessageDialog(this, 
-                e.getMessage(), 
-                "Dados inválidos", 
-                JOptionPane.WARNING_MESSAGE);
+            this.dispose();
 
         } catch (Exception e) {
-            // Erro genérico
-            JOptionPane.showMessageDialog(this, 
-                "Erro ao atualizar tipo:\n" + e.getMessage() + 
-                "\n\nPor favor, tente novamente ou contate o suporte.", 
-                "Erro no sistema", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao atualizar tipo:\n" + e.getMessage(),
+                    "Erro no sistema",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -272,46 +285,14 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnHomeActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TipoPromocaoUpdate().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnListar;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JComboBox<PublicoPromocao> cbbPublicoAlvo;
     private javax.swing.JLabel lblDescricao;
+    private javax.swing.JLabel lblPublicoalvo;
     private javax.swing.JLabel lblRegras;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTituloTela;

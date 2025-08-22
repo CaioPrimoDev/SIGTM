@@ -15,7 +15,7 @@ public interface TipoPromocaoIService {
     
     TipoPromocao save(TipoPromocao tipoPromocao);
     TipoPromocao update(TipoPromocao tipoPromocao);
-    void delete(TipoPromocao tipoPromocao);
+    void delete(Long id);
     List<TipoPromocao> findAll();
     TipoPromocao findById(Long id);
 }

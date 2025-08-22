@@ -5,9 +5,15 @@
 package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.TipoPromocaoIController;
+import br.com.ifba.promocao.entity.PublicoPromocao;
 import br.com.ifba.promocao.entity.TipoPromocao;
+import br.com.ifba.promocao.service.PublicoPromocaoService;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.telainicial.view.TelaInicial;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,23 +29,43 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
     @Autowired
     private TipoPromocaoIController controller;
     
+    @Autowired
+    private UsuarioSession userLogado;
+    
     // Contexto do Spring para acessar outros beans gerenciados
     @Autowired
     private ApplicationContext context;
+    
+    @Autowired
+    private PublicoPromocaoService publicoService;
 
-    /**
-     * Creates new form TipoPromocaoSave
-     */
-    public TipoPromocaoSave() {
+    @Autowired
+    public TipoPromocaoSave(TipoPromocaoIController controller, UsuarioSession userLogado, PublicoPromocaoService publicoService) {
+        this.controller = controller;
+        this.userLogado = userLogado;
+        this.publicoService = publicoService; 
         initComponents();
+        carregarPublicos();
     }
+
     // Método para limpar os campos do formulário
     private void limparCampos() {
-        txtTitulo.setText("");       // Limpa o campo de título
-        txtDescricao.setText("");    // Limpa o campo de descrição
-        txtRegras.setText("");       // Limpa o campo de regras
+        txtTitulo.setText("");
+        txtDescricao.setText("");
+        txtRegras.setText("");
+        if(cbbPublicoAlvo.getItemCount() > 0) {
+            cbbPublicoAlvo.setSelectedIndex(0);
+        }
     }
 
+    private void carregarPublicos() {
+    List<PublicoPromocao> publicos = publicoService.findAll();
+    DefaultComboBoxModel<PublicoPromocao> model = new DefaultComboBoxModel<>();
+    for (PublicoPromocao p : publicos) {
+        model.addElement(p);
+    }
+    cbbPublicoAlvo.setModel(model);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,6 +87,8 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
         txtDescricao = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
         btnHome = new javax.swing.JButton();
+        cbbPublicoAlvo = new javax.swing.JComboBox<>();
+        lblPublicoalvo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,13 +137,25 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
             }
         });
 
+        lblPublicoalvo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblPublicoalvo.setForeground(new java.awt.Color(0, 0, 51));
+        lblPublicoalvo.setText("PUBLICO ALVO");
+
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
         pnlPrincipalLayout.setHorizontalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPrincipalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTituloTela)
+                .addGap(100, 100, 100))
             .addGroup(pnlPrincipalLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPrincipalLayout.createSequentialGroup()
+                        .addComponent(lblPublicoalvo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbbPublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTitulo)
                     .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblRegras)
@@ -128,11 +168,7 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
                         .addComponent(btnHome)
                         .addGap(5, 5, 5)
                         .addComponent(btnListar)))
-                .addContainerGap(27, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTituloTela)
-                .addGap(100, 100, 100))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,11 +187,16 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
                 .addComponent(lblDescricao)
                 .addGap(5, 5, 5)
                 .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90)
+                .addGap(18, 18, 18)
+                .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbbPublicoAlvo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPublicoalvo))
+                .addGap(50, 50, 50)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSalvar)
                     .addComponent(btnHome)
-                    .addComponent(btnListar)))
+                    .addComponent(btnListar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -164,15 +205,15 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(8, 8, 8)
+                .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -191,42 +232,35 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
         String titulo = txtTitulo.getText().trim();
         String regras = txtRegras.getText().trim();
         String descricao = txtDescricao.getText().trim();
-        
+
         // VALIDAÇÕES:
         // Verifica se título foi preenchido
         if(titulo.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Título é obrigatório", "Erro", JOptionPane.ERROR_MESSAGE);
             return; // Interrompe a execução se validação falhar
         }
-        
+
         // Verifica se descrição foi preenchida
         if(descricao.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Descrição é obrigatória", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         try {
-            // Cria novo objeto TipoPromocao com os dados do formulário
             TipoPromocao tipo = new TipoPromocao();
             tipo.setTitulo(titulo);
             tipo.setDescricao(descricao);
-            tipo.setRegra(regras); // Regras é opcional
-            
-            // Chama o controller para salvar no banco de dados
+            tipo.setRegra(regras); 
+
+            PublicoPromocao publicoSelecionado = (PublicoPromocao) cbbPublicoAlvo.getSelectedItem();
+            tipo.setPublicoAlvo(publicoSelecionado);
+
             controller.save(tipo);
-            
-            // Feedback de sucesso para o usuário
+
             JOptionPane.showMessageDialog(this, "Tipo salvo com sucesso!");
-            limparCampos(); // Limpa os campos após salvar
-            
-            // Abre a tela de listagem com os dados atualizados
-            TipoPromocaoList listagem = context.getBean(TipoPromocaoList.class);
-            listagem.setVisible(true);
-            listagem.carregarDados();
-            this.dispose(); // Fecha a tela atual
-            
+            limparCampos();
+
         } catch (Exception e) {
-            // Tratamento de erro genérico
             JOptionPane.showMessageDialog(this, 
                 "Erro ao salvar tipo: " + e.getMessage(), 
                 "Erro", 
@@ -241,46 +275,17 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnHomeActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoSave.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TipoPromocaoSave().setVisible(true);
-            }
-        });
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnListar;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JComboBox<PublicoPromocao> cbbPublicoAlvo;
     private javax.swing.JLabel lblDescricao;
+    private javax.swing.JLabel lblPublicoalvo;
     private javax.swing.JLabel lblRegras;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTituloTela;

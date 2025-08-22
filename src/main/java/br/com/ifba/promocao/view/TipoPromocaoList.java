@@ -2,12 +2,14 @@ package br.com.ifba.promocao.view;
 
 import br.com.ifba.promocao.controller.TipoPromocaoIController;
 import br.com.ifba.promocao.entity.TipoPromocao;
+import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.telainicial.view.TelaInicial;
 import br.com.ifba.util.ButtonRenderer;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,9 @@ public class TipoPromocaoList extends javax.swing.JFrame {
     @Autowired
     private TipoPromocaoIController controller;
     
+    @Autowired
+    private UsuarioSession userLogado;
+    
     // Contexto do Spring para acessar outros componentes
     @Autowired
     private ApplicationContext context;
@@ -33,53 +38,60 @@ public class TipoPromocaoList extends javax.swing.JFrame {
     // Lista que armazenará os tipos de promoção
     private List<TipoPromocao> listaDeTipos;
 
-    /**
-     * Creates new form TipoList
-     */
-    public TipoPromocaoList() {
+    @Autowired
+    public TipoPromocaoList(TipoPromocaoIController controller, UsuarioSession userLogado) {
+        this.controller = controller;
+        this.userLogado = userLogado;
         initComponents();
-    }
-    
-    // Método chamado após a construção do objeto
-    @PostConstruct
-    private void init() {
-        configurarTabela();  // Prepara a tabela
-        carregarDados();     // Carrega os dados do banco
-        adicionarListenerDeCliqueNaTabela(); // Adiciona os ouvintes de clique
+        
+        // Inicializações
+        configurarTabela();
+        carregarDados();
+        adicionarListenerDeCliqueNaTabela();
     }
     
     // Configura como a tabela vai exibir os dados
     private void configurarTabela() {
-        // Cria um modelo de tabela com colunas ID, NOME, EDITAR, REMOVER
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
-            new String[]{"ID", "NOME", "EDITAR", "REMOVER"}
+            new String[]{
+                "ID", 
+                "TÍTULO", 
+                "REGRAS", 
+                "DESCRIÇÃO", 
+                "USUÁRIO", 
+                "PÚBLICO",
+                "EDITAR", 
+                "REMOVER"
+            }
         );
         tblTipos.setModel(model);
+
         // Define renderizadores especiais para os botões
-        tblTipos.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer());
-        tblTipos.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
+        tblTipos.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer()); // Editar
+        tblTipos.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer()); // Remover
     }
-    
+
     // Carrega os dados do banco para a tabela
     public void carregarDados() {
         try {
-            // Pega todos os tipos de promoção do banco
             this.listaDeTipos = controller.findAll();
             DefaultTableModel model = (DefaultTableModel) tblTipos.getModel();
             model.setRowCount(0); // Limpa a tabela
 
-            // Adiciona cada tipo como uma linha na tabela
             for (TipoPromocao tipo : listaDeTipos) {
                 model.addRow(new Object[]{
-                    tipo.getId(),      // Coluna ID
-                    tipo.getTitulo(), // Coluna NOME
-                    "Editar",         // Botão Editar
-                    "Remover"         // Botão Remover
+                    tipo.getId(),                                     // ID
+                    tipo.getTitulo(),                                 // Título
+                    tipo.getRegra(),                                  // Regras
+                    tipo.getDescricao(),                              // Descrição
+                    tipo.getUsuarioCadastro() != null ? tipo.getUsuarioCadastro().getNome() : "—", // Usuário
+                    tipo.getPublicoAlvo() != null ? tipo.getPublicoAlvo().getDescricao() : "—",    // Público alvo
+                    "Editar",                                         // Botão Editar
+                    "Remover"                                         // Botão Remover
                 });
             }
         } catch (Exception e) {
-            // Se der erro, mostra mensagem para o usuário
             JOptionPane.showMessageDialog(this, 
                 "Erro ao carregar tipos de promoção: " + e.getMessage(),
                 "Erro", 
@@ -91,21 +103,39 @@ public class TipoPromocaoList extends javax.swing.JFrame {
         this.tblTipos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Pega a linha e coluna clicadas
                 int linha = tblTipos.rowAtPoint(evt.getPoint());
                 int coluna = tblTipos.columnAtPoint(evt.getPoint());
 
-                if (linha >= 0) { // Se clicou em uma linha válida
+                if (linha >= 0) {
                     TipoPromocao tipoSelecionado = listaDeTipos.get(linha);
 
-                    if (coluna == 2) { // Se clicou em "Editar"
-                        abrirTelaEdicao(tipoSelecionado);
-                    } else if (coluna == 3) { // Se clicou em "Remover"
-                        confirmarRemocao(tipoSelecionado);
+                    if (coluna == 5) { // Editar
+                        if(userLogado.isLogado()) {
+                            try {
+                                abrirTelaEdicao(tipoSelecionado);
+                            } catch (Exception e) {
+                                JOptionPane.showMessageDialog(TipoPromocaoList.this, 
+                                    "Erro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } else {
+                            avisoLogin();
+                        }
+                    } else if (coluna == 6) { // Remover
+                        if(userLogado.isLogado()) {
+                            confirmarRemocao(tipoSelecionado);
+                        } else {
+                            avisoLogin();
+                        }
                     }
                 }
             }
         });
+    }
+
+    private void avisoLogin() {
+        JOptionPane.showMessageDialog(this, 
+            "Acesso negado. Nenhum usuário autenticado na sessão.", 
+            "Login pendente", JOptionPane.INFORMATION_MESSAGE);
     }
     // Abre a tela de edição com os dados do tipo selecionado
     private void abrirTelaEdicao(TipoPromocao tipo) {
@@ -265,9 +295,17 @@ public class TipoPromocaoList extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        TipoPromocaoSave telaCadastrar = context.getBean(TipoPromocaoSave.class);
-        telaCadastrar.setVisible(true);
-        this.dispose();
+        if(userLogado.isLogado()) {
+            try {
+                TipoPromocaoSave telaCadastrar = context.getBean(TipoPromocaoSave.class);
+                telaCadastrar.setVisible(true);
+                this.dispose();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+            }
+        } else {
+            avisoLogin();
+        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
@@ -276,41 +314,10 @@ public class TipoPromocaoList extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnHomeActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TipoPromocaoList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TipoPromocaoList().setVisible(true);
-            }
-        });
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {     
+        this.context = applicationContext;
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;

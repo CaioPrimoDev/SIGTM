@@ -6,6 +6,7 @@ package br.com.ifba.promocao.controller;
 
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.service.TipoPromocaoIService;
+import br.com.ifba.sessao.UsuarioSession;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,10 @@ import org.springframework.stereotype.Controller;
 public class TipoPromocaoController implements TipoPromocaoIController{
     
     @Autowired
-    private TipoPromocaoIService tipoPromocaoService;
+    private TipoPromocaoIService tipoPromocaoService;  
+    
+    @Autowired
+    private UsuarioSession usuarioSession;
 
     // Método para salvar um tipo de promoção
     @Override
@@ -35,7 +39,7 @@ public class TipoPromocaoController implements TipoPromocaoIController{
     // Método para deletar um tipo de promoção
     @Override
     public void delete(TipoPromocao tipoPromocao) {
-        tipoPromocaoService.delete(tipoPromocao);
+        tipoPromocaoService.delete(tipoPromocao.getId());
     }
 
     // Busca um tipo de promoção pelo ID

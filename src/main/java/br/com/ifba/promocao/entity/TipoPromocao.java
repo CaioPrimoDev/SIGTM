@@ -43,6 +43,11 @@ public class TipoPromocao extends PersistenceEntity {
     private String descricao;
     
     @ManyToOne // Relacionamento Muitos-para-Um com Usuário
-    @JoinColumn(name = "id_usuario_cadastro")
-    private Usuario responsavel; 
+    @JoinColumn(name = "id_usuario_cadastro", nullable = false)
+    private Usuario UsuarioCadastro; 
+    
+    @ManyToOne
+    @JoinColumn(name = "publico_alvo", nullable = false)
+    private PublicoPromocao publicoAlvo;
+
 }
