@@ -132,7 +132,7 @@ public class EventoService {
   public List<Evento> findByNomeContainingIgnoreCase(String eventoNome) {
     try {
         // Validação básica do parâmetro
-        if (!StringUtil.isNullOrEmpty(eventoNome)) {
+        if (StringUtil.isNullOrEmpty(eventoNome)) {
             log.warn("Tentativa de busca de eventos com nome vazio ou nulo");
             throw new RegraNegocioException("Nome do evento não pode ser vazio.");
         }

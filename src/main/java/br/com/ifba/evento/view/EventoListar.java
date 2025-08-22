@@ -77,6 +77,24 @@ public class EventoListar extends javax.swing.JFrame {
 }
    
      
+     public void exibirEventos(Evento evento){
+     tableModel.addRow(new Object[]{
+            evento.getParceiro().getNomeEmpresa(),
+            evento.getNome(),
+            evento.getHora().toLocalTime(),            
+            evento.getHora().plusHours(2).toLocalTime(),
+            evento.getData(),
+            evento.getPublicoAlvo(),
+            evento.getProgramacao(),
+            evento.getNivelAcessibilidade(),
+            evento.getEndereco().getBairro(),
+            evento.getEndereco().getCidade(),
+            evento.getEndereco().getEstado(),
+            evento.getEndereco().getNumero(),
+            evento.getEndereco().getRua()
+        });
+     }
+     
   public int nivelAcessibilidade(javax.swing.JComboBox<String> comboBox) {
     String selected = (String) comboBox.getSelectedItem();
     return Integer.parseInt(selected);
@@ -893,44 +911,45 @@ if (listaEventos.isEmpty()) {//verificar existencia de itens na lista
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisarKeyReleased
-        String termo = txtPesquisar.getText().trim();
-
-// Limpar tabela de forma segura na EDT
-SwingUtilities.invokeLater(() -> {
-    tableModel.setRowCount(0); // Usar APENAS um modelo (tableModel)
-});
-
-
-// Busca por Nome do Evento
-SwingUtilities.invokeLater(() -> {
-    try {
-        List<Evento> resultados = eventoController.findByNomeContainingIgnoreCase(termo);
+String termo = txtPesquisar.getText().trim();
         
-        
-            for (Evento evento : resultados) {
-                tableModel.addRow(new Object[]{
-                    evento.getParceiro().getNomeEmpresa(),
-                    evento.getNome(),
-                    evento.getHora().toLocalTime(),            
-                    evento.getHora().plusHours(2).toLocalTime(),
-                    evento.getData(),
-                    evento.getPublicoAlvo(),
-                    evento.getCategoria(),
-                    evento.getProgramacao(),
-                    evento.getNivelAcessibilidade(),
-                    evento.getEndereco().getBairro(),
-                    evento.getEndereco().getCidade(),
-                    evento.getEndereco().getEstado(),
-                    evento.getEndereco().getNumero(),
-                    evento.getEndereco().getRua()
-                });
-            }
-        }
-     catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Erro ao buscar eventos: " + e.getMessage());
+        tableModel.setRowCount(0); // Limpar a tabela
+
+if (termo.isEmpty()) {
+    preencherTabelaEventos();
+    return;
+}
+
+try {
+    List<Evento> resultados = eventoController.findByNomeContainingIgnoreCase(termo);
+    
+    if (resultados.isEmpty()) {
+    
         preencherTabelaEventos();
+    } else {
+        for (Evento evento : resultados) {
+            tableModel.addRow(new Object[]{
+                evento.getParceiro().getNomeEmpresa(),
+                evento.getNome(),
+                evento.getHora().toLocalTime(),            
+                evento.getHora().plusHours(2).toLocalTime(),
+                evento.getData(),
+                evento.getPublicoAlvo(),
+                evento.getCategoria(),
+                evento.getProgramacao(),
+                evento.getNivelAcessibilidade(),
+                evento.getEndereco().getBairro(),
+                evento.getEndereco().getCidade(),
+                evento.getEndereco().getEstado(),
+                evento.getEndereco().getNumero(),
+                evento.getEndereco().getRua()
+            });
+        }
     }
-});
+} catch (Exception e) {
+    
+    preencherTabelaEventos();
+}
     }//GEN-LAST:event_txtPesquisarKeyReleased
 
     /**
