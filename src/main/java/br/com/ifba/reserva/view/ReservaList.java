@@ -2,16 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package br.com.ifba.pontoturistico.view;
+package br.com.ifba.reserva.view;
 
-import br.com.ifba.avaliacoes.view.TelaAvaliacoes;
-import br.com.ifba.endereco.entity.Endereco;
-import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
-import br.com.ifba.pontoturistico.entity.PontoTuristico;
+import br.com.ifba.evento.view.EventoListar;
+import br.com.ifba.pontoturistico.view.PontoTuristicoList;
+import br.com.ifba.reserva.controller.ReservaIController;
+import br.com.ifba.reserva.entity.Reserva;
+import br.com.ifba.reserva.util.ReservaButtonRenderer;
 import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.telainicial.view.TelaInicial;
-import br.com.ifba.pontoturistico.util.PontoButtonRenderer;
 import br.com.ifba.util.ButtonRenderer;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -27,14 +28,14 @@ import org.springframework.stereotype.Component;
  * @author juant
  */
 @Component
-public class PontoTuristicoList extends javax.swing.JFrame implements ApplicationContextAware{
+public class ReservaList extends javax.swing.JFrame implements ApplicationContextAware{
 
     // Adiciona atributos para as classes de buscas
-    private List<PontoTuristico> listaDePontos; // guarda a lista de pontos carregada
+    private List<Reserva> listaDeReservas; // guarda a lista de reservas carregada
     private UsuarioSession userLogado;
     
     @Autowired
-    private PontoTuristicoIController pontoTuristicoController;   ;
+    private ReservaIController reservaController;
     
     private ApplicationContext applicationContext; // VARIÁVEL PARA O CONTEXTO SPRING
  
@@ -42,9 +43,9 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
      * Creates new form PontoTuristicoList
      */
     @Autowired
-    public PontoTuristicoList(PontoTuristicoIController pontoTuristicoController, UsuarioSession userLogado) {
+    public ReservaList(ReservaIController reservaController, UsuarioSession userLogado) {
         // inicializa o controller como parametro recebido
-        this.pontoTuristicoController = pontoTuristicoController;
+        this.reservaController = reservaController;
         this.userLogado = userLogado;
         initComponents();
         
@@ -87,95 +88,48 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     
     private void adicionarListenerDeCliqueNaTabela() {
         // Adiciona um "ouvinte" de eventos de mouse à tabela
-        this.tblPontosTuristicos.addMouseListener(new java.awt.event.MouseAdapter() {
+        this.tblReservas.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Pega a linha e a coluna exatas onde o clique do mouse ocorreu
-                int linha = tblPontosTuristicos.rowAtPoint(evt.getPoint());
-                int coluna = tblPontosTuristicos.columnAtPoint(evt.getPoint());
+                int linha = tblReservas.rowAtPoint(evt.getPoint());
+                int coluna = tblReservas.columnAtPoint(evt.getPoint());
 
                 // Garante que o clique foi em uma linha válida (e não no cabeçalho, por exemplo)
                 if (linha >= 0) {
-                    
-                    // AÇÃO DE COMENTÁRIOS
-                    if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Endereco")  
-                        // Pega o objeto PontoTuristico da linha clicada
-                        PontoTuristico pontoSelecionado = listaDePontos.get(linha);
+                                       
+                    // AÇÃO DE MOSTRAR MAIS INFORMAÇÕES (TODAS)
+                    if (coluna == 2) { // Verifica se o clique foi na 3ª coluna ("Mais informações")  
+                        // Pega o objeto Reserva da linha clicada
+                        Reserva reservaSelecionada = listaDeReservas.get(linha);
 
-                        // Aqui você abre a tela de avaliações passando o ponto turístico selecionado
-                        TelaAvaliacoes telaAvaliacoes = applicationContext.getBean(TelaAvaliacoes.class);
-                        telaAvaliacoes.setPontoTuristico(pontoSelecionado);
-                        telaAvaliacoes.setVisible(true);
-
+                        // exibe todas as informações da reserva
+                        JOptionPane.showMessageDialog(ReservaList.this, 
+                                reservaSelecionada, 
+                                "Detalhes da reserva", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    
-                    // AÇÃO DE MOSTRAR A LOCALIZAÇÃO
-                    if (coluna == 5) { // Verifica se o clique foi na 6ª coluna ("Endereco")  
-                        // Pega o objeto PontoTuristico da linha clicada
-                        PontoTuristico pontoSelecionado = listaDePontos.get(linha);
-
-                        // Extrai o objeto Endereco de dentro do Ponto Turistico
-                        Endereco enderecoParaExibir = pontoSelecionado.getEndereco();
-
-                        // Verifica se o endereço realmente existe
-                        if (enderecoParaExibir != null) {
-                            JOptionPane.showMessageDialog(PontoTuristicoList.this, 
-                                enderecoParaExibir, 
-                                "Detalhes do endereço", JOptionPane.INFORMATION_MESSAGE);
-                        } 
-                        else {
-                              JOptionPane.showMessageDialog(PontoTuristicoList.this, 
-                                "Não há detalhes de endereço para este item.", 
-                                "Endereço não encontrado", JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                    
-                    // AÇÃO DE EDITAR
-                    if (coluna == 6) { // Verifica se o clique foi na 7ª coluna ("Editar")  
-                        if(userLogado.isLogado()){
-                            try{
-                                // verifica se o usuario logado é do tipo gestor
-                                pontoTuristicoController.verificaGestor(userLogado);
-
-                                PontoTuristico pontoParaEditar = listaDePontos.get(linha);
-
-                                PontoTuristicoUpdate telaAtualizacao = applicationContext.getBean(PontoTuristicoUpdate.class);
-                                telaAtualizacao.setDadosParaEdicao(pontoParaEditar, PontoTuristicoList.this);
-                                telaAtualizacao.setVisible(true);
-                            }
-                            catch (Exception e){
-                                acessoNegado(e);
-                            }
-                        }
-                        else{
-                            avisoLogin();
-                        }
-                    } 
-                    // AÇÃO DE REMOVER
-                    else if (coluna == 7) { // Verifica se o clique foi na 8ª coluna ("Remover")                       
-                        PontoTuristico pontoParaRemover = listaDePontos.get(linha);
-                        // Pede confirmação ao usuário antes de remover
-                        int resposta = JOptionPane.showConfirmDialog(PontoTuristicoList.this, // Parent component
-                                "Deseja realmente remover este ponto turistico: \"" + pontoParaRemover.getNome() + "\"?", 
+                    // AÇÃO DE DESMARCAR
+                    else if (coluna == 3) { // Verifica se o clique foi na 3ª coluna ("Remover")                       
+                        Reserva reservaParaRemover = listaDeReservas.get(linha);
+                        // Pede confirmação ao usuário antes de desmarcar (remover)
+                        int resposta = JOptionPane.showConfirmDialog(ReservaList.this, // Parent component
+                                "Deseja realmente desmarcar a reserva de token: \"" + reservaParaRemover.getToken() + "\"?", 
                                 "Confirmar Remoção", 
                                 JOptionPane.YES_NO_OPTION);
                         if (resposta == JOptionPane.YES_NO_OPTION) {
                             try {
-                                // verifica se o usuario logado é do tipo gestor
-                                pontoTuristicoController.verificaGestor(userLogado);
-                                
                                 // Usa o ID do objeto identificado corretamente
-                                pontoTuristicoController.delete(pontoParaRemover);
+                                reservaController.delete(reservaParaRemover);
                                 
                                 // Mostra a mensagem de sucesso
-                                JOptionPane.showMessageDialog(PontoTuristicoList.this, "Ponto Turistico removido com sucesso!");
+                                JOptionPane.showMessageDialog(ReservaList.this, "Reserva desmarcada com sucesso!");
 
                                 // ATUALIZA A TABELA DE FORMA SIMPLES E SEGURA
                                 carregarDados(); 
 
                             } 
                             catch (Exception e) {
-                                JOptionPane.showMessageDialog(PontoTuristicoList.this, "Erro ao remover ponto turistico: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(ReservaList.this, "Erro ao desmarcar reserva: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }
@@ -186,61 +140,56 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     
     // carrega os dados do banco de dados
     public void carregarDados() {
+        // Verifica se um usuário está realmente logado
+        if (!userLogado.isLogado()) {
+            return; // Interrompe a execução do método
+        }
+
         try {
-            // Usa o buscador para obter a lista de pontos turisticos do banco
-            this.listaDePontos = pontoTuristicoController.findAll();
-
+            this.listaDeReservas = this.reservaController.findAll(); 
+            
             // Pega o modelo da tabela
-            DefaultTableModel model = (DefaultTableModel) tblPontosTuristicos.getModel();
+            DefaultTableModel model = (DefaultTableModel) tblReservas.getModel();
             model.setRowCount(0); // Limpa a tabela para evitar duplicatas
+            
+            // Cria um formatador para a data ficar mais legível (ex: 22/08/2025)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            // loop que adiciona cada ponto turistico como uma nova linha
-            for (int i = 0; i < listaDePontos.size(); i++) {
+            // loop que adiciona cada reserva como uma nova linha
+            for (int i = 0; i < listaDeReservas.size(); i++) {
     
-                // Pega o ponto turistico que está na posição 'i' da lista
-                PontoTuristico pontoTuristico = listaDePontos.get(i);
-                String horarioFuncionamento = pontoTuristico.getHorarioAbertura() +
-                                                    " - " + pontoTuristico.getHorarioFechamento();
+                // Pega a reserva que está na posição 'i' da lista
+                Reserva reserva = listaDeReservas.get(i);
 
                 // adiciona linha 
                 model.addRow(new Object[]{
-                    pontoTuristico.getNome(),
-                    pontoTuristico.getDescricao(),
-                    horarioFuncionamento,
-                    pontoTuristico.getNivelAcessibilidade(),
-                    "Avaliações", 
-                    "Info Localização", 
-                    "Editar",
-                    "Remover"
+                    reserva.getToken(),
+                    reserva.getDataReserva().format(formatter),
+                    "Mais informações",
+                    "Desmarcar"
                 });
             }
         } 
         catch (Exception e) {
             // Mostra uma mensagem de erro se a conexão com o banco falhar
             JOptionPane.showMessageDialog(this, 
-                "Erro ao conectar ao banco de dados para listar os pontos turisticos.\n" +
+                "Erro ao conectar ao banco de dados para listar as reservas.\n" +
                 "Verifique sua conexão e as configurações de firewall.\n\n" +
                 "Detalhes do erro: " + e.getMessage(),
                 "Erro de Conexão", 
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(); // Imprime o erro detalhado no console para depuração
         }
     }
     
     // Usando o índice da coluna!
     private void configurarTabela() {
         // Define a altura da linha para 40 pixels. Ajuste conforme necessário.
-        tblPontosTuristicos.setRowHeight(32);
+        tblReservas.setRowHeight(32);
 
-        
-        // Pega a coluna na posição 4 (a quinta coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(4).setCellRenderer(new PontoButtonRenderer());
-        // Pega a coluna na posição 5 (a sexta coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(5).setCellRenderer(new PontoButtonRenderer());        
-        // Pega a coluna na posição 6 (a setima coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(6).setCellRenderer(new PontoButtonRenderer());
-        // Pega a coluna na posição 7 (a oitava coluna)
-        tblPontosTuristicos.getColumnModel().getColumn(7).setCellRenderer(new PontoButtonRenderer());
+        // Pega a coluna na posição 2 (a terceira coluna)
+        tblReservas.getColumnModel().getColumn(2).setCellRenderer(new ReservaButtonRenderer());
+                // Pega a coluna na posição 3 (a quarta coluna)
+        tblReservas.getColumnModel().getColumn(3).setCellRenderer(new ReservaButtonRenderer());
     }
 
     /**
@@ -255,9 +204,11 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         txtPesquisar = new javax.swing.JTextField();
         btnAdiciona = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblPontosTuristicos = new javax.swing.JTable();
+        tblReservas = new javax.swing.JTable();
         btnRefresh = new javax.swing.JButton();
         btnTelaInicial = new javax.swing.JButton();
+        btnEventos = new javax.swing.JButton();
+        btnPontosTuristicos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -284,38 +235,19 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
             }
         });
 
-        tblPontosTuristicos.setModel(new javax.swing.table.DefaultTableModel(
+        tblReservas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Nome", "Descrição", "Horario de Funcionamento", "Nivel de Acessibilidade", "Avaliações", "Localização", "Editar", "Remover"
+                "Token", "Data", "Mais informações", "Desmarcar"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true, true
+                false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -326,8 +258,8 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 return canEdit [columnIndex];
             }
         });
-        tblPontosTuristicos.setToolTipText("");
-        jScrollPane1.setViewportView(tblPontosTuristicos);
+        tblReservas.setToolTipText("");
+        jScrollPane1.setViewportView(tblReservas);
 
         btnRefresh.setText("ref");
         btnRefresh.addActionListener(new java.awt.event.ActionListener() {
@@ -346,6 +278,20 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
             }
         });
 
+        btnEventos.setText("Eventos");
+        btnEventos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventosActionPerformed(evt);
+            }
+        });
+
+        btnPontosTuristicos.setText("Pontos Turisticos");
+        btnPontosTuristicos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPontosTuristicosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -359,9 +305,13 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                         .addComponent(btnRefresh)
                         .addGap(18, 18, 18)
                         .addComponent(btnTelaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                        .addComponent(btnEventos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPontosTuristicos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAdiciona))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -370,15 +320,16 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
-                            .addComponent(btnAdiciona))
-                        .addGap(13, 13, 13))
+                        .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
+                        .addGap(14, 14, 14))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnTelaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRefresh))
+                            .addComponent(btnRefresh)
+                            .addComponent(btnEventos)
+                            .addComponent(btnPontosTuristicos)
+                            .addComponent(btnAdiciona))
                         .addGap(18, 18, 18)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -399,10 +350,10 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
     private void txtPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisarKeyReleased
         // TODO add your handling code here:
         // Pega o texto que o usuário digitou no campo de pesquisa
-        String nomePesquisa = txtPesquisar.getText();
+        String tokenPesquisa = txtPesquisar.getText();
 
         // Verifica se o campo de pesquisa está vazio
-        if (nomePesquisa.isBlank()) {
+        if (tokenPesquisa.isBlank()) {
             // Se estiver vazio, simplesmente recarrega todos os dados da tabela
             this.carregarDados();
             return;
@@ -410,37 +361,34 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
 
         try {
             // Usa o buscadorNome para consultar o banco com o texto digitado
-            this.listaDePontos = pontoTuristicoController.findByNomeStartingWithIgnoreCase(nomePesquisa);
+            this.listaDeReservas = reservaController.findByTokenContainingIgnoreCase(tokenPesquisa);
 
             // Pega o modelo da tabela
-            DefaultTableModel model = (DefaultTableModel) tblPontosTuristicos.getModel();
+            DefaultTableModel model = (DefaultTableModel) tblReservas.getModel();
             model.setRowCount(0); // Limpa a tabela para exibir apenas os resultados da pesquisa
 
             // Se a busca não retornar resultados, exibe uma mensagem
-            if (listaDePontos.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nenhum ponto turistico encontrado com o nome informado.",
+            if (listaDeReservas.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nenhuma reserva encontrada com o token informado.",
                     "Pesquisa",
                     JOptionPane.INFORMATION_MESSAGE);
             }
             else {
                 // Preenche a tabela com os cursos encontrados na pesquisa
-                for (int i = 0; i < listaDePontos.size(); i++) {
+                for (int i = 0; i < listaDeReservas.size(); i++) {
 
                     // Pega o ponto turistico que está na posição 'i' da lista
-                    PontoTuristico pontoTuristico = listaDePontos.get(i);
-                    String horarioFuncionamento = pontoTuristico.getHorarioAbertura() +
-                                                    " - " + pontoTuristico.getHorarioFechamento();
+                    Reserva reserva = listaDeReservas.get(i);
+                    
+                    // Cria um formatador para a data ficar mais legível (ex: 22/08/2025)
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
                     // adiciona linha
                     model.addRow(new Object[]{
-                        pontoTuristico.getNome(),
-                        pontoTuristico.getDescricao(),
-                        horarioFuncionamento,
-                        pontoTuristico.getNivelAcessibilidade(),
-                        "Avaliações",
-                        "Info Localização",  
-                        "Editar",
-                        "Remover"
+                        reserva.getToken(),
+                        reserva.getDataReserva().format(formatter),
+                        "Mais informações",
+                        "Desmarcar"
                     });
                 }
             }
@@ -450,43 +398,39 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 "Ocorreu um erro ao realizar a busca.\nDetalhes: " + e.getMessage(),
                 "Erro de Pesquisa",
                 JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+        } 
     }//GEN-LAST:event_txtPesquisarKeyReleased
-
-    private void avisoLogin(){
-        JOptionPane.showMessageDialog(PontoTuristicoList.this, 
-                                "Acesso negado. Nenhum usuário autenticado na sessão.", 
-                                "Login pendente", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
-    private void acessoNegado(Exception e){
-        JOptionPane.showMessageDialog(this, 
-                  e.getMessage(), 
-                  "Acesso Negado", 
-                  JOptionPane.ERROR_MESSAGE);
-    }
     
     
     private void btnAdicionaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionaActionPerformed
         // TODO add your handling code here:       
-        // verifica se o usuario esta logado
-        if(userLogado.isLogado()){
-            try{
-                // verifica se o usuario logado é do tipo gestor
-                pontoTuristicoController.verificaGestor(userLogado);
+        // Verifica se existe um usuário logado na sessão
+        if (userLogado.isLogado()) {
+            try {
+                // abre a tela de cadastro de reserva
+                ReservaSave telaReservaSave = applicationContext.getBean(ReservaSave.class);
 
-                PontoTuristicoSave telaPontoTuristicoSave = applicationContext.getBean(PontoTuristicoSave.class);
-                telaPontoTuristicoSave.setPontoTuristicoList(this); // Configura a referência para poder atualizar a tabela
-                telaPontoTuristicoSave.setVisible(true);
+                // Passa a referência desta tela para a tela de salvar,
+                // para que a tabela possa ser atualizada após o salvamento.
+                telaReservaSave.setReservaList(this);
+
+                telaReservaSave.setVisible(true);
+
+            } catch (Exception e) {
+                // Mostra uma mensagem de erro genérica caso algo dê errado ao abrir a tela
+                JOptionPane.showMessageDialog(this, 
+                    "Ocorreu um erro inesperado. Por favor, tente novamente.", 
+                    "Erro", 
+                    JOptionPane.ERROR_MESSAGE);
             }
-            catch (Exception e){
-                acessoNegado(e);
-            }
+        } else {
+            // 4. Se não estiver logado, exibe um aviso
+            JOptionPane.showMessageDialog(this, 
+                "Você precisa estar logado para fazer uma reserva.", 
+                "Acesso Negado", 
+                JOptionPane.INFORMATION_MESSAGE);
         }
-        else {
-            avisoLogin();
-        }
+    
     }//GEN-LAST:event_btnAdicionaActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
@@ -501,12 +445,26 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
         this.dispose(); // <--- É esta linha que fecha a janela!
     }//GEN-LAST:event_btnTelaInicialActionPerformed
 
+    private void btnPontosTuristicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPontosTuristicosActionPerformed
+        // TODO add your handling code here:
+        PontoTuristicoList telaPontoTuristicoList = applicationContext.getBean(PontoTuristicoList.class);
+        telaPontoTuristicoList.setVisible(true);
+    }//GEN-LAST:event_btnPontosTuristicosActionPerformed
+
+    private void btnEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventosActionPerformed
+        // TODO add your handling code here:
+        EventoListar crudEventos = applicationContext.getBean(EventoListar.class);
+        crudEventos.setVisible(true);
+    }//GEN-LAST:event_btnEventosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdiciona;
+    private javax.swing.JButton btnEventos;
+    private javax.swing.JButton btnPontosTuristicos;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnTelaInicial;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblPontosTuristicos;
+    private javax.swing.JTable tblReservas;
     private javax.swing.JTextField txtPesquisar;
     // End of variables declaration//GEN-END:variables
 

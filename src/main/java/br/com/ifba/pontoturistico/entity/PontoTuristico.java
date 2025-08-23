@@ -48,4 +48,14 @@ public class PontoTuristico extends ItemTuristico {
         
         this.gestor = gestor;
     }
+    
+    @Override
+    public String toString() {
+        // Retorna o nome para a ComboBox.
+        // Se o objeto não tiver nome, retorna uma string vazia para evitar erros.
+        if (this.getNome() == null) {
+            return "";
+        }
+        return this.getNome();
+    }
 }

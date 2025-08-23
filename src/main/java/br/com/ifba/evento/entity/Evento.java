@@ -48,4 +48,14 @@ public class Evento extends ItemTuristico {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "parceiro_id", nullable = false)
     private Parceiro parceiro;  // Atributo referenciado no mappedBy 
+   
+   @Override
+   public String toString() {
+        // Retorna o nome para a ComboBox.
+        // Se o objeto não tiver nome, retorna uma string vazia para evitar erros.
+        if (this.getNome() == null) {
+            return "";
+        }
+        return this.getNome();
+    }
 }

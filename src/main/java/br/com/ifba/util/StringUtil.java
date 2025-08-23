@@ -4,6 +4,7 @@
  */
 package br.com.ifba.util;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -143,6 +144,30 @@ public class StringUtil {
             return true;
         } catch (DateTimeParseException e) {
             // A string não corresponde ao formato esperado.
+            return false;
+        }
+    }
+    
+    /*
+        Valida se uma string está no formato de data "dd/MM/yyyy" e se a data é válida.
+        Ex: "29/02/2024" é válido, mas "29/02/2025" (não bissexto) não é.
+        Também rejeita datas como "31/04/2025".
+    */
+    public static boolean isValidData(String data) {
+        if (data == null) {
+            return false;
+        }
+
+        // Define o formato estrito "dd/MM/yyyy"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                                                     .withResolverStyle(ResolverStyle.STRICT);
+
+        try {
+            // Tenta fazer o parse. Se o comando for executado com sucesso, a data é válida.
+            LocalDate.parse(data, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            // Se der erro no parse, significa que o formato ou a data são inválidos.
             return false;
         }
     }

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package br.com.ifba.util;
+package br.com.ifba.reserva.util;
 
+import br.com.ifba.util.ButtonRenderer;
 import java.awt.Component;
-import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
@@ -16,14 +16,12 @@ import javax.swing.table.TableCellRenderer;
  * @author juant
  */
 
-public class ButtonRenderer extends JButton implements TableCellRenderer {
+public class ReservaButtonRenderer extends JButton implements TableCellRenderer {
 
-    private ImageIcon editIcon;
     private ImageIcon deleteIcon;
     private ImageIcon infoIcon;
-    private ImageIcon comentIcon;
 
-    public ButtonRenderer() {
+    public ReservaButtonRenderer() {
         setOpaque(true);
         
         // --- CÓDIGO PARA DEIXAR O BOTÃO TRANSPARENTE ---
@@ -38,27 +36,11 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
         try {
             // Carrega e redimensiona as imagens usando um método auxiliar
-            editIcon = scaleImage("/imagens/update.png", iconSize);
-            deleteIcon = scaleImage("/imagens/delete.png", iconSize);
-            infoIcon = scaleImage("/imagens/info.png", iconSize);
-            comentIcon = scaleImage("/imagens/comentIcon.png", iconSize);
+            deleteIcon = ButtonRenderer.scaleImage("/imagens/delete.png", iconSize);
+            infoIcon = ButtonRenderer.scaleImage("/imagens/info.png", iconSize);
         } catch (Exception e) {
             System.err.println("Erro ao carregar ou redimensionar ícones: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-
-    // Este método carrega uma imagem e a redimensiona para o tamanho especificado
-    public static ImageIcon scaleImage(String path, int size) {
-        try {
-            ImageIcon icon = new ImageIcon(ButtonRenderer.class.getResource(path));
-            Image img = icon.getImage();
-            Image scaledImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
-            return new ImageIcon(scaledImg);
-        } catch (Exception e) {
-            System.err.println("Erro ao carregar imagem: " + path);
-            // Retorna um ícone nulo ou um ícone de erro padrão se a imagem não for encontrada
-            return null; 
         }
     }
 
@@ -76,16 +58,10 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
             setBackground(UIManager.getColor("Button.background"));
         }
 
-        if (column == 4) { // Coluna Comentarios
-            setIcon(comentIcon);
-        }
-        else if (column == 5) { // Coluna Info
+        if (column == 2) { // Coluna Info
             setIcon(infoIcon);
         }
-        else if (column == 6) { // Coluna Editar
-            setIcon(editIcon);
-        } 
-        else if (column == 7) { // Coluna Remover
+        else if (column == 3) { // Coluna Remover
             setIcon(deleteIcon);
         }
         

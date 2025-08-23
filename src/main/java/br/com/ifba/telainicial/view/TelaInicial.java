@@ -12,6 +12,7 @@ import br.com.ifba.pontoturistico.view.PontoTuristicoList;
 import br.com.ifba.promocao.view.PromocaoList;
 import br.com.ifba.promocao.view.PublicoPromocaoList;
 import br.com.ifba.promocao.view.TipoPromocaoList;
+import br.com.ifba.reserva.view.ReservaList;
 import br.com.ifba.sessao.UsuarioSession;
 import br.com.ifba.usuario.parceiro.view.ParceirosListar;
 import br.com.ifba.util.MostrarMensagem;
@@ -63,6 +64,7 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         btnTipoPromocao = new javax.swing.JButton();
         btncrudEventos = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        btnReserva = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,6 +131,13 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
             }
         });
 
+        btnReserva.setText("Realizar Reserva(s)");
+        btnReserva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReservaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,11 +163,17 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
                         .addComponent(btncrudEventos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(btnSolicitar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(217, 217, 217)
+                .addComponent(btnReserva)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(9, 9, 9)
+                .addComponent(btnReserva)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCRUDPontoTuristico)
                     .addComponent(btnPromocoes))
@@ -240,11 +255,18 @@ public class TelaInicial extends javax.swing.JFrame implements ApplicationContex
         publico.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservaActionPerformed
+        // TODO add your handling code here:
+        ReservaList reservaList = applicationContext.getBean(ReservaList.class);
+        reservaList.setVisible(true);
+    }//GEN-LAST:event_btnReservaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCRUDPontoTuristico;
     private javax.swing.JButton btnCentral;
     private javax.swing.JButton btnLogar;
     private javax.swing.JButton btnPromocoes;
+    private javax.swing.JButton btnReserva;
     private javax.swing.JButton btnSolicitar;
     private javax.swing.JButton btnTipoPromocao;
     private javax.swing.JButton btncrudEventos;
