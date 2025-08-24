@@ -5,7 +5,7 @@
 package br.com.ifba.Solicitacao.entity;
 
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

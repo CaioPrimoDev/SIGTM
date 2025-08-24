@@ -4,7 +4,7 @@
  */
 package br.com.ifba.login.service;
 
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 
 /**
  *

@@ -5,7 +5,7 @@
 package br.com.ifba.pontoturistico.entity;
 
 import br.com.ifba.endereco.entity.Endereco;
-import br.com.ifba.usuario.gestor.entity.Gestor;
+import br.com.ifba.gestor.entity.Gestor;
 import br.com.ifba.itemturistico.entity.ItemTuristico;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

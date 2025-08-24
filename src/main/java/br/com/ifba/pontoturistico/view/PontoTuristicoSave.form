@@ -2,8 +2,6 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="br.com.ifba.pontoturistico.entity.PontoTuristico" name="pontoTuristico1">
-    </Component>
     <Component class="javax.swing.JTextField" name="txtNome4">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">

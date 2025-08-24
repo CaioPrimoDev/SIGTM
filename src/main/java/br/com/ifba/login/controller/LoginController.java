@@ -5,7 +5,7 @@
 package br.com.ifba.login.controller;
 
 import br.com.ifba.login.service.LoginIService;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 

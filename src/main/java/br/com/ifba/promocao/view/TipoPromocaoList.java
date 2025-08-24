@@ -85,7 +85,7 @@ public class TipoPromocaoList extends javax.swing.JFrame {
                     tipo.getTitulo(),                                 // Título
                     tipo.getRegra(),                                  // Regras
                     tipo.getDescricao(),                              // Descrição
-                    tipo.getUsuarioCadastro() != null ? tipo.getUsuarioCadastro().getNome() : "—", // Usuário
+                    tipo.getUsuarioCadastro() != null ? tipo.getUsuarioCadastro().getPessoa().getNome() : "—", // Usuário
                     tipo.getPublicoAlvo() != null ? tipo.getPublicoAlvo().getDescricao() : "—",    // Público alvo
                     "Editar",                                         // Botão Editar
                     "Remover"                                         // Botão Remover

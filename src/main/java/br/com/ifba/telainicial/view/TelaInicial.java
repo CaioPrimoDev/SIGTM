@@ -14,7 +14,7 @@ import br.com.ifba.promocao.view.PublicoPromocaoList;
 import br.com.ifba.promocao.view.TipoPromocaoList;
 import br.com.ifba.reserva.view.ReservaList;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.parceiro.view.ParceirosListar;
+import br.com.ifba.parceiro.view.ParceirosListar;
 import br.com.ifba.util.MostrarMensagem;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;

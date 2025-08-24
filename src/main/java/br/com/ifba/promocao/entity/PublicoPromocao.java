@@ -4,7 +4,7 @@
  */
 package br.com.ifba.promocao.entity;
 
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

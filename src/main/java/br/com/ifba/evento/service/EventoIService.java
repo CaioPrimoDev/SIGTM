@@ -6,7 +6,7 @@ package br.com.ifba.evento.service;
 
 import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.evento.entity.Evento;
-import br.com.ifba.usuario.parceiro.entity.Parceiro;
+import br.com.ifba.parceiro.entity.Parceiro;
 import java.util.List;
 
 /**

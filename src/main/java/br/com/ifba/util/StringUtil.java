@@ -171,4 +171,16 @@ public class StringUtil {
             return false;
         }
     }
+    
+    public static boolean isValidTelefone(String telefone) {
+        if (telefone == null || telefone.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Remove tudo que não é dígito
+        String apenasNumeros = telefone.replaceAll("[^0-9]", "");
+        
+        // Verifica se tem entre 8 e 15 dígitos (telefones normais)
+        return apenasNumeros.length() >= 8 && apenasNumeros.length() <= 15;
+    }
 }

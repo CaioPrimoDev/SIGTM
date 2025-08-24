@@ -4,7 +4,7 @@
  */
 package br.com.ifba.sessao;
 
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;

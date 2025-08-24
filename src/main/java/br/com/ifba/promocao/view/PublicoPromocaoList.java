@@ -71,7 +71,7 @@ public class PublicoPromocaoList extends javax.swing.JFrame {
                     publico.getDescricao(),
                     publico.getFaixaEtaria(),
                     publico.getInteresse(),
-                    publico.getUsuarioCadastro() != null ? publico.getUsuarioCadastro().getNome() : "—",
+                    publico.getUsuarioCadastro() != null ? publico.getUsuarioCadastro().getPessoa().getNome() : "—",
                     "Editar",
                     "Remover"
                 });

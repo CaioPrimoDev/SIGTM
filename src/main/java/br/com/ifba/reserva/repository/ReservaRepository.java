@@ -7,7 +7,7 @@ package br.com.ifba.reserva.repository;
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.reserva.entity.Reserva;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

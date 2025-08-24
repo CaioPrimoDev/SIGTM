@@ -5,7 +5,7 @@ import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.PromocaoRepository;
 import br.com.ifba.promocao.repository.TipoPromocaoRepository;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.util.StringUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;

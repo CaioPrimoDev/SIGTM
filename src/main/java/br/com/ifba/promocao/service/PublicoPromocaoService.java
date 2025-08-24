@@ -7,8 +7,8 @@ package br.com.ifba.promocao.service;
 import br.com.ifba.promocao.entity.PublicoPromocao;
 import br.com.ifba.promocao.repository.PublicoPromocaoRepository;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.comum.entity.Usuario;
-import br.com.ifba.usuario.comum.service.UsuarioService;
+import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.service.UsuarioService;
 import br.com.ifba.util.RegraNegocioException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -42,7 +42,7 @@ public class PublicoPromocaoService implements PublicoPromocaoIService {
 
     private void validarPermissaoCadastro() {
         Usuario usuario = getUsuarioLogado();
-        String tipoUsuario = usuarioService.findById(usuario.getId())
+        String tipoUsuario = usuarioService.findById(usuario.getPessoa().getId())
                                          .getTipo().getNome().toLowerCase();
         if (!tipoUsuario.equals("parceiro") && !tipoUsuario.equals("gestor")) {
             throw new RegraNegocioException("Apenas parceiros e gestores podem cadastrar públicos");
@@ -89,7 +89,7 @@ public class PublicoPromocaoService implements PublicoPromocaoIService {
         Usuario usuarioLogado = getUsuarioLogado();
         String tipoUsuario = usuarioLogado.getTipo().getNome().toLowerCase();
         boolean isGestor = tipoUsuario.equals("gestor");
-        boolean isDono = existente.getUsuarioCadastro().getId().equals(usuarioLogado.getId());
+        boolean isDono = existente.getUsuarioCadastro().getPessoa().getId().equals(usuarioLogado.getPessoa().getId());
 
         if (!isDono && !isGestor) {
             throw new RegraNegocioException("Apenas o criador ou gestores podem editar este público");
@@ -107,7 +107,7 @@ public class PublicoPromocaoService implements PublicoPromocaoIService {
         Usuario usuarioLogado = getUsuarioLogado();
         String tipoUsuario = usuarioLogado.getTipo().getNome().toLowerCase();
         boolean isGestor = tipoUsuario.equals("gestor");
-        boolean isDono = publico.getUsuarioCadastro().getId().equals(usuarioLogado.getId());
+        boolean isDono = publico.getUsuarioCadastro().getPessoa().getId().equals(usuarioLogado.getPessoa().getId());
 
         if (!isDono && !isGestor) {
             throw new RegraNegocioException("Apenas o criador ou gestores podem excluir este público");

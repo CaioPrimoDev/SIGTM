@@ -8,7 +8,7 @@ import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.pontoturistico.controller.PontoTuristicoIController;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.gestor.entity.Gestor;
+import br.com.ifba.gestor.entity.Gestor;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +32,8 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
     
     /**
      * Creates new form PontoTuristicoSave
+     * @param pontoTuristicoController
+     * @param userLogado
      */
     public PontoTuristicoSave(PontoTuristicoIController pontoTuristicoController, UsuarioSession userLogado) {
         // inicializa o controller como parametro recebido
@@ -60,7 +62,6 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pontoTuristico1 = new br.com.ifba.pontoturistico.entity.PontoTuristico();
         txtNome4 = new javax.swing.JTextField();
         lblLocalizacao1 = new javax.swing.JLabel();
         lblNome = new javax.swing.JLabel();
@@ -317,7 +318,7 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
                 enderecoPonto.setNumero(txtNumero.getText());
                 
                 // Obtém o gestor da sessão
-                Gestor gestorResponsavel = (Gestor) userLogado.getUsuarioLogado();
+                Gestor gestorResponsavel = (Gestor) userLogado.getUsuarioLogado().getPessoa();
                 
                 // Atribui os dados de PontoTuristico ao objeto
                 PontoTuristico novoPonto = new PontoTuristico();
@@ -384,7 +385,6 @@ public class PontoTuristicoSave extends javax.swing.JFrame {
     private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblNumero;
     private javax.swing.JLabel lblRua;
-    private br.com.ifba.pontoturistico.entity.PontoTuristico pontoTuristico1;
     private javax.swing.JSlider sliNivelAcess;
     private javax.swing.JTextField txtBairro;
     private javax.swing.JTextField txtCidade;

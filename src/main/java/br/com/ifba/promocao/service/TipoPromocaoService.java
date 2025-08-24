@@ -3,8 +3,8 @@ package br.com.ifba.promocao.service;
 import br.com.ifba.promocao.entity.TipoPromocao;
 import br.com.ifba.promocao.repository.TipoPromocaoRepository;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.comum.entity.Usuario;
-import br.com.ifba.usuario.comum.service.UsuarioService;
+import br.com.ifba.usuario.entity.Usuario;
+import br.com.ifba.usuario.service.UsuarioService;
 import br.com.ifba.util.RegraNegocioException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -32,7 +32,7 @@ public class TipoPromocaoService implements TipoPromocaoIService {
         }
 
         // Busca o usuário completo para verificar o tipo
-        Usuario usuarioCompleto = usuarioService.findById(usuarioLogado.getId());
+        Usuario usuarioCompleto = usuarioService.findById(usuarioLogado.getPessoa().getId());
         
         // Verifica se é parceiro ou gestor
         String tipoUsuario = usuarioCompleto.getTipo().getNome().toLowerCase();
@@ -103,7 +103,7 @@ public class TipoPromocaoService implements TipoPromocaoIService {
         // Verifica se o usuário é o dono do registro ou é gestor
         String tipoUsuario = usuarioLogado.getTipo().getNome().toLowerCase();
         boolean isGestor = tipoUsuario.equals("gestor");
-        boolean isDono = existente.getUsuarioCadastro().getId().equals(usuarioLogado.getId());
+        boolean isDono = existente.getUsuarioCadastro().getPessoa().getId().equals(usuarioLogado.getPessoa().getId());
         
         if (!isDono && !isGestor) {
             throw new RegraNegocioException("Apenas o criador ou gestores podem editar este tipo de promoção");
@@ -126,7 +126,7 @@ public class TipoPromocaoService implements TipoPromocaoIService {
         // Verifica se o usuário é o dono do registro ou é gestor
         String tipoUsuario = usuarioLogado.getTipo().getNome().toLowerCase();
         boolean isGestor = tipoUsuario.equals("gestor");
-        boolean isDono = tipoPromocao.getUsuarioCadastro().getId().equals(usuarioLogado.getId());
+        boolean isDono = tipoPromocao.getUsuarioCadastro().getPessoa().getId().equals(usuarioLogado.getPessoa().getId());
         
         if (!isDono && !isGestor) {
             throw new RegraNegocioException("Apenas o criador ou gestores podem excluir este tipo de promoção");

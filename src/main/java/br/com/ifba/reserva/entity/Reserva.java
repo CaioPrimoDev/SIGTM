@@ -7,7 +7,7 @@ package br.com.ifba.reserva.entity;
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import br.com.ifba.pontoturistico.entity.PontoTuristico;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -112,7 +112,7 @@ public class Reserva extends PersistenceEntity{
             "  - Item Reservado: %s", // <-- Linha única e genérica
             this.token,
             (this.dataReserva != null ? this.dataReserva.format(formatter) : "Não informada"),
-            (this.usuario != null ? this.usuario.getNome() : "Não informado"),
+            (this.usuario != null ? this.usuario.getPessoa().getNome() : "Não informado"),
             this.getNomeItemReservado()
         );
     }

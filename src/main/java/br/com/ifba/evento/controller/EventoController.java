@@ -7,7 +7,7 @@ package br.com.ifba.evento.controller;
 import br.com.ifba.endereco.entity.Endereco;
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.evento.service.EventoService;
-import br.com.ifba.usuario.parceiro.entity.Parceiro;
+import br.com.ifba.parceiro.entity.Parceiro;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

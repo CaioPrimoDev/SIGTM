@@ -9,7 +9,7 @@ import br.com.ifba.pontoturistico.repository.PontoTuristicoRepository;
 import br.com.ifba.reserva.entity.Reserva;
 import br.com.ifba.reserva.repository.ReservaRepository;
 import br.com.ifba.sessao.UsuarioSession;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -115,7 +115,7 @@ public class ReservaService implements ReservaIService {
         boolean isGestor = GESTOR.equals(usuario.getTipo().getNome());
         
         // Verifica se o ID do usuário logado é o mesmo do dono da reserva
-        boolean isDonoDaReserva = reserva.getUsuario().getId().equals(usuario.getId());
+        boolean isDonoDaReserva = reserva.getUsuario().getPessoa().getId().equals(usuario.getPessoa().getId());
         
         // Se não for gestor E não for o dono da reserva, nega a permissão
         if (!isGestor && !isDonoDaReserva) {
@@ -199,7 +199,7 @@ public class ReservaService implements ReservaIService {
         }
         
         // Se for um usuário comum, retorna apenas as suas próprias reservas
-        log.info("Buscando todas as reservas para o usuário de ID: {}", usuario.getId());
+        log.info("Buscando todas as reservas para o usuário de ID: {}", usuario.getPessoa().getId());
         return reservaRepository.findByUsuario(usuario);
     }
     
@@ -209,7 +209,7 @@ public class ReservaService implements ReservaIService {
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não pode ser nulo.");
         }
-        log.info("Buscando todas as reservas para o usuário de ID: {}", usuario.getId());
+        log.info("Buscando todas as reservas para o usuário de ID: {}", usuario.getPessoa().getId());
         return reservaRepository.findByUsuario(usuario);
     }
     
@@ -231,7 +231,7 @@ public class ReservaService implements ReservaIService {
             return reservaRepository.findByTokenContainingIgnoreCase(token);
         } else {
             // Se for usuário comum, busca a reserva pelo token APENAS se pertencer a ele
-            log.info("Usuário {} buscando própria reserva pelo token: {}", usuario.getId(), token);
+            log.info("Usuário {} buscando própria reserva pelo token: {}", usuario.getPessoa().getId(), token);
             return reservaRepository.findByTokenContainingIgnoreCaseAndUsuario(token, usuario);
         }
     }

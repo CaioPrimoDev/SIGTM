@@ -6,7 +6,7 @@ package br.com.ifba.reserva.controller;
 
 import br.com.ifba.reserva.entity.Reserva;
 import br.com.ifba.reserva.service.ReservaIService;
-import br.com.ifba.usuario.comum.entity.Usuario;
+import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
