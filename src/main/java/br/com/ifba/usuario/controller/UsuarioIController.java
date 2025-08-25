@@ -16,6 +16,7 @@ public interface UsuarioIController {
     void delete(Long id);
     List<Usuario> findAll();
     Usuario findById(Long id);
+    Usuario findByPessoaId(Long pessoaId);
     List <Usuario> findByNomeContainingIgnoreCase(String nome);
     List<Usuario> findBySolicitacaoSolicitouParceriaTrue();//pesquisar por todos os solicitantes
     List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes

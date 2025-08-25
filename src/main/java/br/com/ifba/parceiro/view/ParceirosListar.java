@@ -5,6 +5,7 @@
 package br.com.ifba.parceiro.view;
 
 import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
+import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.controller.UsuarioIController;
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.parceiro.controller.ParceiroIController;
@@ -24,6 +25,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ParceirosListar extends javax.swing.JFrame {
+    
+    @Autowired
+    private UsuarioIController usuarioController;
+    
+    @Autowired
+    ParceiroIController parceiroController;
+
+    @Autowired
+    SolicitacaoIController solicitacaoController;
 
     @Autowired
     public ParceirosListar(ParceiroIController parceiroController, UsuarioIController usuarioController, SolicitacaoIController solicitacaoController) {//mantive o nome de parceiroController apenas para fins organiizacionais   
@@ -49,12 +59,6 @@ public class ParceirosListar extends javax.swing.JFrame {
     final DefaultTableModel tableModelS;//tabela dos solicitantes
 
     int itemSelecionado = -1;
-
-    @Autowired
-    ParceiroIController parceiroController;
-
-    @Autowired
-    SolicitacaoIController solicitacaoController;
     
     // MÉTODOS ESPECÍFICOS
     public void carregarDadosParceiros() {
@@ -86,12 +90,15 @@ public class ParceirosListar extends javax.swing.JFrame {
         // um metodo para buscar os dados de usuario pelo parceiro é:
         // usuario.findByNomeContainingIgnoreCase(parceiro.getNome());
         //método para povoamento da tabela
+        
+        Usuario user;
         for (Parceiro parceiro : listaParceiros) {
+            user = usuarioController.findByPessoaId(parceiro.getId());
             tableModel.addRow(new Object[]{
                 parceiro.getNome(),
                 parceiro.getCnpj(),
                 parceiro.getNomeEmpresa(),
-                parceiro.getEmail(),
+                user.getEmail(),
                 parceiro.getTelefone()
             });
 
@@ -112,15 +119,16 @@ public class ParceirosListar extends javax.swing.JFrame {
         
         listaParceiros.add(parceiroCapsula);
 
+            Usuario user = usuarioController.findByPessoaId(parceiroCapsula.getId());
             tableModel.addRow(new Object[]{
                 parceiroCapsula.getNome(),
                 parceiroCapsula.getCnpj(),
                 parceiroCapsula.getNomeEmpresa(),
-                parceiroCapsula.getEmail(),
+                user.getEmail(),
                 parceiroCapsula.getTelefone()
             });
 
-           JOptionPane.showMessageDialog(null, "Seu novo login é: "+parceiroCapsula.getEmail());
+           JOptionPane.showMessageDialog(null, "Seu novo login é: "+user.getEmail());
          
     }
 
@@ -142,10 +150,11 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         listaParceiros.set(itemSelecionado, parceiro);
 
+        Usuario user = usuarioController.findByPessoaId(parceiro.getId());
         tableModel.setValueAt(parceiro.getNome(), itemSelecionado, 0);
         tableModel.setValueAt(parceiro.getCnpj(), itemSelecionado, 1);
         tableModel.setValueAt(parceiro.getNomeEmpresa(), itemSelecionado, 2);
-        tableModel.setValueAt(parceiro.getEmail(), itemSelecionado, 3);
+        tableModel.setValueAt(user.getEmail(), itemSelecionado, 3);
         tableModel.setValueAt(parceiro.getTelefone(), itemSelecionado, 4);
 
     }
@@ -508,6 +517,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         Parceiro parceiroEditar = listaParceiros.get(itemSelecionado);//selecionar o parceiro pela lista
+        Usuario user = usuarioController.findByPessoaId(parceiroEditar.getId());
 
         if (!txtnovoNome.getText().isEmpty()) {
 
@@ -523,7 +533,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         if (!txtnovoEmail.getText().isEmpty()) {
 
-            parceiroEditar.setEmail(txtnovoEmail.getText());
+            user.setEmail(txtnovoEmail.getText());
         }
 
         if (!txtnovoTelefone.getText().isEmpty()) {
@@ -538,61 +548,61 @@ public class ParceirosListar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnconfirmarMudancasActionPerformed
 
     private void txtbarradePesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbarradePesquisaKeyReleased
-String termo = txtbarradePesquisa.getText().trim();
+        String termo = txtbarradePesquisa.getText().trim();
 
-// Limpar tabela de forma segura na EDT
-SwingUtilities.invokeLater(() -> {
-    tableModel.setRowCount(0); // Usar APENAS um modelo (tableModel)
-});
-
-if (termo.isEmpty()) {
-    preencherTabelaParceiros();
-    return;
-}
-
-//Uso de regex para verificação se é númerico
-if (termo.matches("\\d+")) {
-    try {
-        Parceiro parceiro = procurarParceirocnpj(termo);
+        // Limpar tabela de forma segura na EDT
         SwingUtilities.invokeLater(() -> {
-            if (parceiro != null) {
-                tableModel.addRow(new Object[]{
-                    parceiro.getNome(),
-                    parceiro.getCnpj(),
-                    parceiro.getNomeEmpresa()
-                });
-            } else {
-                JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse CNPJ.");
-                preencherTabelaParceiros();
-            }
+            tableModel.setRowCount(0); // Usar APENAS um modelo (tableModel)
         });
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Erro ao buscar CNPJ: " + e.getMessage());
-    }
-} 
-// Busca por Nome (não numérico)
-else {
-    SwingUtilities.invokeLater(() -> {
-        List<Parceiro> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
-        
-        if (resultados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
-            txtbarradePesquisa.setText("");
+
+        if (termo.isEmpty()) {
             preencherTabelaParceiros();
-        } else {
-            for (Parceiro p : resultados) {
-                tableModel.addRow(new Object[]{
-                    p.getNome(),
-                    p.getCnpj(),
-                    p.getNomeEmpresa()
-                });
-            }
-            
-           
-            
+            return;
         }
-    });
-}
+
+        //Uso de regex para verificação se é númerico
+        if (termo.matches("\\d+")) {
+            try {
+                Parceiro parceiro = procurarParceirocnpj(termo);
+                SwingUtilities.invokeLater(() -> {
+                    if (parceiro != null) {
+                        tableModel.addRow(new Object[]{
+                            parceiro.getNome(),
+                            parceiro.getCnpj(),
+                            parceiro.getNomeEmpresa()
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse CNPJ.");
+                        preencherTabelaParceiros();
+                    }
+                });
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erro ao buscar CNPJ: " + e.getMessage());
+            }
+        } 
+        // Busca por Nome (não numérico)
+        else {
+            SwingUtilities.invokeLater(() -> {
+                List<Parceiro> resultados = parceiroController.findByNomeContainingIgnoreCase(termo);
+
+                if (resultados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum parceiro encontrado com esse nome.");
+                    txtbarradePesquisa.setText("");
+                    preencherTabelaParceiros();
+                } else {
+                    for (Parceiro p : resultados) {
+                        tableModel.addRow(new Object[]{
+                            p.getNome(),
+                            p.getCnpj(),
+                            p.getNomeEmpresa()
+                        });
+                    }
+
+
+
+                }
+            });
+        }
 
     }//GEN-LAST:event_txtbarradePesquisaKeyReleased
 
@@ -620,21 +630,20 @@ else {
 
     public void preenchertabelaSolicitantes() {
 
+        Solicitacao slc;
         for (Usuario solicitantes : listaSolicitantes) {
+            slc = solicitacaoController.findByUsuario(solicitantes);
             tableModelS.addRow(new Object[]{
-                solicitantes.getNome(),
-                solicitantes.getTelefone(),
+                solicitantes.getPessoa().getNome(),
+                solicitantes.getPessoa().getTelefone(),
                 solicitantes.getEmail(),
-                solicitantes.getSolicitacao().getCnpj(),
-                solicitantes.getSolicitacao().getNomeEmpresa()
+                slc.getCnpj(),
+                slc.getNomeEmpresa()
             });
         }
     }
 
     List<Usuario> listaSolicitantes = new ArrayList();// if (usuario.getSolicitacao ==  true) listaSolicitantes.add(usuario)
-
-    @Autowired
-    UsuarioIController usuarioController;
 
     private void btnAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceitarActionPerformed
         if (listaSolicitantes.isEmpty()) {
@@ -645,6 +654,7 @@ else {
         }
 
         Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
+        Solicitacao slc = solicitacaoController.findByUsuario(novoParceiroCapsula);
 
         if (novoParceiroCapsula == null) {
 
@@ -656,11 +666,11 @@ else {
        /* String cnpj = novoParceiroCapsula.getSolicitacao().getCnpj();
         String nomeEmpresa = novoParceiroCapsula.getSolicitacao().getNomeEmpresa(); // coloquei nesse formato para melhorar a leitura de código */ 
        
-        adicionarParceiro(novoParceiroCapsula, novoParceiroCapsula.getSolicitacao().getCnpj(), novoParceiroCapsula.getSolicitacao().getNomeEmpresa());
+        adicionarParceiro(novoParceiroCapsula, slc.getCnpj(), slc.getNomeEmpresa());
 
         listaSolicitantes.remove(itemSelecionado);//após a solicitação ser aceita o usuario vira parceiro, logo pode sair
 
-        JOptionPane.showMessageDialog(null, "O " + novoParceiroCapsula.getNome() + " foi adicionado como parceiro");
+        JOptionPane.showMessageDialog(null, "O " + novoParceiroCapsula.getPessoa().getNome() + " foi adicionado como parceiro");
         
         atualizarSolicitantes();
     }//GEN-LAST:event_btnAceitarActionPerformed
@@ -668,6 +678,7 @@ else {
     private void btnNegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNegarActionPerformed
 
         Usuario parceiroNegado = listaSolicitantes.get(itemSelecionado);
+        Solicitacao slc = solicitacaoController.findByUsuario(parceiroNegado);
 
         if (parceiroNegado == null) {
 
@@ -677,9 +688,9 @@ else {
         }
 
         //solicitacao = false e vai sair da lista de solicitantes
-        parceiroNegado.getSolicitacao().setSolicitouParceria(false); 
+        slc.setSolicitouParceria(false); 
         
-        solicitacaoController.save(parceiroNegado.getSolicitacao());
+        solicitacaoController.save(slc);
         usuarioController.save(parceiroNegado);
         
         listaSolicitantes.remove(parceiroNegado);
@@ -714,8 +725,8 @@ if (isNumerico) {
             
             if (solicitante != null) {
                 tableModelS.addRow(new Object[]{
-                    solicitante.getNome(),
-                    solicitante.getTelefone(),
+                    solicitante.getPessoa().getNome(),
+                    solicitante.getPessoa().getTelefone(),
                     solicitante.getEmail()
                 });
             } else {
@@ -739,8 +750,8 @@ if (isNumerico) {
         } else {
             for (Usuario solicitante : resultados) {
                 tableModelS.addRow(new Object[]{
-                    solicitante.getNome(),
-                    solicitante.getTelefone(),
+                    solicitante.getPessoa().getNome(),
+                    solicitante.getPessoa().getTelefone(),
                     solicitante.getEmail()
                 });
             }

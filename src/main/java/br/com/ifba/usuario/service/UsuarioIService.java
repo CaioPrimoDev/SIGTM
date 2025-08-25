@@ -18,6 +18,7 @@ public interface UsuarioIService {
     void delete(Long id);
     List<Usuario> findAll();
     Usuario findById(Long id);
+    Usuario findByPessoaId(Long pessoaId);
     List<Usuario> findByNomeContainingIgnoreCase(String nome);
     List<Usuario> findBySolicitacaoSolicitouParceriaTrue();
     List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo);

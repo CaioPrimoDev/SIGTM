@@ -98,7 +98,7 @@ public class PontoTuristicoList extends javax.swing.JFrame implements Applicatio
                 if (linha >= 0) {
                     
                     // AÇÃO DE COMENTÁRIOS
-                    if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Endereco")  
+                    if (coluna == 4) { // Verifica se o clique foi na 5ª coluna ("Avaliações")  
                         // Pega o objeto PontoTuristico da linha clicada
                         PontoTuristico pontoSelecionado = listaDePontos.get(linha);
 

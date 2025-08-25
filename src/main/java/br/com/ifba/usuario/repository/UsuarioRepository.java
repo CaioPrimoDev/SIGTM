@@ -18,8 +18,10 @@ import org.springframework.stereotype.Repository;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Optional só retorna um, a diferença é que ele ESPERA que exista um usuario OU NÃO, podendo lidar melhor com exceções
     Optional<Usuario> findByEmail(String email);
+    
+    Usuario findByPessoaId(Long pessoaId);
 
-    List<Usuario> findByNomeContainingIgnoreCase(String nome);
+    List<Usuario> findByPessoaNomeContainingIgnoreCase(String nome);
 
     boolean existsByEmail(String email);
     

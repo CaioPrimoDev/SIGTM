@@ -33,7 +33,7 @@ public class Solicitacao extends PersistenceEntity  {
     private String nomeEmpresa;
     @Column(nullable = false)
     private boolean solicitouParceria = false; // por padrão nenhum usuário fez solicita;cão
-// essa classe precisa ser eager
+    // essa classe precisa ser eager
     
     // FK para Usuario - dono da relação, coluna usuario_id na tabela solicitacao
     @OneToOne(fetch = FetchType.EAGER)

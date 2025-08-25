@@ -6,6 +6,7 @@ package br.com.ifba.Solicitacao.service;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.Solicitacao.repository.SolicitacaoRepository;
+import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.List;
@@ -86,6 +87,27 @@ public class SolicitacaoService implements SolicitacaoIService {
             throw new RegraNegocioException("Erro ao buscar Solicitação por ID.");
         }
     }
+    
+    @Override
+    public Solicitacao findByUsuario(Usuario usuario) {
+    if (usuario == null || usuario.getId() == null) {
+        log.warn("Usuário inválido fornecido para busca de solicitação: {}", usuario);
+        throw new RegraNegocioException("Usuário inválido para busca de solicitação.");
+    }
+
+    try {
+        Solicitacao solicitacao = repo.findFirstByUsuario(usuario);
+        if (solicitacao == null) {
+            log.warn("Nenhuma solicitação encontrada para o usuário ID: {}", usuario.getId());
+            throw new RegraNegocioException("Nenhuma solicitação encontrada para o usuário informado.");
+        }
+        return solicitacao;
+    } catch (RuntimeException e) {
+        log.error("Erro inesperado ao buscar Solicitação para o usuário ID: {}", usuario.getId(), e);
+        throw new RegraNegocioException("Erro ao buscar Solicitação para o usuário.");
+    }
+}
+
 
     @Override
     public void validarSolicitacao(Solicitacao solicitacao) {

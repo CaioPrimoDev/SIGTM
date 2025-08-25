@@ -5,12 +5,11 @@
 package br.com.ifba.usuario.entity;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
+import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import br.com.ifba.pessoa.entity.Pessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -28,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "usuario")
-public class Usuario{
+public class Usuario extends PersistenceEntity{
     
     @Column(nullable = false, unique = true)
     private String email;
@@ -47,9 +46,11 @@ public class Usuario{
     @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
 
+    /*
     // Mapeamento inverso: Usuario não tem a FK, mapeado por "usuario" em Solicitacao
     @OneToOne(mappedBy = "usuario",fetch = FetchType.EAGER)
     private Solicitacao solicitacao;
+    */ // Deixar isso causa ambiguidade
 
     //GAMBIARRA PARA RODAR
     @Column(nullable = true, unique = true)

@@ -6,11 +6,14 @@ package br.com.ifba.parceiro.service;
 
 import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
 import br.com.ifba.Solicitacao.entity.Solicitacao;
+import br.com.ifba.parceiro.controller.ParceiroIController;
 import br.com.ifba.usuario.controller.UsuarioIController;
 import br.com.ifba.usuario.entity.TipoUsuario;
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.parceiro.entity.Parceiro;
 import br.com.ifba.parceiro.repository.ParceiroRepository;
+import br.com.ifba.pessoa.entity.Pessoa;
+import br.com.ifba.usuario.controller.TipoUsuarioIController;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
@@ -32,17 +35,21 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class ParceiroService implements ParceiroIService {
     
-    private final ParceiroRepository repo;
+    private final ParceiroRepository parceiroRepository;
     
      private final UsuarioIController usuarioController;
      
      private final SolicitacaoIController solicitacaoController;
      
+     private final TipoUsuarioIController tipoUsuarioController;
+     
+     private final ParceiroIController parceiroController;
+     
     @Override
     public boolean save(Parceiro user) {
         validarParceiro(user);
         try {
-            repo.save(user);
+            parceiroRepository.save(user);
             return true;
         } catch (DataIntegrityViolationException e) {
             // Violação de constraints do banco (ex: unique ou not null)
@@ -63,7 +70,7 @@ public class ParceiroService implements ParceiroIService {
         }
 
         try {
-            repo.deleteById(id);
+            parceiroRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             // ID não encontrado no banco
             log.error("Tentativa de exclusão de Parceiro inexistente (ID: {}).", id, e);
@@ -77,7 +84,7 @@ public class ParceiroService implements ParceiroIService {
     @Override
     public List<Parceiro> findAll() {
         try {
-            return repo.findAll();
+            return parceiroRepository.findAll();
         } catch (RuntimeException e) {
             log.error("Erro ao buscar todos os Parceiro.", e);
             throw new RegraNegocioException("Erro ao buscar todos os Parceiro.");
@@ -92,7 +99,7 @@ public class ParceiroService implements ParceiroIService {
         }
 
         try {
-            return repo.findById(id)
+            return parceiroRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Parceiro não encontrado para ID: {}", id);
                     return new RegraNegocioException("Usuário não encontrado.");
@@ -109,7 +116,7 @@ public class ParceiroService implements ParceiroIService {
             return Collections.emptyList();
         }
 
-        List<Parceiro> resultado = repo.findByNomeContainingIgnoreCase(nome);
+        List<Parceiro> resultado = parceiroRepository.findByNomeContainingIgnoreCase(nome);
         
         if (resultado.isEmpty()) {
             log.info("Nenhum Parceiro encontrado para o termo: {}", nome);
@@ -130,7 +137,7 @@ public class ParceiroService implements ParceiroIService {
        
         Optional<Parceiro> parceiro = Optional.empty(); // Inicializa com Optional vazio
         try {
-            parceiro = repo.findByCnpj(cnpj);
+            parceiro = parceiroRepository.findByCnpj(cnpj);
 
             if (parceiro.isPresent()) {
                 log.info("Busca por CNPJ: {} concluída. Parceiro encontrado.", cnpj);
@@ -165,61 +172,67 @@ public class ParceiroService implements ParceiroIService {
             }
     }
     
-@Override
-public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
- 
-    Parceiro parceiro = new Parceiro();
-   
-    TipoUsuario tipo = new TipoUsuario();
-    tipo.setNome("PARCEIRO");
-    tipo.setDescricao("");
-    
-    parceiro.setNome(usuario.getPessoa().getNome());
-    parceiro.setEmail(usuario.getEmail());
-    parceiro.setTelefone(usuario.getPessoa().getTelefone());
-    parceiro.setSenha(usuario.getSenha());
-    parceiro.setAtivo(usuario.isAtivo());
-    parceiro.setTipo(tipo);
-   
-    parceiro.setCnpj(cnpj);
-    parceiro.setNomeEmpresa(nomeEmpresa);
+    @Override 
+    public Parceiro tornarParceiro(Usuario usuario, String cnpj, String nomeEmpresa) {
+        if (usuario == null || usuario.getPessoa() == null) {
+            throw new RegraNegocioException("Usuário ou dados pessoais inválidos para criar parceiro.");
+        }
 
-    Solicitacao novaSolicitacao = new Solicitacao();
-    novaSolicitacao.setCnpj(cnpj);
-    novaSolicitacao.setNomeEmpresa(nomeEmpresa);
-    novaSolicitacao.setSolicitouParceria(false);
-    parceiro.setSolicitacao(novaSolicitacao);
+        // Criar Parceiro a partir da Pessoa existente
+        Pessoa pessoaBase = usuario.getPessoa();
+        
+        TipoUsuario tipoParceiro = tipoUsuarioController.findByNome("PARCEIRO");
 
-     
+        Parceiro parceiro = new Parceiro();
+        parceiro.setId(pessoaBase.getId()); // Reutiliza o mesmo ID da pessoa base
+        parceiro.setNome(pessoaBase.getNome());
+        parceiro.setTelefone(pessoaBase.getTelefone());
 
-        
-        solicitacaoController.delete(usuario.getSolicitacao().getId());
-        
-         
-        
-        repo.save(parceiro);
-    
-    return parceiro;
-}
+        // Dados específicos do parceiro
+        parceiro.setCnpj(cnpj);
+        parceiro.setNomeEmpresa(nomeEmpresa);
+
+        // Atualizar o vínculo do Usuario → agora ele aponta para um Parceiro
+        usuario.setPessoa(parceiro);
+        usuario.setTipo(tipoParceiro);
+
+
+        // Remover a solicitação existente
+        Solicitacao solicitacao = solicitacaoController.findByUsuario(usuario);
+        solicitacaoController.delete(solicitacao.getId());
+
+        // Persistir alterações
+        parceiroRepository.save(parceiro);
+        usuarioController.save(usuario);
+
+        return parceiro;
+    }
+
     @Override
     public Usuario removerParceiria(Parceiro parceiro) {
 
-        Usuario usuario = new Usuario();
-
-        TipoUsuario tipo = new TipoUsuario();
-        tipo.setNome("USUARIO_COMUM");
-        tipo.setDescricao("");
+        // Busca/Cria as instâncias necessárias
+        Pessoa pessoaAntiga = new Pessoa();
+        TipoUsuario tipoComum = tipoUsuarioController.findByNome("USUARIO_COMUM");
 
         //DADOS DA PESSOA
-        usuario.setNome(parceiro.getNome());
-        usuario.setEmail(parceiro.getEmail());
-        usuario.setTelefone(parceiro.getTelefone());
+        pessoaAntiga.setNome(parceiro.getNome());
+        pessoaAntiga.setTelefone(parceiro.getTelefone());
 
         // DADOS DO USUÁRIO
-        usuario.setSenha(parceiro.getSenha());
-        usuario.setAtivo(parceiro.isAtivo());
-        usuario.setTipo(tipo);
-        parceiro.getSolicitacao().setSolicitouParceria(false);
+        Usuario usuario = usuarioController.findByPessoaId(parceiro.getId());
+        usuario.setTipo(tipoComum);
+        usuario.setPessoa(pessoaAntiga);
+        
+        // Remove a solicitação do usuario
+        Solicitacao slc = solicitacaoController.findByUsuario(usuario);
+        solicitacaoController.delete(slc.getId());
+        
+        // Atualiza o usuario
+        usuarioController.save(usuario);
+        
+        // Remove o objeto parceiro
+        parceiroController.delete(parceiro.getId());
 
         return usuario;
     }

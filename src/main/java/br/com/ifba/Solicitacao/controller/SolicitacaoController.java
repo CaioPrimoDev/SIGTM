@@ -6,6 +6,7 @@ package br.com.ifba.Solicitacao.controller;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.Solicitacao.service.SolicitacaoIService;
+import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,11 @@ public class SolicitacaoController implements SolicitacaoIController {
     @Override
     public Solicitacao findById(Long id) {
         return solicitacaoService.findById(id);
+    }
+
+    @Override
+    public Solicitacao findByUsuario(Usuario usuario) {
+        return solicitacaoService.findByUsuario(usuario);
     }
     
 }

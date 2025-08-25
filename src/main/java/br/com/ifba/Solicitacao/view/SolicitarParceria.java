@@ -136,27 +136,23 @@ public class SolicitarParceria extends javax.swing.JDialog {
 
         Usuario usuario = usuarioSession.getUsuarioLogado();
 
-        if (usuario.getSolicitacao() != null && usuario.getSolicitacao().isSolicitouParceria()) {
+        // Buscar se já existe uma solicitação ativa para este usuário
+        Solicitacao solicitacaoExistente = solicitacaoController.findByUsuario(usuario);
+
+        if (solicitacaoExistente != null && solicitacaoExistente.isSolicitouParceria()) {
             MostrarMensagem.erro(this, "Você já tem uma solicitação em andamento.", "Aviso");
             return;
         }
 
-        Solicitacao solicitacao = usuario.getSolicitacao();
-        if (solicitacao == null) {
-            solicitacao = new Solicitacao();
-        }
+        // Criar nova solicitação
+        Solicitacao solicitacao = new Solicitacao();
         solicitacao.setCnpj(cnpj);
         solicitacao.setNomeEmpresa(nomeEmpresa);
         solicitacao.setSolicitouParceria(true);
         solicitacao.setUsuario(usuario);  // ASSOCIA O USUÁRIO
 
         try {
-            // SALVA A SOLICITAÇÃO PRIMEIRO PELO SERVICE
             solicitacaoController.save(solicitacao);
-
-            // ASSOCIA A SOLICITAÇÃO AO USUÁRIO E SALVA USUÁRIO (se necessário)
-            usuario.setSolicitacao(solicitacao);
-            UsuarioController.save(usuario);
 
             MostrarMensagem.info(this, "Solicitação feita com sucesso!", " ");
             txtCnpj.setText("");
@@ -164,8 +160,7 @@ public class SolicitarParceria extends javax.swing.JDialog {
             this.dispose();
         } catch (RegraNegocioException | IllegalStateException ex) {
             MostrarMensagem.erro(this, ex.getMessage(), "Erro");
-        }     
-       
+        }
     }//GEN-LAST:event_btnSolicitarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

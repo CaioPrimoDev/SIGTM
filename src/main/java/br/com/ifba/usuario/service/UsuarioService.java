@@ -102,7 +102,7 @@ public class UsuarioService implements UsuarioIService {
             return Collections.emptyList();
         }
 
-        List<Usuario> resultado = UserRepo.findByNomeContainingIgnoreCase(nome);
+        List<Usuario> resultado = UserRepo.findByPessoaNomeContainingIgnoreCase(nome);
         
         if (resultado.isEmpty()) {
             log.info("Nenhum usuário encontrado para o termo: {}", nome);
@@ -237,6 +237,11 @@ public class UsuarioService implements UsuarioIService {
             log.warn("Nome do Usuário fora do tamanho permitido: '{}'", user.getPessoa().getNome());
             throw new RegraNegocioException("O nome do Usuário deve ter entre 3 e 30 caracteres.");
         }       
+    }
+
+    @Override
+    public Usuario findByPessoaId(Long pessoaId) {
+        return UserRepo.findByPessoaId(pessoaId);
     }
     
 }
