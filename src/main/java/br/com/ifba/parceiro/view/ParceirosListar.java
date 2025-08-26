@@ -12,6 +12,7 @@ import br.com.ifba.parceiro.controller.ParceiroIController;
 import br.com.ifba.parceiro.entity.Parceiro;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -615,10 +616,12 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         tableModelS.setRowCount(0);// zerar todas as linhas
 
-        listaSolicitantes.clear(); // limpar a lista 
-
-        List<Usuario> listaCapsula = usuarioController.findBySolicitacaoSolicitouParceriaTrue();
-
+        listaSolicitantes.clear(); // limpar a lista
+        
+        List<Solicitacao> solicitacoes = solicitacaoController.findBySolicitouParceriaTrue();
+        List<Usuario> listaCapsula = solicitacoes.stream()
+                                     .map(Solicitacao::getUsuario)
+                                     .toList();
         for (Usuario solicitantes : listaCapsula) {
 
             listaSolicitantes.add(solicitantes);
@@ -632,7 +635,7 @@ public class ParceirosListar extends javax.swing.JFrame {
 
         Solicitacao slc;
         for (Usuario solicitantes : listaSolicitantes) {
-            slc = solicitacaoController.findByUsuario(solicitantes);
+            slc = solicitacaoController.findByUsuario(solicitantes).get();
             tableModelS.addRow(new Object[]{
                 solicitantes.getPessoa().getNome(),
                 solicitantes.getPessoa().getTelefone(),
@@ -654,14 +657,15 @@ public class ParceirosListar extends javax.swing.JFrame {
         }
 
         Usuario novoParceiroCapsula = listaSolicitantes.get(itemSelecionado);
-        Solicitacao slc = solicitacaoController.findByUsuario(novoParceiroCapsula);
+        Optional<Solicitacao> optSlc = solicitacaoController.findByUsuario(novoParceiroCapsula);
 
-        if (novoParceiroCapsula == null) {
-
-            JOptionPane.showMessageDialog(null, "Não foi possível adicionar a parceria");
+        if (optSlc.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhuma solicitação encontrada para este usuário");
             return;
-
         }
+
+        Solicitacao slc = optSlc.get(); // agora é seguro
+
 
        /* String cnpj = novoParceiroCapsula.getSolicitacao().getCnpj();
         String nomeEmpresa = novoParceiroCapsula.getSolicitacao().getNomeEmpresa(); // coloquei nesse formato para melhorar a leitura de código */ 
@@ -678,7 +682,7 @@ public class ParceirosListar extends javax.swing.JFrame {
     private void btnNegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNegarActionPerformed
 
         Usuario parceiroNegado = listaSolicitantes.get(itemSelecionado);
-        Solicitacao slc = solicitacaoController.findByUsuario(parceiroNegado);
+        Solicitacao slc = solicitacaoController.findByUsuario(parceiroNegado).get();
 
         if (parceiroNegado == null) {
 
@@ -700,65 +704,68 @@ public class ParceirosListar extends javax.swing.JFrame {
     private void txtpesquisarSolicitantesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisarSolicitantesKeyReleased
         String termo = txtpesquisarSolicitantes.getText().trim();
 
-// Limpar tabela de forma segura na EDT
-SwingUtilities.invokeLater(() -> tableModelS.setRowCount(0));
+        // Limpar tabela de forma segura na EDT
+        SwingUtilities.invokeLater(() -> tableModelS.setRowCount(0));
 
-if (termo.isEmpty()) {
-    preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes() se for diferente
-    return;
-}
-
-boolean isNumerico = true;
-for (char c : termo.toCharArray()) {
-    if (!Character.isDigit(c)) {
-        isNumerico = false;
-        break;
-    }
-}
-
-if (isNumerico) {
-    // Busca por ID
-    SwingUtilities.invokeLater(() -> {
-        try {
-            Long id = Long.valueOf(termo);
-            Usuario solicitante = usuarioController.findById(id);
-            
-            if (solicitante != null) {
-                tableModelS.addRow(new Object[]{
-                    solicitante.getPessoa().getNome(),
-                    solicitante.getPessoa().getTelefone(),
-                    solicitante.getEmail()
-                });
-            } else {
-                JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
-                preencherTabelaParceiros(); 
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao buscar ID: " + e.getMessage());
-            preencherTabelaParceiros(); 
+        if (termo.isEmpty()) {
+            preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes() se for diferente
+            return;
         }
-    });
-} else {
-    // Busca por nome
-    SwingUtilities.invokeLater(() -> {
-        List<Usuario> resultados = usuarioController.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(termo);
-        
-        if (resultados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
-            txtpesquisarSolicitantes.setText("");
-            preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes()
+
+        boolean isNumerico = true;
+        for (char c : termo.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                isNumerico = false;
+                break;
+            }
+        }
+
+        if (isNumerico) {
+            // Busca por ID
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Long id = Long.valueOf(termo);
+                    Usuario solicitante = usuarioController.findById(id);
+
+                    if (solicitante != null) {
+                        tableModelS.addRow(new Object[]{
+                            solicitante.getPessoa().getNome(),
+                            solicitante.getPessoa().getTelefone(),
+                            solicitante.getEmail()
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse ID.");
+                        preencherTabelaParceiros(); 
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Erro ao buscar ID: " + e.getMessage());
+                    preencherTabelaParceiros(); 
+                }
+            });
         } else {
-            for (Usuario solicitante : resultados) {
-                tableModelS.addRow(new Object[]{
-                    solicitante.getPessoa().getNome(),
-                    solicitante.getPessoa().getTelefone(),
-                    solicitante.getEmail()
-                });
-            }
-           
+            // Busca por nome
+            SwingUtilities.invokeLater(() -> {
+
+                List<Solicitacao> solicitacoes = solicitacaoController.findByNomeUsuarioComSolicitacaoAtiva(termo);
+                List<Usuario> resultados = solicitacoes.stream()
+                                             .map(Solicitacao::getUsuario)
+                                             .toList();        
+                if (resultados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum solicitante encontrado com esse nome.");
+                    txtpesquisarSolicitantes.setText("");
+                    preencherTabelaParceiros(); // Ou preencherTabelaSolicitantes()
+                } else {
+                    for (Usuario solicitante : resultados) {
+                        tableModelS.addRow(new Object[]{
+                            solicitante.getPessoa().getNome(),
+                            solicitante.getPessoa().getTelefone(),
+                            solicitante.getEmail()
+                        });
+                    }
+
+                }
+            });
         }
-    });
-}
     }//GEN-LAST:event_txtpesquisarSolicitantesKeyReleased
 
     private void tblParceirosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblParceirosMouseClicked

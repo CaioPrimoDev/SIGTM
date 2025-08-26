@@ -7,6 +7,7 @@ package br.com.ifba.Solicitacao.controller;
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -16,6 +17,8 @@ public interface SolicitacaoIController {
     Solicitacao save(Solicitacao solicitacao);
     void delete(Long id);
     List<Solicitacao> findAll();
-    Solicitacao findByUsuario(Usuario usuario);
+    Optional<Solicitacao> findByUsuario(Usuario usuario);
     Solicitacao findById(Long id);
+    List<Solicitacao> findBySolicitouParceriaTrue();
+    List<Solicitacao> findByNomeUsuarioComSolicitacaoAtiva(String nome);
 }

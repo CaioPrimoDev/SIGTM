@@ -17,10 +17,6 @@ public interface UsuarioIController {
     List<Usuario> findAll();
     Usuario findById(Long id);
     Usuario findByPessoaId(Long pessoaId);
-    List <Usuario> findByNomeContainingIgnoreCase(String nome);
-    List<Usuario> findBySolicitacaoSolicitouParceriaTrue();//pesquisar por todos os solicitantes
-    List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
-    List<Usuario> findByTipoNomeIgnoreCase(String nome);
-    List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome);
-   // List<Usuario> findParceirosByNome(@Param("nome") String nome);// pesquisar parceiro via metodo
+    //List<Usuario> findBySolicitacaoSolicitouParceriaTrue();//pesquisar por todos os solicitantes
+    //List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);//para a função de pesquisa  de solicitantes
 }

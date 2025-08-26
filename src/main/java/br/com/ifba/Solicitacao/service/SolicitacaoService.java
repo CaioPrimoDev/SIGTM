@@ -89,24 +89,41 @@ public class SolicitacaoService implements SolicitacaoIService {
     }
     
     @Override
-    public Solicitacao findByUsuario(Usuario usuario) {
-    if (usuario == null || usuario.getId() == null) {
-        log.warn("Usuário inválido fornecido para busca de solicitação: {}", usuario);
-        throw new RegraNegocioException("Usuário inválido para busca de solicitação.");
+    public Optional<Solicitacao> findByUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+            log.warn("Usuário inválido fornecido para busca de solicitação: {}", usuario);
+            return Optional.empty();
+        }
+
+        try {
+            return repo.findFirstByUsuario(usuario); // já retorna Optional
+        } catch (RuntimeException e) {
+            log.error("Erro inesperado ao buscar Solicitação para o usuário ID: {}", usuario.getId(), e);
+            return Optional.empty();
+        }
     }
 
-    try {
-        Solicitacao solicitacao = repo.findFirstByUsuario(usuario);
-        if (solicitacao == null) {
-            log.warn("Nenhuma solicitação encontrada para o usuário ID: {}", usuario.getId());
-            throw new RegraNegocioException("Nenhuma solicitação encontrada para o usuário informado.");
+    
+    @Override
+    public List<Solicitacao> findBySolicitouParceriaTrue() {
+        log.info("Buscando solicitações com parceria TRUE...");
+        List<Solicitacao> solicitacoes = repo.findBySolicitouParceriaTrue();
+
+        if (solicitacoes.isEmpty()) {
+            log.warn("Nenhuma solicitação com parceria TRUE encontrada.");
         }
-        return solicitacao;
-    } catch (RuntimeException e) {
-        log.error("Erro inesperado ao buscar Solicitação para o usuário ID: {}", usuario.getId(), e);
-        throw new RegraNegocioException("Erro ao buscar Solicitação para o usuário.");
+        return solicitacoes;
     }
-}
+
+    @Override
+    public List<Solicitacao> findByNomeUsuarioComSolicitacaoAtiva(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
+        }
+
+        log.info("Buscando solicitações para usuários com nome '{}', parceria TRUE e usuário ativo...", nome);
+        return repo.findByUsuarioPessoaNomeContainingIgnoreCaseAndSolicitouParceriaTrueAndUsuarioAtivoTrue(nome);
+    }
 
 
     @Override

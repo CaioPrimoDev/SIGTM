@@ -8,6 +8,7 @@ import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.Solicitacao.service.SolicitacaoIService;
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -43,8 +44,18 @@ public class SolicitacaoController implements SolicitacaoIController {
     }
 
     @Override
-    public Solicitacao findByUsuario(Usuario usuario) {
+    public Optional<Solicitacao> findByUsuario(Usuario usuario) {
         return solicitacaoService.findByUsuario(usuario);
+    }
+
+    @Override
+    public List<Solicitacao> findBySolicitouParceriaTrue() {
+        return solicitacaoService.findBySolicitouParceriaTrue();
+    }
+
+    @Override
+    public List<Solicitacao> findByNomeUsuarioComSolicitacaoAtiva(String nome) {
+        return solicitacaoService.findByNomeUsuarioComSolicitacaoAtiva(nome);
     }
     
 }

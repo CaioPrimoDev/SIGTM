@@ -39,31 +39,6 @@ public class UsuarioController implements UsuarioIController {
     public Usuario findById(Long id) {
         return service.findById(id);
     }
-
-    @Override
-    public List<Usuario> findByNomeContainingIgnoreCase(String nome) {
-        return service.findByNomeContainingIgnoreCase(nome);
-    }
-
-    @Override
-    public List<Usuario> findBySolicitacaoSolicitouParceriaTrue() {
-        return service.findBySolicitacaoSolicitouParceriaTrue();
-    }
-
-    @Override
-    public List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome) {
-        return service.findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(nome);
-    }
-
-    @Override
-    public  List<Usuario> findByTipoNomeIgnoreCase(String nome){
-        return service.findByTipoNomeIgnoreCase(nome);
-    }
-    
-    @Override
-    public List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome){
-        return service.findByTipoNomeAndNomeContainingIgnoreCase(tipoNome, nome);
-    }
     
     @Override    
     public Usuario findByPessoaId(Long pessoaId) {

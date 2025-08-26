@@ -4,16 +4,16 @@
  */
 package br.com.ifba.parceiro.service;
 
-import br.com.ifba.Solicitacao.controller.SolicitacaoIController;
 import br.com.ifba.Solicitacao.entity.Solicitacao;
-import br.com.ifba.parceiro.controller.ParceiroIController;
-import br.com.ifba.usuario.controller.UsuarioIController;
+import br.com.ifba.Solicitacao.service.SolicitacaoIService;
 import br.com.ifba.usuario.entity.TipoUsuario;
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.parceiro.entity.Parceiro;
 import br.com.ifba.parceiro.repository.ParceiroRepository;
 import br.com.ifba.pessoa.entity.Pessoa;
-import br.com.ifba.usuario.controller.TipoUsuarioIController;
+import br.com.ifba.pessoa.service.PessoaIService;
+import br.com.ifba.usuario.service.TipoUsuarioIService;
+import br.com.ifba.usuario.service.UsuarioIService;
 import br.com.ifba.util.RegraNegocioException;
 import br.com.ifba.util.StringUtil;
 import java.util.Collections;
@@ -37,13 +37,16 @@ public class ParceiroService implements ParceiroIService {
     
     private final ParceiroRepository parceiroRepository;
     
-     private final UsuarioIController usuarioController;
+     private final UsuarioIService usuarioService;
      
-     private final SolicitacaoIController solicitacaoController;
+     private final SolicitacaoIService solicitacaoService;
      
-     private final TipoUsuarioIController tipoUsuarioController;
+     private final TipoUsuarioIService tipoUsuarioService;
      
-     private final ParceiroIController parceiroController;
+     private final PessoaIService pessoaService;
+     
+     // ParceiroService não pode chamar ele mesmo, se não ocorre um loop beam
+     //private final ParceiroIService parceiroService;
      
     @Override
     public boolean save(Parceiro user) {
@@ -178,62 +181,77 @@ public class ParceiroService implements ParceiroIService {
             throw new RegraNegocioException("Usuário ou dados pessoais inválidos para criar parceiro.");
         }
 
-        // Criar Parceiro a partir da Pessoa existente
+        // Dados base da pessoa
         Pessoa pessoaBase = usuario.getPessoa();
-        
-        TipoUsuario tipoParceiro = tipoUsuarioController.findByNome("PARCEIRO");
 
+        TipoUsuario tipoParceiro = tipoUsuarioService.findByNome("PARCEIRO");
+
+        // Criar Parceiro reutilizando o ID da Pessoa
         Parceiro parceiro = new Parceiro();
-        parceiro.setId(pessoaBase.getId()); // Reutiliza o mesmo ID da pessoa base
+        parceiro.setId(pessoaBase.getId());
         parceiro.setNome(pessoaBase.getNome());
         parceiro.setTelefone(pessoaBase.getTelefone());
-
-        // Dados específicos do parceiro
         parceiro.setCnpj(cnpj);
         parceiro.setNomeEmpresa(nomeEmpresa);
 
-        // Atualizar o vínculo do Usuario → agora ele aponta para um Parceiro
+        // Atualizar vínculo do Usuario
         usuario.setPessoa(parceiro);
         usuario.setTipo(tipoParceiro);
 
+        // Remover solicitação existente, se houver
+        solicitacaoService.findByUsuario(usuario)
+            .ifPresent(slc -> solicitacaoService.delete(slc.getId()));
 
-        // Remover a solicitação existente
-        Solicitacao solicitacao = solicitacaoController.findByUsuario(usuario);
-        solicitacaoController.delete(solicitacao.getId());
+        // Persistir Parceiro e Usuario diretamente pelo Repository
+        Parceiro parceiroPersistido = parceiroRepository.save(parceiro);
+        usuarioService.save(usuario);
 
-        // Persistir alterações
-        parceiroRepository.save(parceiro);
-        usuarioController.save(usuario);
-
-        return parceiro;
+        return parceiroPersistido;
     }
 
     @Override
     public Usuario removerParceiria(Parceiro parceiro) {
+        if (parceiro == null) {
+            throw new RegraNegocioException("Parceiro inválido.");
+        }
 
-        // Busca/Cria as instâncias necessárias
+        // Buscar tipo de usuário comum
+        TipoUsuario tipoComum = tipoUsuarioService.findByNome("USUARIO_COMUM");
+
+        // Buscar o usuário associado ao Parceiro
+        Usuario usuario = usuarioService.findByPessoaId(parceiro.getId());
+        if (usuario == null) {
+            throw new RegraNegocioException("Usuário não encontrado para o parceiro informado.");
+        }
+
+        // Criar nova Pessoa
         Pessoa pessoaAntiga = new Pessoa();
-        TipoUsuario tipoComum = tipoUsuarioController.findByNome("USUARIO_COMUM");
-
-        //DADOS DA PESSOA
         pessoaAntiga.setNome(parceiro.getNome());
         pessoaAntiga.setTelefone(parceiro.getTelefone());
 
-        // DADOS DO USUÁRIO
-        Usuario usuario = usuarioController.findByPessoaId(parceiro.getId());
+        // Persistir nova Pessoa (não usamos retorno)
+        boolean pessoaSalva = pessoaService.save(pessoaAntiga);
+        if (!pessoaSalva) {
+            throw new RegraNegocioException("Erro ao salvar dados da pessoa.");
+        }
+
+        // Atualizar Usuario
         usuario.setTipo(tipoComum);
         usuario.setPessoa(pessoaAntiga);
-        
-        // Remove a solicitação do usuario
-        Solicitacao slc = solicitacaoController.findByUsuario(usuario);
-        solicitacaoController.delete(slc.getId());
-        
-        // Atualiza o usuario
-        usuarioController.save(usuario);
-        
-        // Remove o objeto parceiro
-        parceiroController.delete(parceiro.getId());
+        boolean usuarioSalvo = usuarioService.save(usuario);
+        if (!usuarioSalvo) {
+            throw new RegraNegocioException("Erro ao atualizar usuário.");
+        }
+
+        // Remover solicitação se existir
+        solicitacaoService.findByUsuario(usuario)
+                          .ifPresent(s -> solicitacaoService.delete(s.getId()));
+
+        // Remover o Parceiro antigo
+        this.delete(parceiro.getId());
 
         return usuario;
     }
+                   
+
 }

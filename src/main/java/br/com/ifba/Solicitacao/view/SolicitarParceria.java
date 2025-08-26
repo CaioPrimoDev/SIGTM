@@ -11,6 +11,7 @@ import br.com.ifba.usuario.controller.UsuarioIController;
 import br.com.ifba.usuario.entity.Usuario;
 import br.com.ifba.util.MostrarMensagem;
 import br.com.ifba.util.RegraNegocioException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -137,9 +138,9 @@ public class SolicitarParceria extends javax.swing.JDialog {
         Usuario usuario = usuarioSession.getUsuarioLogado();
 
         // Buscar se já existe uma solicitação ativa para este usuário
-        Solicitacao solicitacaoExistente = solicitacaoController.findByUsuario(usuario);
+        Optional<Solicitacao> solicitacaoExistenteOpt = solicitacaoController.findByUsuario(usuario);
 
-        if (solicitacaoExistente != null && solicitacaoExistente.isSolicitouParceria()) {
+        if (solicitacaoExistenteOpt.isPresent() && solicitacaoExistenteOpt.get().isSolicitouParceria()) {
             MostrarMensagem.erro(this, "Você já tem uma solicitação em andamento.", "Aviso");
             return;
         }

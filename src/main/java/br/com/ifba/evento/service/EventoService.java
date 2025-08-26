@@ -4,12 +4,12 @@
  */
 package br.com.ifba.evento.service;
 
-import br.com.ifba.endereco.controller.EnderecoIController;
 import br.com.ifba.endereco.entity.Endereco;
+import br.com.ifba.endereco.service.EnderecoIService;
 import br.com.ifba.evento.entity.Evento;
 import br.com.ifba.evento.repository.EventoRepository;
-import br.com.ifba.parceiro.controller.ParceiroIController;
 import br.com.ifba.parceiro.entity.Parceiro;
+import br.com.ifba.parceiro.service.ParceiroIService;
 import br.com.ifba.util.RegraNegocioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +30,9 @@ public class EventoService implements EventoIService {
 
     private final EventoRepository eventoRepository;
 
-    private final ParceiroIController parceiroController;
+    private final ParceiroIService parceiroService;
 
-    private final EnderecoIController enderecoController;
+    private final EnderecoIService enderecoService;
 
     @Override
     public boolean save(Evento evento) {
@@ -193,11 +193,11 @@ public class EventoService implements EventoIService {
 
         evento.setEndereco(endereco);
 
-        enderecoController.save(endereco);
+        enderecoService.save(endereco);
 
         eventoRepository.save(evento);
 
-        parceiroController.save(parceiro);
+        parceiroService.save(parceiro);
 
         return evento;
     }

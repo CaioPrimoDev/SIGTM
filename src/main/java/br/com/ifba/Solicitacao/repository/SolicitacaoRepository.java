@@ -6,6 +6,8 @@ package br.com.ifba.Solicitacao.repository;
 
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.entity.Usuario;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author User
  */
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> {
-    Solicitacao findFirstByUsuario(Usuario usuario);
+    Optional<Solicitacao> findFirstByUsuario(Usuario usuario);
+    List<Solicitacao> findBySolicitouParceriaTrue();
+    List<Solicitacao> findByUsuarioPessoaNomeContainingIgnoreCaseAndSolicitouParceriaTrueAndUsuarioAtivoTrue(String nome);
 }

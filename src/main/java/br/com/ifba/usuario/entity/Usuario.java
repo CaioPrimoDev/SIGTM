@@ -4,12 +4,10 @@
  */
 package br.com.ifba.usuario.entity;
 
-import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import br.com.ifba.pessoa.entity.Pessoa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;

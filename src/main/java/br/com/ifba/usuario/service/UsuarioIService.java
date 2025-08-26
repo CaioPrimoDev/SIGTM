@@ -19,10 +19,5 @@ public interface UsuarioIService {
     List<Usuario> findAll();
     Usuario findById(Long id);
     Usuario findByPessoaId(Long pessoaId);
-    List<Usuario> findByNomeContainingIgnoreCase(String nome);
-    List<Usuario> findBySolicitacaoSolicitouParceriaTrue();
-    List<Usuario> findByTipoNomeIgnoreCase(String nomeTipo);
-    List<Usuario> findByTipoNomeAndNomeContainingIgnoreCase(String tipoNome, String nome);
-    List<Usuario> findByNomeContainingIgnoreCaseAndSolicitacaoTrueAndAtivoTrue(String nome);
     void validarUsuario(Usuario user);    
 }

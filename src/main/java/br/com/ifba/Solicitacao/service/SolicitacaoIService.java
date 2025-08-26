@@ -7,6 +7,7 @@ package br.com.ifba.Solicitacao.service;
 import br.com.ifba.Solicitacao.entity.Solicitacao;
 import br.com.ifba.usuario.entity.Usuario;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -17,6 +18,8 @@ public interface SolicitacaoIService {
     void delete(Long id);
     List<Solicitacao> findAll();
     Solicitacao findById(Long id);
-    Solicitacao findByUsuario(Usuario usuario);
+    Optional<Solicitacao> findByUsuario(Usuario usuario);
     void validarSolicitacao(Solicitacao solicitacao);
+    List<Solicitacao> findBySolicitouParceriaTrue();
+    List<Solicitacao> findByNomeUsuarioComSolicitacaoAtiva(String nome);
 }
