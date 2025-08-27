@@ -49,6 +49,8 @@ public class PromocaoUpdate extends javax.swing.JFrame {
     // Construtor da classe
     public PromocaoUpdate() {
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
     
     @PostConstruct

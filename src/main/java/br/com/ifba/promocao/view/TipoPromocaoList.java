@@ -48,6 +48,7 @@ public class TipoPromocaoList extends javax.swing.JFrame {
         configurarTabela();
         carregarDados();
         adicionarListenerDeCliqueNaTabela();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
     
     // Configura como a tabela vai exibir os dados

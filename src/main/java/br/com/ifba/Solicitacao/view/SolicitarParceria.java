@@ -38,6 +38,8 @@ public class SolicitarParceria extends javax.swing.JDialog {
         // Chamando JDialog sem parâmetros
         super((java.awt.Frame) null, true); // modal = true
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
     @Override

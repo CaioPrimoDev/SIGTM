@@ -41,6 +41,8 @@ public class PromocaoList extends javax.swing.JFrame {
      */
     public PromocaoList() {
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
     
     @PostConstruct

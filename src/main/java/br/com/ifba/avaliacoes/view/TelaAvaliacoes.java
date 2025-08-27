@@ -33,7 +33,9 @@ public class TelaAvaliacoes extends javax.swing.JFrame {
      * Creates new form TelaAvaliacoes
      */
     public TelaAvaliacoes() {
-        initComponents();   
+        initComponents(); 
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
 

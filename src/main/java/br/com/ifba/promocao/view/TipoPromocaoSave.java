@@ -46,6 +46,8 @@ public class TipoPromocaoSave extends javax.swing.JFrame {
         this.publicoService = publicoService; 
         initComponents();
         carregarPublicos();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
     // Método para limpar os campos do formulário

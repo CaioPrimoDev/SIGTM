@@ -35,6 +35,8 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
      */
     public TelaUsuarioCadastrarUI() {
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
     /**

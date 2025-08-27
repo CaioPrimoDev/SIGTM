@@ -38,6 +38,8 @@ public class TelaLoginUI extends javax.swing.JFrame {
     public TelaLoginUI(LoginController loginController) {
         this.loginController = loginController;
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
 

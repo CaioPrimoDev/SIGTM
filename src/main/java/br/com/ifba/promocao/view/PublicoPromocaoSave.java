@@ -37,6 +37,8 @@ public class PublicoPromocaoSave extends javax.swing.JFrame {
         this.publicoService = publicoService;
         this.userLogado = userLogado;
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
     
     // Limpa os campos da tela

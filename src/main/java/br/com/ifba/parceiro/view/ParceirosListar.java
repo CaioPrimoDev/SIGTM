@@ -52,6 +52,7 @@ public class ParceirosListar extends javax.swing.JFrame {
         carregarDadosParceiros();
         carregardadosSolicitantes();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
     List<Parceiro> listaParceiros = new ArrayList(); //lista para ajudar a popular a tabela

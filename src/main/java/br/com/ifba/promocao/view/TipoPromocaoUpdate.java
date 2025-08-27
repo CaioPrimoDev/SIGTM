@@ -48,6 +48,7 @@ public class TipoPromocaoUpdate extends javax.swing.JFrame {
         this.controller = controller;
         this.userLogado = userLogado;
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
     
     @PostConstruct

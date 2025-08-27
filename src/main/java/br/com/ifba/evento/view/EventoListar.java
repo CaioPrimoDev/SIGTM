@@ -42,6 +42,7 @@ public class EventoListar extends javax.swing.JFrame {
         tableModel = (DefaultTableModel) tblEventos.getModel();
         carregarDadosEventos();
         
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
     @Autowired

@@ -44,6 +44,8 @@ public class PublicoPromocaoList extends javax.swing.JFrame {
         configurarTabela();
         carregarDados();
         adicionarListenerTabela();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
     }
 
 
