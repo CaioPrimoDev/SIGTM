@@ -174,19 +174,29 @@ public class TelaUsuarioCadastrarUI extends javax.swing.JFrame {
 
             if (sucessoPessoa && sucessoUsuario) {
                 MostrarMensagem.info(this, "Usuário cadastrado com sucesso!", "SUCESSO");
+                apagarDados();
                 this.dispose();
             } else {
                 MostrarMensagem.erro(this, "Erro ao salvar usuário.", "ERRO");
+                apagarDados();
             }
 
         } catch (Exception e) {
             MostrarMensagem.erro(this, "Erro: " + e.getMessage(), "ERRO");
+            apagarDados();
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
     /**
      * @param args the command line arguments
      */
     
+    public void apagarDados() {
+        txtNome.setText("");
+        txtTelefone.setText("");
+        txtEmail.setText("");
+        senha1.setText("");
+        senha2.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
